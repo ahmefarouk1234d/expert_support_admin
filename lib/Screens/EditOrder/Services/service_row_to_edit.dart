@@ -1,5 +1,5 @@
-import 'package:expert_support_admin/BlocResources/Order/order_bloc.dart';
-import 'package:expert_support_admin/BlocResources/Order/order_provider.dart';
+import 'package:expert_support_admin/BlocResources/base_provider.dart';
+import 'package:expert_support_admin/BlocResources/order_bloc.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +16,26 @@ class ServiceRowToEdit extends StatefulWidget {
 class _ServiceRowToEditState extends State<ServiceRowToEdit> {
   OrderService service;
   List<int> _qaunityList;
-  OrderBloc _editBloc;
+  OrderBloc _orderBloc;
+  TextEditingController priceController;
 
   @override
   void initState() {
+    service = widget.services[widget.index];
     _qaunityList = List.generate(100, (i) => i);
+    priceController = TextEditingController(text: service.priceForOnePiece.toString());
     super.initState();
+  }
+
+  _handlePriceChange(String value){
+    try{
+      service.priceForOnePiece = double.parse(value);
+      setState(() {
+        service.total = service.priceForOnePiece * service.quantity;
+      });
+    } catch (e){
+      print(e.toString());
+    }
   }
 
   _handlePartsChange(bool value){
@@ -39,15 +53,13 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
   }
 
   _handleDeleteService(){
-    print("deleted services is \"${widget.services[widget.index].nameEn}\"");
     widget.services.removeAt(widget.index);
-    _editBloc.servicesChange.add(widget.services);
+    _orderBloc.servicesChange.add(widget.services);
   }
 
   @override
   Widget build(BuildContext context) {
-    _editBloc = OrderProvider.of(context);
-    service = widget.services[widget.index];
+    _orderBloc = Provider.of<OrderBloc>(context);
     
     return Container(
       padding: EdgeInsets.all(8),
@@ -59,7 +71,25 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
                 Row(
                   children: <Widget>[
                     Expanded(child: Text(service.nameEn ?? ""),),
-                    Text(service.total.toString())
+                    Container(
+                      height: Screen.screenWidth * 0.10,
+                      width: Screen.screenWidth * 0.16,
+                      padding: EdgeInsets.all(8),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.black, width: 2),
+                      ),
+                      child: TextField(
+                        controller: priceController, 
+                        keyboardType: TextInputType.numberWithOptions(decimal: true),
+                        onChanged: _handlePriceChange,
+                        decoration: InputDecoration.collapsed(
+                          hintText: "0.0"
+                        ),
+                      ),
+                    ),
+                    //Text(service.total.toString())
                   ],
                 ),
                 Row(
@@ -80,6 +110,13 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
                             .toList())
                   ],
                 ),
+                Container(height: 8,),
+                Row(
+                  children: <Widget>[
+                    Expanded(child: Text("Total"),),
+                    Text(service.total.toString())
+                  ],
+                )
               ],
             ),
           ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,12 +7,19 @@ import 'package:rxdart/rxdart.dart';
 import 'package:expert_support_admin/HelperClass/validator.dart';
 
 class AuthBloc with Validator{
-  final _email = BehaviorSubject<String>();
-  final _password = BehaviorSubject<String>();
-  final _fcmToken = BehaviorSubject<String>();
-  final _admin = BehaviorSubject<AdminUserInfo>();
+  final BehaviorSubject<String> _email = BehaviorSubject();
+  final BehaviorSubject<String> _password = BehaviorSubject();
+  final BehaviorSubject<String> _fcmToken = BehaviorSubject();
+  final BehaviorSubject<AdminUserInfo> _admin = BehaviorSubject();
 
   final _firebaseManager = FirebaseManager();
+
+  reset(){
+    _email.add(null);
+    _password.add(null);
+    _fcmToken.add(null);
+    _admin.add(null);
+  }
 
   Stream<String> get email => _email.stream.transform(validateEmail);
   Stream<String> get password => _password.stream.transform(validatePassword);
@@ -31,17 +39,22 @@ class AuthBloc with Validator{
     return isValidEmail && isValidPassword;
   }
 
-  Future<FirebaseUser> signIn(){
-    return _firebaseManager.signIn(email: _email.value, password: _password.value);
+  Future<void> signIn({Function(FirebaseUser) onSuccess, Function(String) onError}){
+    return _firebaseManager.signIn(
+      email: _email.value, 
+      password: _password.value, 
+      onSuccess: onSuccess, 
+      onError: onError);
   }
 
-  Future<void> updateAdminDetails(String userId){
-    final adminInfo = AdminUserInfo(id: userId, email: _email.value, role: "admin", fcmToken: _fcmToken.value);
-    return _firebaseManager.saveAdminUser(adminInfo);
+  Future<void> updateFcmToken(String adminID){
+    return _firebaseManager.updateFcmToken(adminID, _fcmToken.value);
   }
 
-  void saveAdminInfo(String userId){
-    this._admin.add(AdminUserInfo(id: userId, email: _email.value, role: "admin", fcmToken: _fcmToken.value));
+  Future<AdminUserInfo> reteiveAdminInfo(String adminID) async{
+    DocumentSnapshot adminDoc = await _firebaseManager.getAdminInfo(adminID);
+    AdminUserInfo adminInfo = AdminUserInfo.fromMap(adminDoc)..id = adminID;
+    return adminInfo;
   }
 
   void dispose() async{

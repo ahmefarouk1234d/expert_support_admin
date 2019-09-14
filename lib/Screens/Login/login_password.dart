@@ -1,15 +1,17 @@
-import 'package:expert_support_admin/BlocResources/Login/auth_bloc.dart';
+import 'package:expert_support_admin/BlocResources/auth_bloc.dart';
 import 'package:expert_support_admin/HelperClass/string.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:flutter/material.dart';
 
+import 'package:expert_support_admin/BlocResources/base_provider.dart';
+
 class LoginPasswordTextField extends StatelessWidget {
   final TextEditingController controller;
-  final AuthBloc bloc;
-  LoginPasswordTextField({this.controller, this.bloc});
+  LoginPasswordTextField({this.controller});
 
   @override
   Widget build(BuildContext context) {
+    AuthBloc bloc = Provider.of<AuthBloc>(context);
     return Container(
         height: Screen.screenWidth * 0.12,
         alignment: Alignment.centerLeft,

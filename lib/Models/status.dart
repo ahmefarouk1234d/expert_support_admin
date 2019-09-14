@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-class Status {
+class OrderStatus {
   // ---------------- status to display ----------------------
   static const String inProcessEn = "In process";
   static const String inProcessAr = "تحت المعالجة";
@@ -10,14 +10,17 @@ class Status {
   static const String canceledAr = "ملغى";
   static const String pendingEn = "Pending";
   static const String pendingAr = "معلق";
+  static const String requestChangeEn = "Request Change";
+  static const String requestChangeAr = "طلب تعديل";
   static const String unknownAr = "حالة غير معروفة";
   static const String unknownEn = "Unknow Status";
 
-  // ---------------- actual status -------------------------
+  // ---------------- database status -------------------------
   static const String inProcess = "InProcess";
   static const String done = "Done";
   static const String pending = "Pending";
   static const String canceled = "Canceled";
+  static const String requestChange = "RequestChange";
   static const String unknown = "unknow";
 
   String getDisplayStaus({@required String status}) {
@@ -30,6 +33,8 @@ class Status {
         return doneEn;
       case canceled:
         return canceledEn;
+      case requestChange:
+        return requestChangeEn;
       default:
         return unknownEn;
     }

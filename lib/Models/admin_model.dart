@@ -1,8 +1,116 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+class AdminUserStatus{
+  // ---------------- Database status ----------------------
+  static const String active = "active";
+  static const String deleted = "deleted";
+  static const String disbaled = "disabled";
+  static const String unknown = "unknow";
+
+  // ---------------- status to display ----------------------
+  static const String activeEn = "Active";
+  static const String activeAr = "نشط";
+  static const String deletedEn = "Deleted";
+  static const String deletedAr = "محذوف";
+  static const String disbaledEn = "Disabled";
+  static const String disbaledAr = "معطل";
+  static const String unknownEn = "Unknow Status";
+  static const String unknownAr = "حالة غير معروفة";
+
+  String getDisplayStatus({@required String status}) {
+    switch (status) {
+      case active:
+        return activeEn;
+      case deleted:
+        return deletedEn;
+      case disbaled:
+        return disbaledEn;
+      default:
+        return unknownEn;
+    }
+  }
+}
+
 class AdminUserInfo{
   String id;
+  String name;
+  String phone;
   String email;
   String role;
   String fcmToken;
+  String status;
+  int dateCreated;
+  int dateUpdated;
 
-  AdminUserInfo({this.id, this.email, this.role, this.fcmToken});
+  AdminUserInfo({this.id, this.email, this.role, this.fcmToken, this.name, this.phone, this.dateCreated, this.dateUpdated, this.status});
+
+  _userMapToList(DocumentSnapshot adminDocData){
+    Map<String, dynamic> adminData = adminDocData.data;
+    this.id = adminDocData.documentID;
+    this.email = adminData["email"];
+    this.role = adminData["role"];
+    this.fcmToken = adminData["fcmToken"];
+    this.name = adminData["name"];
+    this.phone = adminData["phone"];
+    this.status = adminData["status"];
+    this.dateCreated = adminData["dateCreated"];
+    this.dateUpdated = adminData["dateUpdated"];
+  }
+
+  AdminUserInfo.fromMap(DocumentSnapshot adminDocData){
+    this._userMapToList(adminDocData);
+  }
+
+  static List<AdminUserInfo> fromMapList({List<DocumentSnapshot> adminDocDataList}){
+    List<AdminUserInfo> aminList = List();
+    adminDocDataList.forEach((adminDocData){
+      aminList.add(AdminUserInfo().._userMapToList(adminDocData));
+    });
+    return aminList;
+  }
+
+  Map<String, dynamic> toMap(AdminUserInfo admin){
+    return {
+      "name": admin.name,
+      "phone": admin.phone,
+      "email": admin.email,
+      "role": admin.role,
+      "fcmToken": admin.fcmToken,
+      "status": admin.status,
+      "dateCreated": admin.dateCreated,
+      "dateUpdated": admin.dateUpdated,
+    };
+  }
+
+  Map<String, dynamic> toUpdateInfoMap(AdminUserInfo admin){
+    return {
+      "name": admin.name,
+      "phone": admin.phone,
+      "email": admin.email,
+      "role": admin.role,
+      "dateUpdated": admin.dateUpdated,
+    };
+  }
+
+  Map<String, dynamic> toDeletedInfoMap(AdminUserInfo admin){
+    return {
+      "status": admin.status,
+      "dateUpdated": admin.dateUpdated,
+    };
+  }
+
+  update(AdminUserInfo admin){
+    this.id = admin.id;
+    this.email = admin.email;
+    this.role = admin.role;
+    this.fcmToken = admin.fcmToken;
+    this.name = admin.name;
+    this.phone = admin.phone;
+    this.status = admin.status;
+    this.dateCreated = admin.dateCreated;
+    this.dateUpdated = admin.dateUpdated;
+  }
 }
+
+//DateTime.now().toUtc().millisecondsSinceEpoch

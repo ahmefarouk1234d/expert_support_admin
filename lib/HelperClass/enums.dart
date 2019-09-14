@@ -5,3 +5,8 @@ enum eOrderStatus{
   canceled,
   unknown
 }
+
+enum AuthStatus{
+  signedIn,
+  notSingedIn
+}

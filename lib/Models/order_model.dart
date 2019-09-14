@@ -12,7 +12,8 @@ class OrderInfo{
   List<String> imagesUrl;
   String comment;
   String visitTime;
-  String visitDate;
+  DateTime visitDate;
+  String visitDateFormatted;
   Coordinate coordinate;
   num discountPercent;
   num totalDiscountAmount;
@@ -20,8 +21,14 @@ class OrderInfo{
   num totalPriceAfterDiscount;
   num vatTotal;
   num totalPriceWithVAT;
+  String adminID;
+  String adminName;
+  String adminRole;
+  String cancelReason;
+  String changeRequestDetails;
 
-  OrderInfo({this.documentID ,this.id, this.username, this.userPhone, this.status, this.dateCreated, this.orderService, this.imagesUrl, this.comment, this.visitDate, this.visitTime, this.coordinate, this.discountPercent, this.totalDiscountAmount, this.totalPriceAfterDiscount, this.totalPriceBeforeDiscount, this.totalPriceWithVAT, this.vatTotal});
+  OrderInfo({this.documentID ,this.id, this.username, this.userPhone, this.status, this.dateCreated, this.orderService, this.imagesUrl, this.comment, this.visitDate , this.visitDateFormatted, this.visitTime, this.coordinate, this.discountPercent, this.totalDiscountAmount, this.totalPriceAfterDiscount, this.totalPriceBeforeDiscount, this.totalPriceWithVAT, this.vatTotal,
+  this.adminID, this.adminName, this.adminRole, this.cancelReason, this.changeRequestDetails});
 
   _orderMapToList(DocumentSnapshot orderDocData){
     Map<String, dynamic> orderData = orderDocData.data;
@@ -34,7 +41,8 @@ class OrderInfo{
       this.userPhone = orderData["userPhone"];
       this.status = orderData["OrderStatus"];
       this.dateCreated = DateConvert().toStringFromTimestamp(timestamp: dateCreated);
-      this.visitDate = DateConvert().toStringFromTimestamp(timestamp: visitedDate);
+      this.visitDateFormatted = DateConvert().toStringFromTimestamp(timestamp: visitedDate);
+      this.visitDate = DateTime.fromMillisecondsSinceEpoch(visitedDate);
       this.visitTime = orderData["VisitTime"];
       this.comment = orderData["Comment"];
       this.discountPercent = orderData["DiscountPercent"];
@@ -44,6 +52,11 @@ class OrderInfo{
       this.vatTotal = orderData["VATTotal"];
       this.totalPriceWithVAT = orderData["TotalPriceWithVAT"];
       this.coordinate = Coordinate.fromMap(orderData["VisitLocation"]);
+      this.adminID = orderData["adminID"];
+      this.adminName = orderData["adminName"];
+      this.adminRole = orderData["adminRole"];
+      this.cancelReason = orderData["cancelReason"];
+      this.changeRequestDetails = orderData["changeRequestDetails"];
 
       List<dynamic> serviceList = orderData["OrderServices"];
       this.orderService = List<OrderService>();
@@ -72,6 +85,34 @@ class OrderInfo{
 
   OrderInfo.toMap(){
     //TODO: From order list to map.
+  }
+
+  update(OrderInfo order){
+    this.documentID = order.documentID;
+    this.id = order.id;
+    this.username = order.username;
+    this.userPhone = order.userPhone;
+    this.status = order.status;
+    this.dateCreated = order.dateCreated;
+    this.visitDateFormatted = order.visitDateFormatted;
+    this.visitDate = order.visitDate;
+    this.visitTime = order.visitTime;
+    this.comment = order.comment;
+    this.discountPercent = order.discountPercent;
+    this.totalDiscountAmount = order.totalDiscountAmount;
+    this.totalPriceBeforeDiscount = order.totalPriceBeforeDiscount;
+    this.totalPriceAfterDiscount = order.totalPriceAfterDiscount;
+    this.vatTotal = order.vatTotal;
+    this.totalPriceWithVAT = order.totalPriceWithVAT;
+    this.coordinate = order.coordinate;
+    this.orderService = List<OrderService>();
+    order.orderService.forEach((serv) => this.orderService.add(OrderService()..update(serv)));
+    this.imagesUrl = order.imagesUrl;
+    this.adminID = order.adminID;
+    this.adminName = order.adminName;
+    this.adminRole = order.adminRole;
+    this.cancelReason = order.cancelReason;
+    this.changeRequestDetails = order.changeRequestDetails;
   }
 }
 

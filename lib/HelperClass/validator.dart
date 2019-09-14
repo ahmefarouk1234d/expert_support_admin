@@ -1,9 +1,18 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:expert_support_admin/Models/status.dart';
 
 class Validator{
+  final validateUsername = StreamTransformer<String, String>.fromHandlers(
+    handleData: (username, sink){
+      if (username.isEmpty) {
+        sink.addError("Usernanme should not be empty");
+      } else {
+        sink.add(username);
+      }
+    }
+  );
+
   final validateEmail = StreamTransformer<String, String>.fromHandlers(
     handleData: (email, sink){
       String emailRegexValidation =
@@ -15,6 +24,18 @@ class Validator{
         sink.addError("Please enter valid email");
       } else if(email.isNotEmpty){
         sink.add(email);
+      }
+    }
+  );
+
+  final validatePhone = StreamTransformer<String, String>.fromHandlers(
+    handleData: (phone, sink){
+      if (phone.isEmpty) {
+        sink.addError("Phone should not be empty");
+      } else if (phone.length != 9) {
+        sink.addError("Phone length should be 9 digit");
+      } else {
+        sink.add(phone);
       }
     }
   );
@@ -31,9 +52,19 @@ class Validator{
     }
   );
 
+  final validateUserRole = StreamTransformer<String, String>.fromHandlers(
+    handleData: (userRole, sink){
+      if(userRole == null){
+        sink.addError("User Role should not be empty");
+      } else {
+        sink.add(userRole);
+      }
+    }
+  );
+
   final validateOrderActionButton = StreamTransformer<String, bool>.fromHandlers(
     handleData: (status, sink){
-      if (status == Status.pending || status == Status.inProcess){
+      if (status == OrderStatus.pending || status == OrderStatus.inProcess){
         sink.add(true);
       } else {
         sink.add(false);
@@ -43,7 +74,7 @@ class Validator{
 
   final validateOrderEditButton = StreamTransformer<String, bool>.fromHandlers(
     handleData: (status, sink){
-      if (status == Status.pending || status == Status.inProcess){
+      if (status == OrderStatus.pending || status == OrderStatus.inProcess){
         sink.add(true);
       } else {
         sink.add(false);
@@ -53,7 +84,7 @@ class Validator{
 
   final validateOrderCancelButton = StreamTransformer<String, bool>.fromHandlers(
     handleData: (status, sink){
-      if (status == Status.pending || status == Status.inProcess){
+      if (status == OrderStatus.pending || status == OrderStatus.inProcess){
         sink.add(true);
       } else {
         sink.add(false);

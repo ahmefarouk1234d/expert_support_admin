@@ -1,45 +1,54 @@
-import 'package:expert_support_admin/BlocResources/Login/auth_bloc.dart';
+import 'package:expert_support_admin/BlocResources/app_bloc.dart';
+import 'package:expert_support_admin/BlocResources/auth_bloc.dart';
+import 'package:expert_support_admin/HelperClass/alert.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
 import 'package:expert_support_admin/HelperClass/string.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
-import 'package:expert_support_admin/Screens/Home/home.dart';
-import 'package:expert_support_admin/Screens/nav_screens.dart';
+import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'package:expert_support_admin/BlocResources/base_provider.dart';
+import 'package:flutter/services.dart';
+
 class LoginButton extends StatelessWidget {
-  final AuthBloc bloc;
-  LoginButton({this.bloc});
+  final VoidCallback onSignedIn;
+  LoginButton({@required this.onSignedIn});
 
-  _handleLogin(BuildContext context) async{
+  _updateAdminInfo(BuildContext context, AuthBloc bloc, AppBloc appBloc, FirebaseUser admin) async{
     try{
-      Common.loading(context);
-      FirebaseUser user = await bloc.signIn();
-      print("user: $user"); 
-      _handleUpdateUserInfo(context, user.uid);
+      AdminUserInfo _adminInfo = await bloc.reteiveAdminInfo(admin.uid);
+      appBloc.adminChange.add(_adminInfo);
     } catch (error){
-      print("Error signing in: ${error.toString()}");
-      Common.dismiss(context);
+      String alertMessage = "Could not complete request. Please try again";
+      Alert().error(context, alertMessage, (){
+        Common().dismiss(context);
+      });
     }
   }
 
-  _handleUpdateUserInfo(BuildContext context, String userId) async{
-    try{
-      bloc.saveAdminInfo(userId);
-      await bloc.updateAdminDetails(userId);
-      Common.dismiss(context);
-      _navigteToHome(context);
-    } catch (error){
-      print("Error update user in: ${error.toString()}");
-    }
-  }
-
-  _navigteToHome(BuildContext context){
-    Navigator.of(context).pushReplacementNamed(NavigatorScreens.route);
+  _handleLogin(BuildContext context, AuthBloc bloc, AppBloc appBloc) async{
+    Common().loading(context);
+    await bloc.signIn(
+      onSuccess: (admin) async{
+        await bloc.updateFcmToken(admin.uid);
+        _updateAdminInfo(context, bloc, appBloc, admin);
+        Common().dismiss(context); 
+        onSignedIn();
+      }, 
+      onError: (error){
+        Common().dismiss(context);
+        Alert().error(context, error, (){
+          Common().dismiss(context);
+        });
+      }
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    AuthBloc bloc = Provider.of<AuthBloc>(context);
+    AppBloc appBloc = Provider.of<AppBloc>(context);
     return SizedBox(
       width: double.infinity,
       height: Screen.screenWidth * 0.12,
@@ -47,7 +56,7 @@ class LoginButton extends StatelessWidget {
           stream: bloc.isValidSignUpFields,
           builder: (context, snapshot) {
             return RaisedButton(
-              onPressed: snapshot.hasData ? () =>  _handleLogin(context) : null,
+              onPressed: snapshot.hasData ? () =>  _handleLogin(context, bloc, appBloc) : null,
               child: Text(TextContent.loginButtonTitle),
               textColor: Colors.white,
               color: Theme.of(context).primaryColor,
