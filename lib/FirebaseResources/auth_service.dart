@@ -36,4 +36,32 @@ class Auth{
     return _auth.signOut();
   }
 
+  Future<void> changePassword(String newPassword, Function() onSuccess, Function(String) onError) async{
+    try{
+      FirebaseUser user = await _auth.currentUser();
+      await user.updatePassword(newPassword);
+      onSuccess();
+    } on PlatformException catch(e){
+      onError(e.message);
+    }
+  }
+
+  Future<void> resetPassword(String email, Function() onSuccess, Function(String) onError) async{
+    try{
+      await _auth.sendPasswordResetEmail(email: email);
+      onSuccess();
+    } on PlatformException catch(e){
+      onError(e.message);
+    }
+  }
+
+  Future<void> resendVerificationEmail(FirebaseUser user, Function() onSuccess, Function(String) onError) async{
+    try{
+      await user.sendEmailVerification();
+      onSuccess();
+    } on PlatformException catch(e){
+      onError(e.message);
+    }
+  }
+
 }

@@ -2,6 +2,8 @@ import 'package:expert_support_admin/BlocResources/app_bloc.dart';
 import 'package:expert_support_admin/HelperClass/enums.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Screens/Home/no_role_inbox.dart';
+import 'package:expert_support_admin/Screens/LoginServices/forgot_password.dart';
+import 'package:expert_support_admin/Screens/LoginServices/send_verification_emai.dart';
 import 'package:expert_support_admin/Screens/NewUser/add_new_user.dart';
 import 'package:expert_support_admin/Screens/NewUser/users.dart';
 import 'package:expert_support_admin/Screens/Offers/add_offer.dart';
@@ -47,6 +49,8 @@ class MyApp extends StatelessWidget {
           PendingInbox.route: (BuildContext context) => PendingInbox(),
           PendingOrderDetails.route: (BuildContext context) => PendingOrderDetails(),
           Users.route: (BuildContext context) => Users(),
+          ForgotPassword.route: (BuildContext context) => ForgotPassword(),
+          SendVerificationEmail.route: (BuildContext context) => SendVerificationEmail(),
         },
       )
     );

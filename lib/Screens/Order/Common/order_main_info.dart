@@ -112,8 +112,8 @@ class MapLauncher extends StatelessWidget {
   MapLauncher({@required this.latitude, @required this.logntitude});
 
   launchUrl() async{
-    //String url = "https://www.google.com/maps/search/?api=1&query=$latitude,$logntitude";
-    String url = "comgooglemaps://?saddr=$latitude,$logntitude";
+    String url = "https://www.google.com/maps/search/?api=1&query=$latitude,$logntitude";
+    //String url = "comgooglemaps://?saddr=$latitude,$logntitude";
     if(await canLaunch(url)){
       await launch(url);
     } else {

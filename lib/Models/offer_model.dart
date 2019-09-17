@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expert_support_admin/HelperClass/date_common.dart';
 
 class OfferInfo{
   String offerID;
@@ -12,15 +13,22 @@ class OfferInfo{
   String price;
   String qauntity;
   String dateCreate;
+  num dateCreateTimestamp;
   String dateUpdate;
-  String isActive;
+  num dateUpdateTimestamp;
+  bool isActive;
   num startDate;
   num endDate;
 
-  OfferInfo({this.servID, this.servNameAr, this.servNameEn, this.offerTitleAr, this.offerTitleEn, this.offerDescAr, this.offerDescEn, this.price, this.qauntity, this.dateCreate, this.dateUpdate, this.startDate, this.endDate, this.isActive});
+  OfferInfo({this.servID, this.offerID, this.servNameAr, this.servNameEn, this.offerTitleAr, this.offerTitleEn, this.offerDescAr, this.offerDescEn, this.price, this.qauntity, this.dateCreate, this.dateUpdate, this.startDate, this.endDate, this.isActive});
+
+  //DateConvert().toStringFromTimestamp(timestamp: dateCreated)
 
   _offerMapToList(DocumentSnapshot offerDocData){
     Map<String, dynamic> offerData = offerDocData.data;
+    num dateCreate = offerData["dateCreate"];
+    num dateUpdate = offerData["dateUpdate"];
+
     this.offerID = offerDocData.documentID;
     this.servID = offerData["serviceID"];
     this.servNameAr = offerData["serviceNameAr"];
@@ -31,8 +39,10 @@ class OfferInfo{
     this.offerDescEn = offerData["offerDescEn"];
     this.price = offerData["price"];
     this.qauntity = offerData["qauntity"];
-    this.dateCreate = offerData["dateCreate"];
-    this.dateUpdate = offerData["dateUpdate"];
+    this.dateCreate = DateConvert().toStringFromTimestamp(timestamp: dateCreate);
+    this.dateCreateTimestamp = dateCreate;
+    this.dateUpdate = DateConvert().toStringFromTimestamp(timestamp: dateUpdate);
+    this.dateUpdateTimestamp = dateUpdate;
     this.isActive = offerData["isActive"];
     this.startDate = offerData["startDate"];
     this.endDate = offerData["endDate"];
@@ -61,11 +71,11 @@ class OfferInfo{
       "offerDescEn" : offer.offerDescEn,
       "price" : offer.price,
       "qauntity" : offer.qauntity,
-      "dateCreate" : offer.dateCreate,
-      "dateUpdate" : offer.dateUpdate,
-      "isActive" : offer.isActive,
-      "startDate" : offer.startDate,
-      "endDate" : offer.endDate,
+      "dateCreate" : DateTime.now().toUtc().millisecondsSinceEpoch,
+      "dateUpdate" : DateTime.now().toUtc().millisecondsSinceEpoch,
+      "isActive" : true,
+      "startDate" : offer.startDate ?? 0,
+      "endDate" : offer.endDate ?? 0,
     };
   }
 
@@ -77,19 +87,19 @@ class OfferInfo{
       "offerDescEn" : offer.offerDescEn,
       "price" : offer.price,
       "qauntity" : offer.qauntity,
-      "dateUpdate" : offer.dateUpdate,
+      "dateUpdate" : DateTime.now().toUtc().millisecondsSinceEpoch,
       "isActive" : offer.isActive,
-      "startDate" : offer.startDate,
-      "endDate" : offer.endDate,
+      "startDate" : offer.startDate ?? 0,
+      "endDate" : offer.endDate ?? 0,
     };
   }
 
   Map<String, dynamic> toMapOnUpdateStatus(OfferInfo offer){
     return {
-      "dateUpdate" : offer.dateUpdate,
+      "dateUpdate" : DateTime.now().toUtc().millisecondsSinceEpoch,
       "isActive" : offer.isActive,
-      "startDate" : offer.startDate,
-      "endDate" : offer.endDate,
+      "startDate" : offer.startDate ?? 0,
+      "endDate" : offer.endDate ?? 0,
     };
   }
 }

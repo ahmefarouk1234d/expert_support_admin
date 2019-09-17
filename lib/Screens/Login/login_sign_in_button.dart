@@ -5,6 +5,7 @@ import 'package:expert_support_admin/HelperClass/common.dart';
 import 'package:expert_support_admin/HelperClass/string.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
+import 'package:expert_support_admin/Screens/LoginServices/send_verification_emai.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -31,6 +32,19 @@ class LoginButton extends StatelessWidget {
     Common().loading(context);
     await bloc.signIn(
       onSuccess: (admin) async{
+        // if (admin.isEmailVerified){
+        //   await bloc.updateFcmToken(admin.uid);
+        //   _updateAdminInfo(context, bloc, appBloc, admin);
+        //   Common().dismiss(context); 
+        //   onSignedIn();
+        // } else {
+        //   Common().dismiss(context);
+        //   Alert().conformation(context, "Not Verified", "Your email is not verified. Do you want to re-send verification email? ", (){
+        //     Common().dismiss(context);
+        //     Navigator.of(context).pushNamed(SendVerificationEmail.route);
+        //   });
+        // }
+
         await bloc.updateFcmToken(admin.uid);
         _updateAdminInfo(context, bloc, appBloc, admin);
         Common().dismiss(context); 

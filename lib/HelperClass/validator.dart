@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:expert_support_admin/Models/service_model.dart';
 import 'package:expert_support_admin/Models/status.dart';
 
 class Validator{
@@ -88,6 +89,26 @@ class Validator{
         sink.add(true);
       } else {
         sink.add(false);
+      }
+    }
+  );
+
+  final validateTextField = StreamTransformer<String, String>.fromHandlers(
+    handleData: (text, sink){
+      if (text.isEmpty) {
+        sink.addError("Field should not be empty");
+      } else {
+        sink.add(text);
+      }
+    }
+  );
+
+  final validateService = StreamTransformer<Service, Service>.fromHandlers(
+    handleData: (service, sink){
+      if(service == null){
+        sink.addError("Service should not be empty");
+      } else {
+        sink.add(service);
       }
     }
   );

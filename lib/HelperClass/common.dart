@@ -13,6 +13,6 @@ class Common {
   }
 
   dismiss(BuildContext context) {
-    Navigator.of(context, rootNavigator: true).pop();
+    Navigator.of(context).pop();
   }
 }

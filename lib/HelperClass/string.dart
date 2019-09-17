@@ -31,4 +31,7 @@ class TextContent{
   static const String saveChangeButtonTitle = "SAVE CHANGES";
   static const String addServiceButtonTitle = "ADD NEW SERVICE";
   static const String editOrderTitle = "Edit Order";
+  static const String activeButtonTitle = "REACTIVE";
+  static const String deactiveButtonTitle = "DEACTIVE";
+  static const String changePasswordTitle = "Change Password";
 }

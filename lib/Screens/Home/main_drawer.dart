@@ -26,10 +26,9 @@ class MainDrawer extends StatelessWidget {
         child: StreamBuilder<AdminUserInfo>(
           stream: _appBloc.admin,
           builder: (context, snapshot) {
-            print("admin info: ${snapshot.data}");
             return Column(
               children: <Widget>[
-                MenuHeader(),
+                MenuHeader(adminName: snapshot.hasData && snapshot != null ? snapshot.data.name : "",),
                 Expanded(
                   child: ListView.separated(
                     padding: EdgeInsets.all(8),
@@ -48,9 +47,14 @@ class MainDrawer extends StatelessWidget {
 }
 
 class MenuHeader extends StatelessWidget {
+  final String adminName;
+  MenuHeader({this.adminName});
+
   @override
   Widget build(BuildContext context) {
-    return DrawerHeader(child: Center(child: Text("Export support logo")),);
+    return DrawerHeader(
+      child: Center(child: Text(adminName, style: TextStyle(color: Colors.white, fontSize: 24))),
+    );
   }
 }
 

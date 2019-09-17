@@ -7,6 +7,7 @@ import 'package:expert_support_admin/Screens/NewUser/add_new_user.dart';
 import 'package:expert_support_admin/Screens/NewUser/users.dart';
 import 'package:expert_support_admin/Screens/Offers/add_offer.dart';
 import 'package:expert_support_admin/Screens/Offers/offers.dart';
+import 'package:expert_support_admin/Screens/Password/change_password.dart';
 import 'package:flutter/material.dart';
 
 class NavScreen {
@@ -34,9 +35,14 @@ class MenuList {
         widget: OrderInbox(
           orderStatus: OrderStatus.requestChange,
         )),
+    NavWidget(
+        title: TextContent.changePasswordTitle,
+        widget: ChangePassword()
+        ),
   ], menuList: [
     TextContent.pendingTitle,
     TextContent.requestChangeTitle,
+    TextContent.changePasswordTitle,
     TextContent.signOutMenu
   ]);
 
@@ -45,9 +51,14 @@ class MenuList {
         title: TextContent.homeTitle,
         widget: OrderInbox(
           orderStatus: OrderStatus.inProcess,
-        ))
+        )),
+    NavWidget(
+        title: TextContent.changePasswordTitle,
+        widget: ChangePassword()
+        ),
   ], menuList: [
     TextContent.homeMenu,
+    TextContent.changePasswordTitle,
     TextContent.signOutMenu
   ]);
 
@@ -56,9 +67,14 @@ class MenuList {
         title: TextContent.homeTitle,
         widget: OrderInbox(
           orderStatus: OrderStatus.done,
-        ))
+        )),
+    NavWidget(
+        title: TextContent.changePasswordTitle,
+        widget: ChangePassword()
+        ),
   ], menuList: [
     TextContent.homeMenu,
+    TextContent.changePasswordTitle,
     TextContent.signOutMenu
   ]);
 
@@ -89,6 +105,10 @@ class MenuList {
           orderStatus: OrderStatus.canceled,
         )),
     NavWidget(title: TextContent.offerTitle, widget: AddOffer()),
+    NavWidget(
+        title: TextContent.changePasswordTitle,
+        widget: ChangePassword()
+        ),
   ], menuList: [
     TextContent.pendingTitle,
     TextContent.requestChangeTitle,
@@ -96,6 +116,7 @@ class MenuList {
     TextContent.doneTitle,
     TextContent.canceledTitle,
     TextContent.offerMenu,
+    TextContent.changePasswordTitle,
     TextContent.signOutMenu
   ]);
 
@@ -103,14 +124,19 @@ class MenuList {
     NavWidget(
         title: TextContent.homeTitle,
         widget: OrderInbox(
-          orderStatus: OrderStatus.pending,
+          orderStatus: OrderStatus.unknown,
         )),
     NavWidget(title: TextContent.offerTitle, widget: Offers()),
-    NavWidget(title: TextContent.usersTitle, widget: Users())
+    NavWidget(title: TextContent.usersTitle, widget: Users()),
+    NavWidget(
+        title: TextContent.changePasswordTitle,
+        widget: ChangePassword()
+        ),
   ], menuList: [
     TextContent.homeMenu,
     TextContent.offerMenu,
     TextContent.usersMune,
+    TextContent.changePasswordTitle,
     TextContent.signOutMenu
   ]);
 

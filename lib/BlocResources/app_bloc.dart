@@ -19,6 +19,7 @@ class AppBloc{
   Stream<QuerySnapshot> get canceledOrderDocument => _firebaseManager.getCanceledOrders();
   Stream<QuerySnapshot> get orderDocument => _firebaseManager.getOrders();
   Stream<QuerySnapshot> get adminListDocument => _firebaseManager.getAllUsers();
+  Stream<QuerySnapshot> get offerListDocument => _firebaseManager.getAllOffers();
 
   dispose() {
     _admin.close();

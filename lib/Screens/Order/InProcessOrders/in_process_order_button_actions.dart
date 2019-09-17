@@ -62,17 +62,12 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
     setState(() =>_borderColor = Colors.black);
     Common().loading(context);
     String changeRequestDeatils = widget.controller.text.isNotEmpty ? widget.controller.text : null;
-    Provider.of<AppBloc>(context).admin.listen((onData) async{
-      if (onData == null) Common().dismiss(context);
-      else {
-        await _firebaseManager.updateOrderStatus(_order.documentID, status, onData, changeRequestDetails: changeRequestDeatils);
-        Common().dismiss(context);
-        _order.status = status;
-        _orderBloc.ordersChange.add(_order);
-        setState(() {
-          _isEnabled = false;
-        });
-      }
+    await _firebaseManager.updateOrderStatus(_order.documentID, status, admin, changeRequestDetails: changeRequestDeatils);
+    Common().dismiss(context);
+    _order.status = status;
+    _orderBloc.ordersChange.add(_order);
+    setState(() {
+      _isEnabled = false;
     });
   }
   

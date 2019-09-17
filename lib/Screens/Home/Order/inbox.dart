@@ -62,6 +62,8 @@ class _OrdersListState extends State<OrdersList> {
       case OrderStatus.canceled: 
         orderStream = _appBloc.canceledOrderDocument;
         break;
+      case OrderStatus.unknown:
+        orderStream = _appBloc.orderDocument;
     }
     return orderStream;
   }

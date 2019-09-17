@@ -96,6 +96,12 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
           widgets.add(OrderUpdatedByView(name: order.adminName, role: order.adminRole,),);
         }
         break;
+      case OrderStatus.unknown:
+        if (order.cancelReason != null){
+          widgets.add(ReasonLabel(header: "Cancel Reason", reason: order.cancelReason,),);
+        } else if (order.changeRequestDetails != null){
+          widgets.add(ReasonLabel(header: "Change Details", reason: order.changeRequestDetails,),);
+        }
     }
     return widgets;
   }

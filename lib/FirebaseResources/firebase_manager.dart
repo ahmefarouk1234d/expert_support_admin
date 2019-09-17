@@ -25,6 +25,10 @@ class FirebaseManager{
     return _auth.signOut();
   }
 
+  Future<void> changePassword(String newPassword, Function() onSuccess, Function(String) onError){
+    return _auth.changePassword(newPassword, onSuccess, onError);
+  }
+
   // -------------------- End Auth Services -------------------
 
   // -------------------- Database Services -------------------
@@ -102,8 +106,12 @@ class FirebaseManager{
     return _db.updateAllOffer(offer);
   }
 
-  Future<void> updateOfferStaus(OfferInfo offer) {
-    return _db.updateOfferStaus(offer);
+  Future<void> updateOfferStatus(OfferInfo offer) {
+    return _db.updateOfferStatus(offer);
+  }
+
+  Stream<QuerySnapshot> getAllOffers(){
+    return _db.getAllOffers();
   }
 
   // -------------------- End Database Services -------------------

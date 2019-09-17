@@ -70,14 +70,41 @@ class DataBase{
     AdminUserInfo admin,
     {String cancelReason,
     String changeRequestDetails}){
-    return ordersCollection.document(id).updateData({
-      "OrderStatus": status,
-      "adminName": admin.name,
-      "adminID": admin.id,
-      "adminRole": admin.role,
-      "cancelReason": cancelReason,
-      "changeRequestDetails" : changeRequestDetails,
-    });
+
+      WriteBatch batch = Firestore.instance.batch();
+
+      DocumentReference ordersDocRef = ordersCollection.document(id);
+      batch.updateData(ordersDocRef, {
+        "OrderStatus": status,
+        "adminName": admin.name,
+        "adminID": admin.id,
+        "adminRole": admin.role,
+        "cancelReason": cancelReason,
+        "changeRequestDetails" : changeRequestDetails,
+        "OrderDateUpdated": DateTime.now().toUtc().millisecondsSinceEpoch,
+      });
+
+      DocumentReference ordersDocWorkflowRef = ordersDocRef.collection("workflow").document();
+      batch.setData(ordersDocWorkflowRef, {
+        "OrderStatus": status,
+        "adminName": admin.name,
+        "adminID": admin.id,
+        "adminRole": admin.role,
+        "cancelReason": cancelReason,
+        "changeRequestDetails" : changeRequestDetails,
+        "dateCreated": DateTime.now().toUtc().millisecondsSinceEpoch,
+      });
+
+      return batch.commit();
+
+    // return ordersCollection.document(id).updateData({
+    //   "OrderStatus": status,
+    //   "adminName": admin.name,
+    //   "adminID": admin.id,
+    //   "adminRole": admin.role,
+    //   "cancelReason": cancelReason,
+    //   "changeRequestDetails" : changeRequestDetails,
+    // });
   }
 
   Future<void> updateServices(OrderInfo order, String docId){
@@ -146,8 +173,12 @@ class DataBase{
     return offerCollection.document(offer.offerID).updateData(offerMap);
   }
 
-  Future<void> updateOfferStaus(OfferInfo offer) {
+  Future<void> updateOfferStatus(OfferInfo offer) {
     Map<String, dynamic> offerMap = OfferInfo().toMapOnUpdateStatus(offer);
     return offerCollection.document(offer.offerID).updateData(offerMap);
+  }
+
+  Stream<QuerySnapshot> getAllOffers(){
+    return offerCollection.snapshots();
   }
 }
