@@ -1,13 +1,12 @@
 import 'package:expert_support_admin/HelperClass/string.dart';
 import 'package:expert_support_admin/Models/admin_role.dart';
 import 'package:expert_support_admin/Models/status.dart';
+import 'package:expert_support_admin/Screens/Home/Offers/add_offer.dart';
+import 'package:expert_support_admin/Screens/Home/Offers/offers.dart';
 import 'package:expert_support_admin/Screens/Home/Order/inbox.dart';
+import 'package:expert_support_admin/Screens/Home/Password/change_password.dart';
+import 'package:expert_support_admin/Screens/Home/Users/users.dart';
 import 'package:expert_support_admin/Screens/Home/no_role_inbox.dart';
-import 'package:expert_support_admin/Screens/NewUser/add_new_user.dart';
-import 'package:expert_support_admin/Screens/NewUser/users.dart';
-import 'package:expert_support_admin/Screens/Offers/add_offer.dart';
-import 'package:expert_support_admin/Screens/Offers/offers.dart';
-import 'package:expert_support_admin/Screens/Password/change_password.dart';
 import 'package:flutter/material.dart';
 
 class NavScreen {
@@ -104,7 +103,7 @@ class MenuList {
         widget: OrderInbox(
           orderStatus: OrderStatus.canceled,
         )),
-    NavWidget(title: TextContent.offerTitle, widget: AddOffer()),
+    NavWidget(title: TextContent.offerTitle, widget: Offers()),
     NavWidget(
         title: TextContent.changePasswordTitle,
         widget: ChangePassword()

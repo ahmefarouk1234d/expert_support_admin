@@ -1,0 +1,9 @@
+{
+    "app_name" : "Expert Support",
+    "login": {
+        "forgot_password": "Forgot Password?",
+        "email_placeholder": "Enter email",
+        "password_placeholder": "Enter password",
+        "login_button_title": "LOGIN"
+    }
+}

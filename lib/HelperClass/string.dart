@@ -34,4 +34,9 @@ class TextContent{
   static const String activeButtonTitle = "REACTIVE";
   static const String deactiveButtonTitle = "DEACTIVE";
   static const String changePasswordTitle = "Change Password";
+  static const String requestCompleteError = "Could not complete request. Please try again";
+  static const String newOfferTitle = "Add new offer";
+  static const String addNewOfferConformation = "Are are sure you want to add new offer";
+  static const String addNewOfferSuccess = "Offer has been added successfully";
+  static const String conformationTitle = "Conformation";
 }

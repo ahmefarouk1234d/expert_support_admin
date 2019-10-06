@@ -96,15 +96,6 @@ class DataBase{
       });
 
       return batch.commit();
-
-    // return ordersCollection.document(id).updateData({
-    //   "OrderStatus": status,
-    //   "adminName": admin.name,
-    //   "adminID": admin.id,
-    //   "adminRole": admin.role,
-    //   "cancelReason": cancelReason,
-    //   "changeRequestDetails" : changeRequestDetails,
-    // });
   }
 
   Future<void> updateServices(OrderInfo order, String docId){

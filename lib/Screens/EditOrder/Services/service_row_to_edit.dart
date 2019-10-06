@@ -70,7 +70,7 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Expanded(child: Text(service.nameEn ?? ""),),
+                    Expanded(child: Text(service.nameEn ?? "", style: TextStyle(fontSize: Screen.fontSize(size: 18))),),
                     Container(
                       height: Screen.screenWidth * 0.10,
                       width: Screen.screenWidth * 0.16,

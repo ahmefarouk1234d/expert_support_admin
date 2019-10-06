@@ -13,9 +13,9 @@ class OrderMainInfo extends StatelessWidget {
     return Container(
           child: Column(
             children: <Widget>[
-              OrderInfoRow(title: "customer name:", value: "${order.username}",),
-              OrderInfoPhoneRow(title: "customer phone:", value: phone,),
-              OrderInfoRow(title: "status:", value: "${order.status}",),
+              OrderInfoRow(title: "Customer name:", value: "${order.username}",),
+              OrderInfoPhoneRow(title: "Customer phone:", value: phone,),
+              OrderInfoRow(title: "Status:", value: "${order.status}",),
               OrderInfoRow(title: "Date:", value: "${order.visitDateFormatted}",),
               OrderInfoRow(title: "Time:", value: "${order.visitTime}",),
               OrderInfoMapRow(title: "Locations:", latitude: order.coordinate.latitude, logntitude: order.coordinate.logntitude,),
@@ -34,9 +34,10 @@ class OrderInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(bottom: 8),
       child: Row(
             children: <Widget>[
-              Text(title),
+              Text(title, style: TextStyle(fontWeight: FontWeight.w700),),
               Container(width: 8,),
               Expanded(child: Text(value),)
             ],
@@ -53,9 +54,10 @@ class OrderInfoPhoneRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(bottom: 8),
       child: Row(
             children: <Widget>[
-              Text(title),
+              Text(title, style: TextStyle(fontWeight: FontWeight.w700),),
               Container(width: 8,),
               Expanded(child: PhoneLauncher(phone: value,))
             ],
@@ -73,9 +75,10 @@ class OrderInfoMapRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(bottom: 8),
       child: Row(
             children: <Widget>[
-              Text(title),
+              Text(title, style: TextStyle(fontWeight: FontWeight.w700),),
               Container(width: 8,),
               Expanded(child: MapLauncher(latitude: latitude, logntitude: logntitude,))
             ],

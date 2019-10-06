@@ -102,6 +102,9 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
         } else if (order.changeRequestDetails != null){
           widgets.add(ReasonLabel(header: "Change Details", reason: order.changeRequestDetails,),);
         }
+        if (order.adminName != null && order.adminRole != null){
+          widgets.add(OrderUpdatedByView(name: order.adminName, role: order.adminRole,),);
+        }
     }
     return widgets;
   }
@@ -143,7 +146,7 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
        ),
        child: Row(
          children: <Widget>[
-           Text(header + ": "),
+           Text(header + ": ", style: TextStyle(fontWeight: FontWeight.w700),),
            Expanded(
              child: Text(reason),
            ),
@@ -168,16 +171,18 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
        ),
        child: Column(
          children: <Widget>[
-           Row(children: <Widget>[Expanded(child: Text("Update By:")),],),
+           Row(children: <Widget>[Expanded(child: Text("Update By", style: TextStyle(fontWeight: FontWeight.w700),)),],),
+           Container(height: 8,),
            Row(
              children: <Widget>[
-               Text("Name: "),
+               Text("Name: ", style: TextStyle(fontWeight: FontWeight.w700),),
                Text(name)
              ],
            ),
+           Container(height: 4,),
            Row(
              children: <Widget>[
-               Text("Role: "),
+               Text("Role: ", style: TextStyle(fontWeight: FontWeight.w700),),
                Text(role)
              ],
            )

@@ -279,7 +279,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: Text("Price for one"),
+                  child: Text("Price for one", style: TextStyle(fontWeight: FontWeight.w700),),
                 ),
                 Text(priceForOne.toString())
               ],
@@ -290,7 +290,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: Text("Total price"),
+                  child: Text("Total price", style: TextStyle(fontWeight: FontWeight.w700),),
                 ),
                 Text(totalPrice.toString())
               ],

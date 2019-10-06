@@ -12,7 +12,7 @@ class LoginEmailTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     AuthBloc bloc = Provider.of<AuthBloc>(context);
     return Container(
-        height: Screen.screenWidth * 0.12,
+        height: Screen.screenWidth * 0.13,
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -26,6 +26,7 @@ class LoginEmailTextField extends StatelessWidget {
                 controller: controller,
                 onChanged: bloc.emailChange,
                 keyboardType: TextInputType.emailAddress,
+                style: TextStyle(fontSize: Screen.fontSize(size: 20)),
                 decoration: InputDecoration.collapsed(hintText: TextContent.emailPlaceholder),
               );
             }));

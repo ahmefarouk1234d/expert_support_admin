@@ -32,9 +32,10 @@ class PriceRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(bottom: 8),
       child: Row(
             children: <Widget>[
-              Expanded(child: Text(title),),
+              Expanded(child: Text(title, style: TextStyle(fontWeight: FontWeight.w700),),),
               Container(width: 8,),
               Text("$price"),
             ],

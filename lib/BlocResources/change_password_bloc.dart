@@ -3,7 +3,7 @@ import 'package:expert_support_admin/HelperClass/validator.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ChangePasswordBloc extends Validator{
-  final _newPassword = BehaviorSubject<String>();
+  BehaviorSubject<String> _newPassword = BehaviorSubject<String>();
   FirebaseManager _firebaseManager = FirebaseManager();
 
   Stream<String> get newPassword => _newPassword.stream.transform(validatePassword);

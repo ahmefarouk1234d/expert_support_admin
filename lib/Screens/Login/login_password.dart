@@ -13,7 +13,7 @@ class LoginPasswordTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     AuthBloc bloc = Provider.of<AuthBloc>(context);
     return Container(
-        height: Screen.screenWidth * 0.12,
+        height: Screen.screenWidth * 0.13,
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -26,6 +26,7 @@ class LoginPasswordTextField extends StatelessWidget {
               return TextField(
                 controller: controller,
                 onChanged: bloc.passwordChange,
+                style: TextStyle(fontSize: Screen.fontSize(size: 20)),
                 keyboardType: TextInputType.text,
                 obscureText: true,
                 decoration:

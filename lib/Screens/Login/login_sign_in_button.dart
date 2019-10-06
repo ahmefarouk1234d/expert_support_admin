@@ -5,12 +5,10 @@ import 'package:expert_support_admin/HelperClass/common.dart';
 import 'package:expert_support_admin/HelperClass/string.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
-import 'package:expert_support_admin/Screens/LoginServices/send_verification_emai.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:expert_support_admin/BlocResources/base_provider.dart';
-import 'package:flutter/services.dart';
 
 class LoginButton extends StatelessWidget {
   final VoidCallback onSignedIn;
@@ -21,7 +19,7 @@ class LoginButton extends StatelessWidget {
       AdminUserInfo _adminInfo = await bloc.reteiveAdminInfo(admin.uid);
       appBloc.adminChange.add(_adminInfo);
     } catch (error){
-      String alertMessage = "Could not complete request. Please try again";
+      String alertMessage = TextContent.requestCompleteError;
       Alert().error(context, alertMessage, (){
         Common().dismiss(context);
       });
@@ -65,13 +63,13 @@ class LoginButton extends StatelessWidget {
     AppBloc appBloc = Provider.of<AppBloc>(context);
     return SizedBox(
       width: double.infinity,
-      height: Screen.screenWidth * 0.12,
+      height: Screen.screenWidth * 0.13,
       child: StreamBuilder<bool>(
           stream: bloc.isValidSignUpFields,
           builder: (context, snapshot) {
             return RaisedButton(
               onPressed: snapshot.hasData ? () =>  _handleLogin(context, bloc, appBloc) : null,
-              child: Text(TextContent.loginButtonTitle),
+              child: Text(TextContent.loginButtonTitle, style: TextStyle(fontSize: Screen.fontSize(size: 20)),),
               textColor: Colors.white,
               color: Theme.of(context).primaryColor,
             );

@@ -9,7 +9,7 @@ import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/Models/status.dart';
 import 'package:expert_support_admin/Screens/EditOrder/Services/edit_services.dart';
 import 'package:expert_support_admin/Screens/EditOrder/TimeAndDate/edit_time_date.dart';
-import 'package:expert_support_admin/Screens/OrderImages/order_images.dart';
+import 'package:expert_support_admin/Screens/Order/Common/order_images.dart';
 import 'package:expert_support_admin/SharedWidget/commom_button.dart';
 import 'package:expert_support_admin/SharedWidget/multiple_text.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +36,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
 
   @override
   void initState() {
-    _setUp();
+    //_setUp();
     super.initState();
   }
 
@@ -73,7 +73,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
       MaterialPageRoute(builder: (context) => OrderImages(imageUrls: _order.imagesUrl,)));
   }
 
-  _navigateToEditOrder(){
+  _navigateToEditOrder(AdminUserInfo admin){
     List<OrderService> services = List();
     _order.orderService.forEach((serv) => services.add(OrderService()..update(serv)));
     OrderInfo orderToEdit = OrderInfo()..update(_order);
@@ -90,7 +90,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
     );
   }
 
-  _navigateToEditTimeDate(){
+  _navigateToEditTimeDate(AdminUserInfo admin){
     OrderInfo orderToEdit = OrderInfo()..update(_order);
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -107,6 +107,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
   Widget build(BuildContext context) {
     _orderBloc = Provider.of<OrderBloc>(context);
     _appBloc = Provider.of<AppBloc>(context);
+    _setUp();
     return StreamBuilder<AdminUserInfo>(
       stream: _appBloc.admin,
       builder: (context, snapshot) {
@@ -121,12 +122,22 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
               Container(height: 8,),
               CommonButton(
                 title: TextContent.editServButtonTitle,
-                onPressed: _isEnabled ? () => _navigateToEditOrder() : null,
+                onPressed: _isEnabled ? () {
+                  if (snapshot.hasData){
+                    _navigateToEditOrder(snapshot.data);
+                  }
+                }
+                : null,
               ),
               Container(height: 8,),
               CommonButton(
                 title: TextContent.editTimeAndDateButtonTitle,
-                onPressed: _isEnabled ? () => _navigateToEditTimeDate() : null,
+                onPressed: _isEnabled ? () {
+                  if (snapshot.hasData){
+                    _navigateToEditTimeDate(snapshot.data);
+                  }
+                }
+                : null,
               ),
               Container(height: 8,),
               CommonButton(

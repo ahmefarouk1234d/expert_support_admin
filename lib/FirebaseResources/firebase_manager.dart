@@ -29,6 +29,14 @@ class FirebaseManager{
     return _auth.changePassword(newPassword, onSuccess, onError);
   }
 
+  Future<void> resetPassword(String email, Function() onSuccess, Function(String) onError) async{
+    return _auth.resetPassword(email, onSuccess, onError);
+  }
+
+  Future<void> resendVerificationEmail(FirebaseUser user, Function() onSuccess, Function(String) onError) async{
+    return _auth.resendVerificationEmail(user, onSuccess, onError);
+  }
+
   // -------------------- End Auth Services -------------------
 
   // -------------------- Database Services -------------------

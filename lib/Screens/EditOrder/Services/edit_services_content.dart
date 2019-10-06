@@ -1,19 +1,20 @@
-import 'package:expert_support_admin/BlocResources/base_provider.dart';
 import 'package:expert_support_admin/BlocResources/order_bloc.dart';
 import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
+import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/Screens/EditOrder/Services/editty_services_action_buttons.dart';
 import 'package:expert_support_admin/Screens/EditOrder/Services/service_list_to_edit.dart';
 import 'package:flutter/material.dart';
 
 class EditServicesContent extends StatefulWidget {
+  final AdminUserInfo admin;
   final String orderDocID;
   final List<OrderService> services;
   final OrderInfo order;
   final OrderBloc orderBloc;
-  EditServicesContent(this.services, this.orderDocID, this.order, this.orderBloc);
+  EditServicesContent(this.services, this.orderDocID, this.order, this.orderBloc, this.admin);
 
   @override
   _EditServicesContentState createState() => _EditServicesContentState();
@@ -80,7 +81,6 @@ class _EditServicesContentState extends State<EditServicesContent> {
     _orderInfo.totalPriceBeforeDiscount = _total;
     _orderInfo.totalPriceAfterDiscount = _totalPriceAfterDiscount;
     _orderInfo.totalPriceWithVAT = _totalPriceAfterVAT;
-    print(_orderInfo);
   }
 
   @override

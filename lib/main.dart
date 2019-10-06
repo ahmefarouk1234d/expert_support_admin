@@ -1,18 +1,18 @@
 import 'package:expert_support_admin/BlocResources/app_bloc.dart';
 import 'package:expert_support_admin/HelperClass/enums.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
+import 'package:expert_support_admin/Screens/Home/Offers/add_offer.dart';
+import 'package:expert_support_admin/Screens/Home/Users/add_new_user.dart';
+import 'package:expert_support_admin/Screens/Home/Users/users.dart';
 import 'package:expert_support_admin/Screens/Home/no_role_inbox.dart';
 import 'package:expert_support_admin/Screens/LoginServices/forgot_password.dart';
 import 'package:expert_support_admin/Screens/LoginServices/send_verification_emai.dart';
-import 'package:expert_support_admin/Screens/NewUser/add_new_user.dart';
-import 'package:expert_support_admin/Screens/NewUser/users.dart';
-import 'package:expert_support_admin/Screens/Offers/add_offer.dart';
-import 'package:expert_support_admin/Screens/Order/PendingOrders/pending_order_details.dart';
 import 'package:expert_support_admin/Screens/nav_screens.dart';
 import 'package:flutter/material.dart';
-import 'Screens/Home/PendingOrders/pending_inbox.dart';
+import 'HelperClass/app_localizations.dart';
 import 'Screens/Login/login.dart';
 import 'package:expert_support_admin/BlocResources/base_provider.dart';
+//import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'Screens/Order/Common/order_details.dart';
 
@@ -22,16 +22,12 @@ void main() {
 
 // class MyApp extends StatefulWidget {
 //   static String route = "/MyApp";
-//   final AppBloc appBloc;
-//   final AuthBloc authBloc;
-//   MyApp({this.appBloc, this.authBloc});
 
 //   @override
 //   _MyAppState createState() => _MyAppState();
 // }
 
 class MyApp extends StatelessWidget {
-  static String route = "/MyApp";
 
   @override
   Widget build(BuildContext context) {
@@ -39,15 +35,39 @@ class MyApp extends StatelessWidget {
       builder: (context, appBloc) => appBloc ?? AppBloc(),
       onDispose: (context, appBloc) => appBloc.dispose(),
       child: MaterialApp(
-        theme: ThemeData(primarySwatch: CommonData.mainMaterialColor),
+        theme: ThemeData(primarySwatch: CommonData.mainMaterialColor, fontFamily: 'BigVesta'),
+        // List all of the app's supported locales here
+        // supportedLocales: [
+        //   Locale('en', 'US'),
+        //   Locale('ar', 'SA'),
+        // ],
+        // //These delegates make sure that the localization data for the proper language is loaded
+        // localizationsDelegates: [
+        //   // A class which loads the translations from JSON files
+        //   AppLocalizations.delegate,
+        //   // Built-in localization of basic text for Material widgets
+        //   GlobalMaterialLocalizations.delegate,
+        //   // Built-in localization for text direction LTR/RTL
+        //   GlobalWidgetsLocalizations.delegate,
+        // ],
+        // localeResolutionCallback: (locale, supportedLocales) {
+        //   // Check if the current device locale is supported
+        //   for (var supportedLocale in supportedLocales) {
+        //     if (supportedLocale.languageCode == locale.languageCode &&
+        //         supportedLocale.countryCode == locale.countryCode) {
+        //       return supportedLocale;
+        //     }
+        //   }
+        //   // If the locale of the device is not supported, use the first one
+        //   // from the list (English, in this case).
+        //   return supportedLocales.first;
+        // },
         home: Main(),
         routes: <String, WidgetBuilder>{
           NoRoleInbox.route: (BuildContext context) => NoRoleInbox(),
           OrderDetails.route: (BuildContext context) => OrderDetails(),
           AddNewUser.route : (BuildContext context) => AddNewUser(),
           AddOffer.route: (BuildContext context) => AddOffer(),
-          PendingInbox.route: (BuildContext context) => PendingInbox(),
-          PendingOrderDetails.route: (BuildContext context) => PendingOrderDetails(),
           Users.route: (BuildContext context) => Users(),
           ForgotPassword.route: (BuildContext context) => ForgotPassword(),
           SendVerificationEmail.route: (BuildContext context) => SendVerificationEmail(),

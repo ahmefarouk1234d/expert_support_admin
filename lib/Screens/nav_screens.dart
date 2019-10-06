@@ -4,9 +4,9 @@ import 'package:expert_support_admin/HelperClass/alert.dart';
 import 'package:expert_support_admin/HelperClass/menu_list.dart';
 import 'package:expert_support_admin/HelperClass/string.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
+import 'package:expert_support_admin/Screens/Home/Offers/add_offer.dart';
+import 'package:expert_support_admin/Screens/Home/Users/add_new_user.dart';
 import 'package:expert_support_admin/Screens/Home/main_drawer.dart';
-import 'package:expert_support_admin/Screens/NewUser/add_new_user.dart';
-import 'package:expert_support_admin/Screens/Offers/add_offer.dart';
 import 'package:expert_support_admin/SharedWidget/loading.dart';
 import 'package:flutter/material.dart';
 

@@ -6,7 +6,9 @@ class UnderLineTextField extends StatelessWidget {
   final bool isError;
   final Function(String) onChange;
   final String hint;
-  UnderLineTextField({this.onChange, this.isError = false, this.controller, this.hint = ""});
+  final bool isPassowrd;
+  final TextInputType keyboardType;
+  UnderLineTextField({this.onChange, this.isError = false, this.controller, this.hint = "", this.isPassowrd = false, this.keyboardType = TextInputType.text});
 
 
   @override
@@ -24,7 +26,8 @@ class UnderLineTextField extends StatelessWidget {
             child: TextField(
               controller: controller,
               onChanged: onChange,
-              obscureText: true,
+              obscureText: isPassowrd,
+              keyboardType: keyboardType,
               decoration: InputDecoration.collapsed(hintText: hint),
             ),
           ),

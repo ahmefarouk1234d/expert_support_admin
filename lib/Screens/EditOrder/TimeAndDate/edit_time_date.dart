@@ -3,6 +3,7 @@ import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
 import 'package:expert_support_admin/HelperClass/date_common.dart';
+import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/SharedWidget/commom_button.dart';
 import 'package:flutter/material.dart';
@@ -92,6 +93,7 @@ class _EditTimeDateState extends State<EditTimeDate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text("Edit Time and Date"),
         elevation: 0.0,
       ),
       body: Container(
@@ -99,6 +101,7 @@ class _EditTimeDateState extends State<EditTimeDate> {
         child: Column(
           children: <Widget>[
             DateTimeInfoRow(title: "Time", value: _time,),
+            Container(height: 8,),
             DateTimeInfoRow(title: "Date", value: _dateformated,),
             Container(height: 16,),
             CommonButton(
@@ -132,8 +135,8 @@ class DateTimeInfoRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text(title + ": "),
-        Text(value)
+        Text(title + ": ", style: TextStyle(fontWeight: FontWeight.w700, fontSize: Screen.fontSize(size: 18)),),
+        Text(value, style: TextStyle(fontSize: Screen.fontSize(size: 18)))
       ],
     );
   }
