@@ -1,3 +1,4 @@
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class AdminRole{
@@ -23,20 +24,21 @@ class AdminRole{
   static const String admin = "admin" ;
   static const String unknown = "unknow";
 
-  String getDisplayRole({@required String role}) {
+  String getDisplayRole({@required String role, @required BuildContext context}) {
+    bool isArabic = AppLocalizations.of(context).isArabic();
     switch (role) {
       case customerService:
-        return customerServiceEn;
+        return isArabic ? customerServiceAr : customerServiceEn;
       case technicion:
-        return technicionEn;
+        return isArabic ? technicionAr : technicionEn;
       case accountant:
-        return accountantEn;
+        return isArabic ? accountantAr : accountantEn;
       case supervisor:
-        return supervisorEn;
+        return isArabic ? supervisorAr : supervisorEn;
       case admin:
-        return adminEn;
+        return isArabic ? adminAr : adminEn;
       default:
-        return unknownEn;
+        return isArabic ? unknownAr : unknownEn;
     }
   }
 }

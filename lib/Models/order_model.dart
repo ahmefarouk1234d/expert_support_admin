@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:expert_support_admin/HelperClass/date_common.dart';
 
 class OrderInfo{
   String documentID;
@@ -7,13 +6,13 @@ class OrderInfo{
   String username;
   String userPhone;
   String status;
-  String dateCreated;
+  DateTime dateCreated;
   List<OrderService> orderService;
   List<String> imagesUrl;
   String comment;
   String visitTime;
   DateTime visitDate;
-  String visitDateFormatted;
+  DateTime visitDateAndTime;
   Coordinate coordinate;
   num discountPercent;
   num totalDiscountAmount;
@@ -27,23 +26,28 @@ class OrderInfo{
   String cancelReason;
   String changeRequestDetails;
 
-  OrderInfo({this.documentID ,this.id, this.username, this.userPhone, this.status, this.dateCreated, this.orderService, this.imagesUrl, this.comment, this.visitDate , this.visitDateFormatted, this.visitTime, this.coordinate, this.discountPercent, this.totalDiscountAmount, this.totalPriceAfterDiscount, this.totalPriceBeforeDiscount, this.totalPriceWithVAT, this.vatTotal,
-  this.adminID, this.adminName, this.adminRole, this.cancelReason, this.changeRequestDetails});
+  OrderInfo({this.documentID ,this.id, this.username, this.userPhone, this.status, this.dateCreated, this.orderService, this.imagesUrl, this.comment, this.visitDate , this.visitTime, this.coordinate, this.discountPercent, this.totalDiscountAmount, this.totalPriceAfterDiscount, this.totalPriceBeforeDiscount, this.totalPriceWithVAT, this.vatTotal,
+  this.adminID, this.adminName, this.adminRole, this.cancelReason, this.changeRequestDetails, this.visitDateAndTime});
 
   _orderMapToList(DocumentSnapshot orderDocData){
     Map<String, dynamic> orderData = orderDocData.data;
       int dateCreated = orderData["OrderDateCreated"];
       int visitedDate = orderData["VisitDate"];
+      int visitDateAndTimeTimestamp = orderData["VisitDateAndTime"];
+      DateTime visitDateAndTime = 
+        visitDateAndTimeTimestamp != null 
+        ? DateTime.fromMillisecondsSinceEpoch(visitDateAndTimeTimestamp)
+        : null;
 
       this.documentID = orderDocData.documentID;
       this.id = orderData["orderID"];
       this.username = orderData["username"];
       this.userPhone = orderData["userPhone"];
       this.status = orderData["OrderStatus"];
-      this.dateCreated = DateConvert().toStringFromTimestamp(timestamp: dateCreated);
-      this.visitDateFormatted = DateConvert().toStringFromTimestamp(timestamp: visitedDate);
+      this.dateCreated = DateTime.fromMillisecondsSinceEpoch(dateCreated);
       this.visitDate = DateTime.fromMillisecondsSinceEpoch(visitedDate);
       this.visitTime = orderData["VisitTime"];
+      this.visitDateAndTime = visitDateAndTime;
       this.comment = orderData["Comment"];
       this.discountPercent = orderData["DiscountPercent"];
       this.totalDiscountAmount = orderData["TotalDiscountAmount"];
@@ -94,9 +98,9 @@ class OrderInfo{
     this.userPhone = order.userPhone;
     this.status = order.status;
     this.dateCreated = order.dateCreated;
-    this.visitDateFormatted = order.visitDateFormatted;
     this.visitDate = order.visitDate;
     this.visitTime = order.visitTime;
+    this.visitDateAndTime = order.visitDateAndTime;
     this.comment = order.comment;
     this.discountPercent = order.discountPercent;
     this.totalDiscountAmount = order.totalDiscountAmount;

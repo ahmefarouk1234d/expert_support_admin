@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:expert_support_admin/Models/code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -22,9 +23,9 @@ class AppLocalizations {
   Map<String, String> _localizedStrings;
 
   Future<bool> load() async {
-    // Load the language JSON file from the "lang" folder
+    // Load the language JSON file from the "localization" folder
     String jsonString =
-        await rootBundle.loadString('lang/${locale.languageCode}.json');
+        await rootBundle.loadString('localization/${locale.languageCode}.json');
     Map<String, dynamic> jsonMap = json.decode(jsonString);
 
     _localizedStrings = jsonMap.map((key, value) {
@@ -37,6 +38,10 @@ class AppLocalizations {
   // This method will be called from every widget which needs a localized text
   String translate(String key) {
     return _localizedStrings[key];
+  }
+
+  bool isArabic(){
+    return this.locale.languageCode == Code.languageCodeAr;
   }
 }
 

@@ -4,8 +4,9 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
 import 'package:expert_support_admin/BlocResources/order_bloc.dart';
 import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
-import 'package:expert_support_admin/HelperClass/string.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/Models/status.dart';
@@ -45,10 +46,9 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
     _borderColor = Colors.black;
   }
 
-  _showConformatiomAlert({@required String status, @required String action, @required AdminUserInfo admin}){
-    String message = "Are are sure you want to $action order";
+  _showConformatiomAlert({@required String status, @required String message, @required AdminUserInfo admin}){
     Alert().conformation(
-      context, "Conformation", message, 
+      context, AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, 
       () => _handleAction(status: status, admin: admin));
   }
 
@@ -82,15 +82,18 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
           child: Column(
             children: <Widget>[
               CommonButton(
-                title: TextContent.viewImageButtonTitle,
+                title: AppLocalizations.of(context).translate(LocalizedKey.viewImageButtonTitle),
                 onPressed: _isViewImageEnabled ? () => _handleViewImages() : null,
               ),
               Container(height: 8,),
               CommonButton(
-                title: TextContent.doneButtonTitle,
+                title: AppLocalizations.of(context).translate(LocalizedKey.doneButtonTitle),
                 onPressed: _isEnabled ? () {
                   if (snapshot.hasData){
-                    _showConformatiomAlert(status: OrderStatus.done, action: "close", admin: snapshot.data);
+                    _showConformatiomAlert(
+                      status: OrderStatus.done, 
+                      message: AppLocalizations.of(context).translate(LocalizedKey.doneAlertMessage), 
+                      admin: snapshot.data);
                   }
                 }
                 : null,
@@ -98,12 +101,12 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
               Container(height: 16,),
               MultipleLineText(
                 controller: widget.controller,
-                hint: "Enter order change details",
+                hint: AppLocalizations.of(context).translate(LocalizedKey.requestChangePlaceholderText),
                 borderColor: _borderColor,
               ),
               Container(height: 8,),
               CommonButton(
-                title: TextContent.requestChangeButtonTitle,
+                title: AppLocalizations.of(context).translate(LocalizedKey.requestChangeButtonTitle),
                 onPressed: 
                 _isEnabled 
                 ? () {
@@ -113,7 +116,10 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
                     });
                   } else {
                     if (snapshot.hasData){
-                      _showConformatiomAlert(status: OrderStatus.requestChange, action: "request change", admin: snapshot.data);
+                      _showConformatiomAlert(
+                        status: OrderStatus.requestChange, 
+                        message: AppLocalizations.of(context).translate(LocalizedKey.requestChangeAlertMessage), 
+                        admin: snapshot.data);
                     }
                   }
                 }

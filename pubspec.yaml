@@ -25,6 +25,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  flutter_cupertino_localizations: ^1.0.1
   cupertino_icons: ^0.1.2
   flutter_bloc: ^0.21.0
   firebase_auth: ^0.14.0+5
@@ -75,13 +76,13 @@ flutter:
   #         style: italic
 
   fonts:
+    - family: BigVesta
+      fonts:
+        - asset: assets/fonts/BigVesta-Arabic-Regular.ttf
     - family: MainFont
       fonts:
         - asset: assets/fonts/coconnextarabic-light.ttf
         - weight: 200
-    - family: BigVesta
-      fonts:
-        - asset: assets/fonts/BigVesta-Arabic-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

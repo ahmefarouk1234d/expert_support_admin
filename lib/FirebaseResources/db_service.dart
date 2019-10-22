@@ -133,7 +133,8 @@ class DataBase{
     Map<String, dynamic> updatedOrderMap = Map();
     updatedOrderMap = {
       "VisitDate": order.visitDate.millisecondsSinceEpoch,
-      "VisitTime": order.visitTime
+      "VisitTime": order.visitTime,
+      "VisitDateAndTime": order.visitDateAndTime.millisecondsSinceEpoch
     };
     return ordersCollection.document(docId).updateData(updatedOrderMap);
   }

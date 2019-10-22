@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class AdminUserStatus{
@@ -18,16 +19,17 @@ class AdminUserStatus{
   static const String unknownEn = "Unknow Status";
   static const String unknownAr = "حالة غير معروفة";
 
-  String getDisplayStatus({@required String status}) {
+  String getDisplayStatus({@required String status, @required BuildContext context}) {
+    bool isArabic = AppLocalizations.of(context).isArabic();
     switch (status) {
       case active:
-        return activeEn;
+        return isArabic ? activeAr : activeEn;
       case deleted:
-        return deletedEn;
+        return isArabic ? deletedAr : deletedEn;
       case disbaled:
-        return disbaledEn;
+        return isArabic ? disbaledAr : disbaledEn;
       default:
-        return unknownEn;
+        return isArabic ? unknownAr : unknownEn;
     }
   }
 }

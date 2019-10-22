@@ -1,5 +1,7 @@
 import 'package:expert_support_admin/BlocResources/base_provider.dart';
 import 'package:expert_support_admin/BlocResources/order_bloc.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +62,8 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
   @override
   Widget build(BuildContext context) {
     _orderBloc = Provider.of<OrderBloc>(context);
+    bool isArabic = AppLocalizations.of(context).isArabic();
+    String serviceName = isArabic ? service.nameAr ?? "" : service.nameEn ?? "";
     
     return Container(
       padding: EdgeInsets.all(8),
@@ -70,7 +74,10 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Expanded(child: Text(service.nameEn ?? "", style: TextStyle(fontSize: Screen.fontSize(size: 18))),),
+                    Expanded(
+                      child: Text(
+                        serviceName, 
+                        style: TextStyle(fontSize: Screen.fontSize(size: 18))),),
                     Container(
                       height: Screen.screenWidth * 0.10,
                       width: Screen.screenWidth * 0.16,
@@ -98,7 +105,8 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
                       value: service.hasParts,
                       onChanged: _handlePartsChange
                     ),
-                    Expanded(child: Text("has parts")),
+                    Expanded(
+                      child: Text(AppLocalizations.of(context).translate(LocalizedKey.hasPartsTitle))),
                     DropdownButton(
                         value: service.quantity,
                         onChanged: _updateQuantityAndPrice,
@@ -113,7 +121,8 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
                 Container(height: 8,),
                 Row(
                   children: <Widget>[
-                    Expanded(child: Text("Total"),),
+                    Expanded(
+                      child: Text(AppLocalizations.of(context).translate(LocalizedKey.totalPriceTitle)),),
                     Text(service.total.toString())
                   ],
                 )

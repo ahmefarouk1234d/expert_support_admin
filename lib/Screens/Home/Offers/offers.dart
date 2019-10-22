@@ -3,8 +3,10 @@ import 'package:expert_support_admin/BlocResources/app_bloc.dart';
 import 'package:expert_support_admin/BlocResources/base_provider.dart';
 import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
-import 'package:expert_support_admin/HelperClass/string.dart';
+import 'package:expert_support_admin/HelperClass/date_common.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/Models/offer_model.dart';
 import 'package:expert_support_admin/Models/offer_status.dart';
 import 'package:expert_support_admin/SharedWidget/commom_button.dart';
@@ -80,15 +82,33 @@ class OfferList extends StatelessWidget {
         itemBuilder: (context, index) {
           final OfferInfo offer = orderList[index];
           bool isActive = offer.isActive;
+          String offerTitle = 
+            AppLocalizations.of(context).isArabic()
+            ? offer.offerTitleAr ?? ""
+            : offer.offerTitleEn ?? "";
+          String dateUpdate = 
+            offer.dateUpdateTimestamp == null ? "" :
+            DateConvert().toStringFromTimestamp(
+              timestamp: offer.dateUpdateTimestamp, 
+              locale: AppLocalizations.of(context).locale.languageCode);
+          IconData icon = 
+            AppLocalizations.of(context).isArabic()
+            ? Icons.keyboard_arrow_left
+            : Icons.keyboard_arrow_right;
+          BoxBorder border =
+            AppLocalizations.of(context).isArabic()
+            ? Border(right: BorderSide(width: 4, color: isActive ? Colors.green : Colors.red))
+            : Border(left: BorderSide(width: 4, color: isActive ? Colors.green : Colors.red));
+
           return Container(
             decoration: BoxDecoration(
-              border: Border(left: BorderSide(width: 4, color: isActive ? Colors.green : Colors.red)),
+              border: border,
             ),
             child: ListTile(
               onTap: () => onTap(offer, index),
-              title: Text(offer.offerTitleEn ?? ""),
-              subtitle: Text(offer.dateUpdate ?? ""),
-              trailing: Icon(Icons.keyboard_arrow_right, color: Colors.black12,),
+              title: Text(offerTitle),
+              subtitle: Text(dateUpdate),
+              trailing: Icon(icon, color: Colors.black12,),
             ),
           );
         }
@@ -110,19 +130,21 @@ class _OfferDetailsState extends State<OfferDetails> {
   String _offerStatus;
   String _buttonTitle;
   FirebaseManager _firebaseManager = FirebaseManager();
+  bool isInitial;
 
   @override
   void initState() {
     _info = widget.offerInfo;
     _offerStatus = _info.isActive ? OfferStatus.active : OfferStatus.deactive;
-    _buttonTitle = _info.isActive ? TextContent.deactiveButtonTitle : TextContent.activeButtonTitle;
+    isInitial = true;
     super.initState();
   }
 
   _showConformatiomAlert() {
-    String message = "Are are sure you want to change offer status?";
+    String message = AppLocalizations.of(context).translate(LocalizedKey.offerStatusChangeAlertMessage);
     Alert().conformation(
-        context, "Conformation", message, () => _handleChangeStatus());
+        context, AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, 
+        () => _handleChangeStatus());
   }
 
   _showCompletedAlert({String message}){
@@ -132,7 +154,7 @@ class _OfferDetailsState extends State<OfferDetails> {
   }
 
   _handleChangeStatus() async{
-    bool isActive = _buttonTitle == TextContent.activeButtonTitle;
+    bool isActive = _buttonTitle == AppLocalizations.of(context).translate(LocalizedKey.offerActiveButtonTitle);
     try{
       Common().loading(context);
       OfferInfo offerInfo = OfferInfo(
@@ -142,10 +164,12 @@ class _OfferDetailsState extends State<OfferDetails> {
       await _firebaseManager.updateOfferStatus(offerInfo);
       setState(() {
         _offerStatus = isActive ? OfferStatus.active : OfferStatus.deactive;
-        _buttonTitle = isActive ? TextContent.deactiveButtonTitle : TextContent.activeButtonTitle;
+        _buttonTitle = isActive 
+          ? AppLocalizations.of(context).translate(LocalizedKey.offerDeactiveButtonTitle) 
+          : AppLocalizations.of(context).translate(LocalizedKey.offerActiveButtonTitle);
       });
       Common().dismiss(context);
-      _showCompletedAlert(message: "Offer has been updated successfully");
+      _showCompletedAlert(message: AppLocalizations.of(context).translate(LocalizedKey.offerStatusChangeSuccessAlertMessage));
     } on PlatformException catch(e){
       Common().dismiss(context);
       Alert().error(context, e.message, () => Common().dismiss(context));
@@ -154,20 +178,37 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   @override
   Widget build(BuildContext context) {
+    if (isInitial){
+      _buttonTitle = _info.isActive 
+        ? AppLocalizations.of(context).translate(LocalizedKey.offerDeactiveButtonTitle) 
+        : AppLocalizations.of(context).translate(LocalizedKey.offerActiveButtonTitle);
+      isInitial = false;
+    }
+    
     return Scaffold(
       appBar: AppBar(
-        title: Text("Offer Details"),
+        title: Text(AppLocalizations.of(context).translate(LocalizedKey.offerAppBarTitle)),
         elevation: 0.0,
       ),
       body: Container(
         padding: EdgeInsets.all(8),
         child: Column(
           children: <Widget>[
-            OfferDetailsRow(title: "Title", value: _info.offerTitleEn,),
-            OfferDetailsRow(title: "Description", value: _info.offerDescEn,),
-            OfferDetailsRow(title: "Price", value: _info.price,),
-            OfferDetailsRow(title: "Quantity", value: _info.qauntity,),
-            OfferDetailsRow(title: "Status", value: OfferStatus().getDisplayStaus(status: _offerStatus),),
+            OfferDetailsRow(
+              title: AppLocalizations.of(context).translate(LocalizedKey.offerTitle), 
+              value: AppLocalizations.of(context).isArabic() ? _info.offerTitleAr : _info.offerTitleEn,),
+            OfferDetailsRow(
+              title: AppLocalizations.of(context).translate(LocalizedKey.offerDescTitle), 
+              value: AppLocalizations.of(context).isArabic() ? _info.offerDescAr : _info.offerDescEn,),
+            OfferDetailsRow(
+              title: AppLocalizations.of(context).translate(LocalizedKey.offerPriceTitle), 
+              value: _info.price,),
+            OfferDetailsRow(
+              title: AppLocalizations.of(context).translate(LocalizedKey.offerQtyTitle), 
+              value: _info.qauntity,),
+            OfferDetailsRow(
+              title: AppLocalizations.of(context).translate(LocalizedKey.offerStatusTitle), 
+              value: OfferStatus().getDisplayStaus(status: _offerStatus, context: context),),
             Container(height: 16,),
             CommonButton(
               title: _buttonTitle,

@@ -39,7 +39,7 @@ class AuthBloc with Validator{
     return isValidEmail && isValidPassword;
   }
 
-  Future<void> signIn({Function(FirebaseUser) onSuccess, Function(String) onError}){
+  Future<void> signIn({Function(AuthResult) onSuccess, Function(String) onError}){
     return _firebaseManager.signIn(
       email: _email.value, 
       password: _password.value, 

@@ -1,4 +1,7 @@
 import 'package:expert_support_admin/BlocResources/order_bloc.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
+import 'package:expert_support_admin/Models/admin_role.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/Models/status.dart';
 import 'package:expert_support_admin/Screens/Order/Common/order_main_info.dart';
@@ -70,7 +73,9 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
         break;
       case OrderStatus.requestChange: 
         if (order.changeRequestDetails != null){
-          widgets.add(ReasonLabel(header: "Change Details", reason: order.changeRequestDetails,),);
+          widgets.add(
+            ReasonLabel(header: AppLocalizations.of(context).translate(LocalizedKey.requestChangeDetailsTitle), 
+            reason: order.changeRequestDetails,),);
         }
         if (order.adminName != null && order.adminRole != null){
           widgets.add(OrderUpdatedByView(name: order.adminName, role: order.adminRole,),);
@@ -90,7 +95,10 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
         break;
       case OrderStatus.canceled: 
         if (order.cancelReason != null){
-          widgets.add(ReasonLabel(header: "Cancel Reason", reason: order.cancelReason,),);
+          widgets.add(
+            ReasonLabel(
+              header: AppLocalizations.of(context).translate(LocalizedKey.cancelReseanDetailsTitle), 
+              reason: order.cancelReason,),);
         }
         if (order.adminName != null && order.adminRole != null){
           widgets.add(OrderUpdatedByView(name: order.adminName, role: order.adminRole,),);
@@ -98,9 +106,15 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
         break;
       case OrderStatus.unknown:
         if (order.cancelReason != null){
-          widgets.add(ReasonLabel(header: "Cancel Reason", reason: order.cancelReason,),);
+          widgets.add(
+            ReasonLabel(
+              header: AppLocalizations.of(context).translate(LocalizedKey.cancelReseanDetailsTitle), 
+              reason: order.cancelReason,),);
         } else if (order.changeRequestDetails != null){
-          widgets.add(ReasonLabel(header: "Change Details", reason: order.changeRequestDetails,),);
+          widgets.add(
+            ReasonLabel(
+              header: AppLocalizations.of(context).translate(LocalizedKey.requestChangeDetailsTitle), 
+              reason: order.changeRequestDetails,),);
         }
         if (order.adminName != null && order.adminRole != null){
           widgets.add(OrderUpdatedByView(name: order.adminName, role: order.adminRole,),);
@@ -163,6 +177,8 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
 
    @override
    Widget build(BuildContext context) {
+     String adminRole = AdminRole().getDisplayRole(role: role, context: context);
+
      return Container(
        margin: EdgeInsets.only(top: 16),
        padding: EdgeInsets.all(8),
@@ -171,19 +187,29 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
        ),
        child: Column(
          children: <Widget>[
-           Row(children: <Widget>[Expanded(child: Text("Update By", style: TextStyle(fontWeight: FontWeight.w700),)),],),
+           Row(children: <Widget>[
+             Expanded(child: 
+             Text(
+               AppLocalizations.of(context).translate(LocalizedKey.updateByTitle), 
+               style: TextStyle(fontWeight: FontWeight.w700),)),],),
            Container(height: 8,),
            Row(
              children: <Widget>[
-               Text("Name: ", style: TextStyle(fontWeight: FontWeight.w700),),
+               Text(
+                 AppLocalizations.of(context).translate(LocalizedKey.name)
+                  + ": ", 
+                style: TextStyle(fontWeight: FontWeight.w700),),
                Text(name)
              ],
            ),
            Container(height: 4,),
            Row(
              children: <Widget>[
-               Text("Role: ", style: TextStyle(fontWeight: FontWeight.w700),),
-               Text(role)
+               Text(
+                 AppLocalizations.of(context).translate(LocalizedKey.role)
+                  + ": ", 
+                 style: TextStyle(fontWeight: FontWeight.w700),),
+               Text(adminRole)
              ],
            )
          ],

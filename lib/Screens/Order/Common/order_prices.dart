@@ -1,3 +1,5 @@
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:flutter/material.dart';
 
@@ -9,15 +11,26 @@ class OrderPrices extends StatelessWidget {
     num totalPrice = order.totalPriceAfterDiscount != 0.0
         ? order.totalPriceAfterDiscount
         : order.totalPriceBeforeDiscount;
+    AppLocalizations localizations = AppLocalizations.of(context);
 
     return Container(
       child: Column(
         children: <Widget>[
-          PriceRow(title: "Discount", price: order.discountPercent,),
-          PriceRow(title: "Total Discount", price: order.totalDiscountAmount,),
-          PriceRow(title: "Estimated Total", price: totalPrice,),
-          PriceRow(title: "VAT (5%)", price: order.vatTotal,),
-          PriceRow(title: "Total Price", price: order.totalPriceWithVAT,),
+          PriceRow(
+            title: localizations.translate(LocalizedKey.discountTitle), 
+            price: order.discountPercent,),
+          PriceRow(
+            title: localizations.translate(LocalizedKey.totalDiscountTitle), 
+            price: order.totalDiscountAmount,),
+          PriceRow(
+            title: localizations.translate(LocalizedKey.estimatedTotalTitle), 
+            price: totalPrice,),
+          PriceRow(
+            title: localizations.translate(LocalizedKey.vatTitle), 
+            price: order.vatTotal,),
+          PriceRow(
+            title: localizations.translate(LocalizedKey.totalPriceTitle), 
+            price: order.totalPriceWithVAT,),
         ],
       ),
     );

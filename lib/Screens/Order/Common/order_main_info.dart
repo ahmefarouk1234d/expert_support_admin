@@ -1,4 +1,9 @@
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
+import 'package:expert_support_admin/HelperClass/date_common.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
+import 'package:expert_support_admin/Models/day_time_model.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
+import 'package:expert_support_admin/Models/status.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -9,17 +14,42 @@ class OrderMainInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String phone = order.userPhone.replaceAll("+966", '0');
+    String localCode = AppLocalizations.of(context).locale.languageCode;
+    String visitDate = DateConvert().toStringFromDate(date: order.visitDate, locale: localCode);
+    AppLocalizations localizations = AppLocalizations.of(context);
+    String orderStatus = OrderStatus().getDisplayStatus(status: order.status, context: context);
+    String visitTime = 
+      order.visitDateAndTime != null
+      ? TimeOfDay(
+        hour: order.visitDateAndTime.hour, 
+        minute: order.visitDateAndTime.minute).format(context)
+      : DayTime().getDisplayStatus(dayTime: order.visitTime, context: context);
 
     return Container(
           child: Column(
             children: <Widget>[
-              OrderInfoRow(title: "Customer name:", value: "${order.username}",),
-              OrderInfoPhoneRow(title: "Customer phone:", value: phone,),
-              OrderInfoRow(title: "Status:", value: "${order.status}",),
-              OrderInfoRow(title: "Date:", value: "${order.visitDateFormatted}",),
-              OrderInfoRow(title: "Time:", value: "${order.visitTime}",),
-              OrderInfoMapRow(title: "Locations:", latitude: order.coordinate.latitude, logntitude: order.coordinate.logntitude,),
-              OrderInfoRow(title: "Other details:", value: "${order.comment}",),
+              OrderInfoRow(
+                title: localizations.translate(LocalizedKey.customerNameTitle), 
+                value: "${order.username}",),
+              OrderInfoPhoneRow(
+                title: localizations.translate(LocalizedKey.customerPhoneTitle), 
+                value: phone,),
+              OrderInfoRow(
+                title: localizations.translate(LocalizedKey.statusTitle), 
+                value: orderStatus,),
+              OrderInfoRow(
+                title: localizations.translate(LocalizedKey.dateTitle), 
+                value: "$visitDate",),
+              OrderInfoRow(
+                title: localizations.translate(LocalizedKey.timeTitle), 
+                value: visitTime,),
+              OrderInfoMapRow(
+                title: localizations.translate(LocalizedKey.locationTitle), 
+                latitude: order.coordinate.latitude, 
+                logntitude: order.coordinate.logntitude,),
+              OrderInfoRow(
+                title: localizations.translate(LocalizedKey.otherDetailsTitle), 
+                value: "${order.comment}",),
             ],
           ),
         );
@@ -34,10 +64,10 @@ class OrderInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 16),
       child: Row(
             children: <Widget>[
-              Text(title, style: TextStyle(fontWeight: FontWeight.w700),),
+              Text(title + ":", style: TextStyle(fontWeight: FontWeight.w700),),
               Container(width: 8,),
               Expanded(child: Text(value),)
             ],
@@ -54,10 +84,10 @@ class OrderInfoPhoneRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 16),
       child: Row(
             children: <Widget>[
-              Text(title, style: TextStyle(fontWeight: FontWeight.w700),),
+              Text(title + ":", style: TextStyle(fontWeight: FontWeight.w700),),
               Container(width: 8,),
               Expanded(child: PhoneLauncher(phone: value,))
             ],
@@ -75,7 +105,7 @@ class OrderInfoMapRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 16),
       child: Row(
             children: <Widget>[
               Text(title, style: TextStyle(fontWeight: FontWeight.w700),),
@@ -128,7 +158,9 @@ class MapLauncher extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: launchUrl,
-      child: Text("open on maps", style: TextStyle(color: Colors.blue)),
+      child: Text(
+        AppLocalizations.of(context).translate(LocalizedKey.openMapsText), 
+        style: TextStyle(color: Colors.blue)),
     );
   }
 }

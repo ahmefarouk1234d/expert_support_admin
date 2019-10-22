@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expert_support_admin/BlocResources/app_bloc.dart';
 import 'package:expert_support_admin/BlocResources/base_provider.dart';
 import 'package:expert_support_admin/BlocResources/user_details_bloc.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/date_common.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Models/admin_role.dart';
 import 'package:expert_support_admin/Screens/Home/Users/updateUser.dart';
@@ -71,6 +73,8 @@ class UsersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String role =  AppLocalizations.of(context).translate(LocalizedKey.role);
+
     return Container(
       margin: EdgeInsets.only(bottom: 24),
       child: ListView.separated(
@@ -80,15 +84,25 @@ class UsersList extends StatelessWidget {
         itemBuilder: (context, index) {
           final AdminUserInfo admin = adminList[index];
           bool isActive = admin.status != null && admin.status == AdminUserStatus.active;
+          IconData icon = 
+            AppLocalizations.of(context).isArabic()
+              ? Icons.keyboard_arrow_left
+              : Icons.keyboard_arrow_right;
+          BoxBorder border =
+            AppLocalizations.of(context).isArabic()
+            ? Border(right: BorderSide(width: 4, color: isActive ? Colors.green : Colors.red))
+            : Border(left: BorderSide(width: 4, color: isActive ? Colors.green : Colors.red));
+
           return Container(
             decoration: BoxDecoration(
-              border: Border(left: BorderSide(width: 4, color: isActive ? Colors.green : Colors.red)),
+              border: border,
             ),
             child: ListTile(
               onTap: () => onTap(admin, index),
               title: Text(admin.email ?? ""),
-              subtitle: Text("Role: " + (AdminRole().getDisplayRole(role: admin.role))),
-              trailing: Icon(Icons.keyboard_arrow_right, color: Colors.black12,),
+              subtitle: Text(
+                role + ": " + (AdminRole().getDisplayRole(role: admin.role, context: context))),
+              trailing: Icon(icon, color: Colors.black12,),
             ),
           );
         }
@@ -127,7 +141,7 @@ class _UserDetailsState extends State<UserDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Details"),
+        title: Text(AppLocalizations.of(context).translate(LocalizedKey.userDetailsAppBarTitle)),
         elevation: 0.0,
       ),
       body: StreamBuilder<AdminUserInfo>(
@@ -158,15 +172,29 @@ class UserDetailsContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
             children: <Widget>[
-              UserDetailsRow(title: "Name", text: admin.name ?? "",),
-              UserDetailsRow(title: "Phone", text: admin.phone ?? "",),
-              UserDetailsRow(title: "email", text: admin.email ?? "",),
-              UserDetailsRow(title: "Role", text: AdminRole().getDisplayRole(role: admin.role),),
-              UserDetailsRow(title: "Status", text: AdminUserStatus().getDisplayStatus(status: admin.status),),
-              UserDetailsRow(title: "Last Action", text: DateConvert().toStringFromTimestamp(timestamp: admin.dateUpdated),),
+              UserDetailsRow(
+                title: AppLocalizations.of(context).translate(LocalizedKey.usernameTitle), 
+                text: admin.name ?? "",),
+              UserDetailsRow(
+                title: AppLocalizations.of(context).translate(LocalizedKey.userPhoneTitle), 
+                text: admin.phone ?? "",),
+              UserDetailsRow(
+                title: AppLocalizations.of(context).translate(LocalizedKey.userEmailTitle), 
+                text: admin.email ?? "",),
+              UserDetailsRow(
+                title: AppLocalizations.of(context).translate(LocalizedKey.role), 
+                text: AdminRole().getDisplayRole(role: admin.role, context: context),),
+              UserDetailsRow(
+                title: AppLocalizations.of(context).translate(LocalizedKey.userStatusTitle), 
+                text: AdminUserStatus().getDisplayStatus(status: admin.status, context: context),),
+              UserDetailsRow(
+                title: AppLocalizations.of(context).translate(LocalizedKey.userLastActionTitle), 
+                text: DateConvert().toStringFromTimestamp(
+                  timestamp: admin.dateUpdated, 
+                  locale: AppLocalizations.of(context).locale.languageCode),),
               Container(height: 16,),
               CommonButton(
-                title: "Edit",
+                title: AppLocalizations.of(context).translate(LocalizedKey.userEditButtonTitle),
                 onPressed: onEdit,
               ),
             ],
@@ -185,7 +213,7 @@ class UserDetailsRow extends StatelessWidget {
       padding: EdgeInsets.all(8),
       child: Row(
         children: <Widget>[
-          Text(title, style: TextStyle(fontWeight: FontWeight.w700),),
+          Text(title + ":", style: TextStyle(fontWeight: FontWeight.w700),),
           Container(width: 8,),
           Expanded(child: Text(text),)
         ],

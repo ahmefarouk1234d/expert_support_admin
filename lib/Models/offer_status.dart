@@ -1,3 +1,4 @@
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class OfferStatus{
@@ -12,14 +13,15 @@ class OfferStatus{
   static const String unknownAr = "حالة غير معروفة";
   static const String unknownEn = "Unknow Status";
 
-  String getDisplayStaus({@required String status}) {
+  String getDisplayStaus({@required String status, @required BuildContext context}) {
+    bool isArabic = AppLocalizations.of(context).isArabic();
     switch (status) {
       case active:
-        return activeEn;
+        return isArabic ? activeAr : activeEn;
       case deactive:
-        return deactiveEn;
+        return isArabic ? deactiveAr : deactiveEn;
       default:
-        return unknownEn;
+        return isArabic ? unknownAr : unknownEn;
     }
   }
 }

@@ -1,7 +1,9 @@
 import 'package:expert_support_admin/BlocResources/order_bloc.dart';
 import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/Screens/EditOrder/Services/editty_services_action_buttons.dart';
@@ -39,8 +41,8 @@ class _EditServicesContentState extends State<EditServicesContent> {
   _showConformatiomAlert(){
     Alert().conformation(
       context, 
-      "Conformation", 
-      "Are are sure you want to save the changes", 
+      AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), 
+      AppLocalizations.of(context).translate(LocalizedKey.editOrderSaveAlertMessage), 
       () => _handleSaveChanges());
   }
 

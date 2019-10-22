@@ -2,7 +2,9 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
 import 'package:expert_support_admin/BlocResources/user_bloc.dart';
 import 'package:expert_support_admin/BlocResources/user_details_bloc.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Screens/Home/Users/add_new_user.dart';
 import 'package:expert_support_admin/SharedWidget/commom_button.dart';
@@ -22,7 +24,7 @@ class UpdateUser extends StatelessWidget {
       onDispose: (context, userBloc) => userBloc.dispose(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Update User"),
+          title: Text(AppLocalizations.of(context).translate(LocalizedKey.userUpdateAppBarNameTitle)),
           elevation: 0.0,
         ),
         body: UpdateUserContent(admin: admin, userDetailsBloc: userDetailsBloc,)
@@ -80,14 +82,15 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
     }
     if (role != null){
       _userBloc.roleChange(role);
+      adminRole = role;
     }
     isIntials = true;
   }
 
   _showConformatiomAlertForUpdate() {
-    String message = "Are are sure you want to update user?";
+    String message = AppLocalizations.of(context).translate(LocalizedKey.userUpdateAlertMessage);
     Alert().conformation(
-        context, "Conformation", message, () => _updateAdminInfo());
+        context, AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, () => _updateAdminInfo());
   }
  
   _updateAdminInfo() async{
@@ -103,16 +106,16 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
       widget.userDetailsBloc.userChange.add(admin);
 
       Common().dismiss(context);
-      _showCompletedAlert(message: "User has been updated successfully");
+      _showCompletedAlert(message: AppLocalizations.of(context).translate(LocalizedKey.userUpdateSuccessAlertMessage));
     } on PlatformException catch (e){
       Alert().error(context, e.message, () => Common().dismiss(context));
     }
   }
 
   _showConformatiomAlertForDelete() {
-    String message = "Are are sure you want to delete user?";
+    String message = AppLocalizations.of(context).translate(LocalizedKey.userDeleteAlertMessage);
     Alert().conformation(
-        context, "Conformation", message, () => _deleteAdminInfo());
+        context,AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, () => _deleteAdminInfo());
   }
 
   _deleteAdminInfo() async{
@@ -125,7 +128,7 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
       widget.userDetailsBloc.userChange.add(admin);
 
       Common().dismiss(context);
-      _showCompletedAlert(message: "User has been deleted successfully");
+      _showCompletedAlert(message: AppLocalizations.of(context).translate(LocalizedKey.userDeleteSuccessAlertMessage));
     } on PlatformException catch (e){
       Alert().error(context, e.message, () => Common().dismiss(context));
     }
@@ -155,7 +158,7 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
               stream: _userBloc.name,
               builder: (context, snapshot) {
                 return NewUserTextFieldForm(
-                  hint: "Name",
+                  hint: AppLocalizations.of(context).translate(LocalizedKey.usernameTitle),
                   controller: nameController,
                   onChange: _userBloc.nameChange,
                   isError: snapshot.hasError,
@@ -166,7 +169,8 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
               stream: _userBloc.phone,
               builder: (context, snapshot) {
                 return NewUserTextFieldForm(
-                  hint: "Phone (ex: 512345678)",
+                  hint: AppLocalizations.of(context).translate(LocalizedKey.userPhoneTitle) 
+                        + " " + AppLocalizations.of(context).translate(LocalizedKey.userPhoneExample),
                   controller: phoneController,
                   onChange: _userBloc.phoneChange,
                   isError: snapshot.hasError,
@@ -179,7 +183,8 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
               stream: _userBloc.email,
               builder: (context, snapshot) {
                 return NewUserTextFieldForm(
-                  hint: "Email (ex: example@email.com)",
+                  hint: AppLocalizations.of(context).translate(LocalizedKey.userEmailTitle) 
+                        + " " + AppLocalizations.of(context).translate(LocalizedKey.userEmailExample),
                   controller: emailController,
                   onChange: _userBloc.emailChange,
                   isError: snapshot.hasError,
@@ -207,14 +212,14 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
               stream: _userBloc.isValidUpdateFields,
               builder: (context, snapshot) {
                 return CommonButton(
-                  title: "Update",
+                  title: AppLocalizations.of(context).translate(LocalizedKey.userUpdateButtonTitle),
                   onPressed: snapshot.hasData ? () => _showConformatiomAlertForUpdate() : null,
                 );
               }
             ),
             Container(height: 16,),
             CommonButton(
-              title: "Delete",
+              title: AppLocalizations.of(context).translate(LocalizedKey.userDeleteButtonTitle),
               onPressed: () => _showConformatiomAlertForDelete(),
             ),
           ],

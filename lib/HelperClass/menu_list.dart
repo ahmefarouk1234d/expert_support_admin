@@ -1,7 +1,8 @@
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/string.dart';
 import 'package:expert_support_admin/Models/admin_role.dart';
 import 'package:expert_support_admin/Models/status.dart';
-import 'package:expert_support_admin/Screens/Home/Offers/add_offer.dart';
 import 'package:expert_support_admin/Screens/Home/Offers/offers.dart';
 import 'package:expert_support_admin/Screens/Home/Order/inbox.dart';
 import 'package:expert_support_admin/Screens/Home/Password/change_password.dart';
@@ -23,149 +24,186 @@ class NavWidget {
 }
 
 class MenuList {
-  NavScreen _navScreenListCustomerService = NavScreen(navWidget: [
-    NavWidget(
-        title: TextContent.pendingTitle,
-        widget: OrderInbox(
-          orderStatus: OrderStatus.pending,
-        )),
-    NavWidget(
-        title: TextContent.requestChangeTitle,
-        widget: OrderInbox(
-          orderStatus: OrderStatus.requestChange,
-        )),
-    NavWidget(
-        title: TextContent.changePasswordTitle,
-        widget: ChangePassword()
-        ),
-  ], menuList: [
-    TextContent.pendingTitle,
-    TextContent.requestChangeTitle,
-    TextContent.changePasswordTitle,
-    TextContent.signOutMenu
-  ]);
+  final BuildContext context;
+  String pendingTitle = "";
+  String changeRequestTitle = "";
+  String inProcessTitle = "";
+  String doneTitle = "";
+  String cancelTitle = "";
+  String changePasswordTitle = "";
+  String offersTitle = "";
+  String usersTitle = "";
+  String ordersTitle = "";
+  String signOutTitle = "";
 
-  NavScreen _navScreenListTech = NavScreen(navWidget: [
-    NavWidget(
-        title: TextContent.homeTitle,
-        widget: OrderInbox(
-          orderStatus: OrderStatus.inProcess,
-        )),
-    NavWidget(
-        title: TextContent.changePasswordTitle,
-        widget: ChangePassword()
-        ),
-  ], menuList: [
-    TextContent.homeMenu,
-    TextContent.changePasswordTitle,
-    TextContent.signOutMenu
-  ]);
+  MenuList(this.context) {
+    this.pendingTitle = AppLocalizations.of(context)
+        .translate(LocalizedKey.pendingOrderMenuTitle);
+    this.changeRequestTitle = AppLocalizations.of(context)
+        .translate(LocalizedKey.changeRequestOrderMenuTitle);
+    this.inProcessTitle = AppLocalizations.of(context)
+        .translate(LocalizedKey.inProcessOrderMenuTitle);
+    this.doneTitle =
+        AppLocalizations.of(context).translate(LocalizedKey.doneMenuTitle);
+    this.cancelTitle =
+        AppLocalizations.of(context).translate(LocalizedKey.cancelMeunTitle);
+    this.changePasswordTitle = AppLocalizations.of(context)
+        .translate(LocalizedKey.changePasswordMenuTitle);
+    this.offersTitle =
+        AppLocalizations.of(context).translate(LocalizedKey.offerMenuTitle);
+    this.usersTitle =
+        AppLocalizations.of(context).translate(LocalizedKey.usersMenuTitle);
+    this.ordersTitle =
+        AppLocalizations.of(context).translate(LocalizedKey.ordersMenuTitle);
+    this.signOutTitle =
+        AppLocalizations.of(context).translate(LocalizedKey.signOutMenuTitle);
+  }
 
-  NavScreen _navScreenListAccountant = NavScreen(navWidget: [
-    NavWidget(
-        title: TextContent.homeTitle,
-        widget: OrderInbox(
-          orderStatus: OrderStatus.done,
-        )),
-    NavWidget(
-        title: TextContent.changePasswordTitle,
-        widget: ChangePassword()
-        ),
-  ], menuList: [
-    TextContent.homeMenu,
-    TextContent.changePasswordTitle,
-    TextContent.signOutMenu
-  ]);
+  NavScreen getCustomerServiceList() {
+    NavScreen _navScreenListCustomerService = NavScreen(navWidget: [
+      NavWidget(
+          title: pendingTitle,
+          widget: OrderInbox(
+            orderStatus: OrderStatus.pending,
+          )),
+      NavWidget(
+          title: changeRequestTitle,
+          widget: OrderInbox(
+            orderStatus: OrderStatus.requestChange,
+          )),
+      NavWidget(title: changePasswordTitle, widget: ChangePassword()),
+    ], menuList: [
+      pendingTitle,
+      changeRequestTitle,
+      changePasswordTitle,
+      signOutTitle
+    ]);
+    return _navScreenListCustomerService;
+  }
 
-  NavScreen _navScreenListSupervior = NavScreen(navWidget: [
-    NavWidget(
-        title: TextContent.pendingTitle,
-        widget: OrderInbox(
-          orderStatus: OrderStatus.pending,
-        )),
-    NavWidget(
-        title: TextContent.requestChangeTitle,
-        widget: OrderInbox(
-          orderStatus: OrderStatus.requestChange,
-        )),
-    NavWidget(
-        title: TextContent.inProcessTitle,
-        widget: OrderInbox(
-          orderStatus: OrderStatus.inProcess,
-        )),
-    NavWidget(
-        title: TextContent.doneTitle,
-        widget: OrderInbox(
-          orderStatus: OrderStatus.done,
-        )),
-    NavWidget(
-        title: TextContent.canceledTitle,
-        widget: OrderInbox(
-          orderStatus: OrderStatus.canceled,
-        )),
-    NavWidget(title: TextContent.offerTitle, widget: Offers()),
-    NavWidget(
-        title: TextContent.changePasswordTitle,
-        widget: ChangePassword()
-        ),
-  ], menuList: [
-    TextContent.pendingTitle,
-    TextContent.requestChangeTitle,
-    TextContent.inProcessTitle,
-    TextContent.doneTitle,
-    TextContent.canceledTitle,
-    TextContent.offerMenu,
-    TextContent.changePasswordTitle,
-    TextContent.signOutMenu
-  ]);
+  NavScreen getTechList() {
+    NavScreen _navScreenListTech = NavScreen(navWidget: [
+      NavWidget(
+          title: ordersTitle,
+          widget: OrderInbox(
+            orderStatus: OrderStatus.inProcess,
+          )),
+      NavWidget(
+          title: changePasswordTitle, widget: ChangePassword()),
+    ], menuList: [
+      ordersTitle,
+      changePasswordTitle,
+      signOutTitle
+    ]);
+    return _navScreenListTech;
+  }
 
-  NavScreen _navScreenListAdmin = NavScreen(navWidget: [
-    NavWidget(
-        title: TextContent.homeTitle,
-        widget: OrderInbox(
-          orderStatus: OrderStatus.unknown,
-        )),
-    NavWidget(title: TextContent.offerTitle, widget: Offers()),
-    NavWidget(title: TextContent.usersTitle, widget: Users()),
-    NavWidget(
-        title: TextContent.changePasswordTitle,
-        widget: ChangePassword()
-        ),
-  ], menuList: [
-    TextContent.homeMenu,
-    TextContent.offerMenu,
-    TextContent.usersMune,
-    TextContent.changePasswordTitle,
-    TextContent.signOutMenu
-  ]);
+  NavScreen getAccountantList() {
+    NavScreen _navScreenListAccountant = NavScreen(navWidget: [
+      NavWidget(
+          title: ordersTitle,
+          widget: OrderInbox(
+            orderStatus: OrderStatus.done,
+          )),
+      NavWidget(
+          title: changePasswordTitle, widget: ChangePassword()),
+    ], menuList: [
+      ordersTitle,
+      changePasswordTitle,
+      signOutTitle
+    ]);
+    return _navScreenListAccountant;
+  }
+
+  NavScreen getSuperviorList() {
+    NavScreen _navScreenListSupervior = NavScreen(navWidget: [
+      NavWidget(
+          title: pendingTitle,
+          widget: OrderInbox(
+            orderStatus: OrderStatus.pending,
+          )),
+      NavWidget(
+          title: changeRequestTitle,
+          widget: OrderInbox(
+            orderStatus: OrderStatus.requestChange,
+          )),
+      NavWidget(
+          title: inProcessTitle,
+          widget: OrderInbox(
+            orderStatus: OrderStatus.inProcess,
+          )),
+      NavWidget(
+          title: doneTitle,
+          widget: OrderInbox(
+            orderStatus: OrderStatus.done,
+          )),
+      NavWidget(
+          title: cancelTitle,
+          widget: OrderInbox(
+            orderStatus: OrderStatus.canceled,
+          )),
+      NavWidget(title: offersTitle, widget: Offers()),
+      NavWidget(
+          title: changePasswordTitle, widget: ChangePassword()),
+    ], menuList: [
+      pendingTitle,
+      changeRequestTitle,
+      inProcessTitle,
+      doneTitle,
+      cancelTitle,
+      offersTitle,
+      changePasswordTitle,
+      signOutTitle
+    ]);
+    return _navScreenListSupervior;
+  }
+
+  NavScreen getAdminList() {
+    NavScreen _navScreenListAdmin = NavScreen(navWidget: [
+      NavWidget(
+          title: ordersTitle,
+          widget: OrderInbox(
+            orderStatus: OrderStatus.unknown,
+          )),
+      NavWidget(title: offersTitle, widget: Offers()),
+      NavWidget(title: usersTitle, widget: Users()),
+      NavWidget(
+          title: changePasswordTitle, widget: ChangePassword()),
+    ], menuList: [
+      ordersTitle,
+      offersTitle,
+      usersTitle,
+      changePasswordTitle,
+      signOutTitle
+    ]);
+    return _navScreenListAdmin;
+  }
 
   NavScreen _navScreenListNoRole = NavScreen(navWidget: [
-    NavWidget(
-        title: TextContent.homeTitle,
-        widget: NoRoleInbox()),
+    NavWidget(title: TextContent.homeTitle, widget: NoRoleInbox()),
   ], menuList: [
     TextContent.homeMenu,
     TextContent.signOutMenu
   ]);
 
-  NavScreen getMenuList(String role){
+  NavScreen getMenuList(String role) {
     if (role != null) {
       NavScreen menuList;
-      switch(role){
-        case AdminRole.customerService: 
-          menuList = _navScreenListCustomerService;
+      switch (role) {
+        case AdminRole.customerService:
+          menuList = getCustomerServiceList();
           break;
-        case AdminRole.technicion: 
-          menuList = _navScreenListTech;
+        case AdminRole.technicion:
+          menuList = getTechList();
           break;
-        case AdminRole.accountant: 
-          menuList = _navScreenListAccountant;
+        case AdminRole.accountant:
+          menuList = getAccountantList();
           break;
-        case AdminRole.supervisor: 
-          menuList = _navScreenListSupervior;
+        case AdminRole.supervisor:
+          menuList = getSuperviorList();
           break;
-        case AdminRole.admin: 
-          menuList = _navScreenListAdmin;
+        case AdminRole.admin:
+          menuList = getAdminList();
           break;
       }
       return menuList;

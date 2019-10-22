@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expert_support_admin/BlocResources/order_bloc.dart';
 import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/Models/service_model.dart';
 import 'package:expert_support_admin/SharedWidget/commom_button.dart';
@@ -32,7 +34,7 @@ class AddNewService extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("New Service"),
+        title: Text(AppLocalizations.of(context).translate(LocalizedKey.newServiceAppBarTitle)),
         elevation: 0.0,
       ),
       body: AddNewServiceContent(orderBloc: orderBloc, services: services,),
@@ -163,9 +165,9 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
       subSubService != null &&
       qty != 0.0
     ){
-      String message = "Are are sure you want to add new service";
+      String message = AppLocalizations.of(context).translate(LocalizedKey.newServiceAddAlertMessage);
       Alert().conformation(
-        context, "Conformation", message, 
+        context, AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, 
         () => _handleAddingNewService());
     }
   }
@@ -190,6 +192,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
 
   @override
   Widget build(BuildContext context) {
+    bool isArabic = AppLocalizations.of(context).isArabic();
     if (isLoading){
       return Center(
         child: CircularProgressIndicator(),
@@ -202,13 +205,14 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
         child: Column(
           children: <Widget>[
             DropdownButton(
-              hint: Text("Select service"),
+              hint: Text(
+                AppLocalizations.of(context).translate(LocalizedKey.newServiceDropDownServicePlaceholderText)),
               value: service,
               isExpanded: true,
               onChanged: _handleMainServiceChange,
               items: servicesList
                   .map((serv) => DropdownMenuItem(
-                        child: Text(serv.nameEn),
+                        child: Text(isArabic ? serv.nameAr : serv.nameEn),
                         value: serv,
                       ))
                   .toList(),
@@ -217,7 +221,8 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
               height: 16,
             ),
             DropdownButton(
-              hint: Text("Select sub service"),
+              hint: Text(
+                AppLocalizations.of(context).translate(LocalizedKey.newServiceDropDownSubServicePlaceholderText)),
               value: subService,
               isExpanded: true,
               onChanged: _handleSubServiceChange,
@@ -225,7 +230,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
                   ? null
                   : subServicesList
                       .map((subServ) => DropdownMenuItem(
-                            child: Text(subServ.nameEn),
+                            child: Text(isArabic ? subServ.nameAr : subServ.nameEn),
                             value: subServ,
                           ))
                       .toList(),
@@ -234,7 +239,8 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
               height: 16,
             ),
             DropdownButton(
-              hint: Text("Select sub sub service"),
+              hint: Text(
+                AppLocalizations.of(context).translate(LocalizedKey.newServiceDropDownSubSubServicePlaceholderText)),
               value: subSubService,
               isExpanded: true,
               onChanged: _handleSubSubServiceChange,
@@ -243,7 +249,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
                   ? null
                   : subSubServicesList
                       .map((subSubServ) => DropdownMenuItem(
-                            child: Text(subSubServ.nameEn),
+                            child: Text(isArabic ? subSubServ.nameAr : subSubServ.nameEn),
                             value: subSubServ,
                           ))
                       .toList(),
@@ -260,7 +266,9 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
                         valueSelected = value;
                       });
                     }),
-                Expanded(child: Text("has parts")),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context).translate(LocalizedKey.hasPartsTitle))),
                 DropdownButton(
                     value: qty,
                     hint: Text("0"),
@@ -279,7 +287,9 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: Text("Price for one", style: TextStyle(fontWeight: FontWeight.w700),),
+                  child: Text(
+                    AppLocalizations.of(context).translate(LocalizedKey.newServicePriceForOne), 
+                    style: TextStyle(fontWeight: FontWeight.w700),),
                 ),
                 Text(priceForOne.toString())
               ],
@@ -290,7 +300,9 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: Text("Total price", style: TextStyle(fontWeight: FontWeight.w700),),
+                  child: Text(
+                    AppLocalizations.of(context).translate(LocalizedKey.totalPriceTitle), 
+                    style: TextStyle(fontWeight: FontWeight.w700),),
                 ),
                 Text(totalPrice.toString())
               ],
@@ -302,7 +314,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
               height: 16,
             ),
             CommonButton(
-              title: "ADD SERVICE",
+              title: AppLocalizations.of(context).translate(LocalizedKey.newSerivceAddServiceButtonTitle),
               onPressed: () => _showConformatiomAlert(),
             ),
           ],

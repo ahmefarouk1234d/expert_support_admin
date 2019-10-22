@@ -2,7 +2,6 @@ import 'package:expert_support_admin/BlocResources/auth_bloc.dart';
 import 'package:expert_support_admin/FirebaseResources/firebase_notification.dart';
 import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/localized_keys.dart';
-import 'package:expert_support_admin/HelperClass/string.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Screens/Login/login_email_textfield.dart';
 import 'package:expert_support_admin/Screens/Login/login_password.dart';
@@ -37,7 +36,7 @@ class Login extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.0,
-          title: Text(TextContent.appName),
+          title: Text(AppLocalizations.of(context).translate(LocalizedKey.appName)),
         ),
         body: LoginForm(
           onSignedIn: onSignedIn, 
@@ -80,7 +79,7 @@ class LoginForm extends StatelessWidget {
               height: 8,
             ),
             LinkButton(
-              title: "dfdgdfggfd", //AppLocalizations.of(context).translate(LocalizedKey.forgotPassword), 
+              title: AppLocalizations.of(context).translate(LocalizedKey.forgotPassword), 
               onPressed: () => _navigateToForgatPassword(context),),
           ],
         ),

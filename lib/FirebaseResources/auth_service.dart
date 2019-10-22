@@ -9,10 +9,10 @@ class Auth{
   Future<void> signIn(
     String email, 
     String password,
-    Function(FirebaseUser) onSuccess,
+    Function(AuthResult) onSuccess,
     Function(String) onError) async{
     try{
-      FirebaseUser user = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      AuthResult user = await _auth.signInWithEmailAndPassword(email: email, password: password);
       onSuccess(user);
     } on PlatformException catch(e){
       onError(e.message);
@@ -22,10 +22,10 @@ class Auth{
   Future<void> signUp(
     String email, 
     String password, 
-    Function(FirebaseUser) onSuccess, 
+    Function(AuthResult) onSuccess, 
     Function(String) onError) async{
     try{
-      FirebaseUser user = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      AuthResult user = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       onSuccess(user);
     } on PlatformException catch(e){
       onError(e.message);

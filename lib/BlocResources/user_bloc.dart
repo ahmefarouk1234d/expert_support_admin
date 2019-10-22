@@ -50,7 +50,7 @@ class UserBloc extends Validator{
     }
   );
 
-  Future<void> signUp({Function(FirebaseUser) onSuccess, Function(String) onError}){
+  Future<void> signUp({Function(AuthResult) onSuccess, Function(String) onError}){
     return _firebaseManager.signUp(email: _email.value, password: _password.value, onSuccess: onSuccess, onError: onError);
   }
 

@@ -3,8 +3,9 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
 import 'package:expert_support_admin/BlocResources/offer_bloc.dart';
 import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
-import 'package:expert_support_admin/HelperClass/string.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/service_model.dart';
 import 'package:expert_support_admin/SharedWidget/commom_button.dart';
@@ -21,7 +22,7 @@ class AddOffer extends StatelessWidget {
       onDispose: (context, offerBloc) => offerBloc.dispose(),
       child: Scaffold(
           appBar: AppBar(
-            title: Text(TextContent.newOfferTitle),
+            title: Text(AppLocalizations.of(context).translate(LocalizedKey.addOfferAppBarTitle)),
             elevation: 0.0,
           ),
           body: AddOfferContent()),
@@ -78,9 +79,9 @@ class _AddOfferContentState extends State<AddOfferContent> {
   }
 
   _showConformatiomAlert() {
-    String message = TextContent.addNewOfferConformation;
+    String message = AppLocalizations.of(context).translate(LocalizedKey.addOfferAlertMessage);
     Alert().conformation(
-        context, TextContent.conformationTitle, message, () => _handleAddingNewOffer());
+        context, AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, () => _handleAddingNewOffer());
   }
 
   _navigateToOfferList(){
@@ -99,7 +100,7 @@ class _AddOfferContentState extends State<AddOfferContent> {
       Common().loading(context);
       await _offerBloc.saveOfferInfo();
       Common().dismiss(context);
-      _showCompletedAlert(message: TextContent.addNewOfferSuccess);
+      _showCompletedAlert(message: AppLocalizations.of(context).translate(LocalizedKey.addOfferSuccessAlertMessage));
     } on PlatformException catch(e){
       Common().dismiss(context);
       Alert().error(context, e.message, () => Common().dismiss(context));
@@ -132,7 +133,7 @@ class _AddOfferContentState extends State<AddOfferContent> {
                   stream: _offerBloc.offerTitleAr,
                   builder: (context, snapshot) {
                     return OfferTextField(
-                      header: "Title Arabic",
+                      header: AppLocalizations.of(context).translate(LocalizedKey.addOdderTitleArTitle),
                       controller: titleArController,
                       onChange: _offerBloc.offerTitleArChange,
                       isError: snapshot.hasError,
@@ -142,7 +143,7 @@ class _AddOfferContentState extends State<AddOfferContent> {
                   stream: _offerBloc.offerTitleEn,
                   builder: (context, snapshot) {
                     return OfferTextField(
-                      header: "Title English",
+                      header: AppLocalizations.of(context).translate(LocalizedKey.addOfferTitleEnTitle),
                       controller: titleEnController,
                       onChange: _offerBloc.offerTitleEnChange,
                       isError: snapshot.hasError,
@@ -152,7 +153,7 @@ class _AddOfferContentState extends State<AddOfferContent> {
                 stream: _offerBloc.offerDescAr,
                 builder: (context, snapshot) {
                   return OfferMultiLineTextField(
-                    header: "Desc Arabic",
+                    header: AppLocalizations.of(context).translate(LocalizedKey.addOfferDescArTitle),
                     controller: offerDescArController,
                     onChange: _offerBloc.offerDescArChange,
                     isError: snapshot.hasError,
@@ -163,7 +164,7 @@ class _AddOfferContentState extends State<AddOfferContent> {
                 stream: _offerBloc.offerDescEn,
                 builder: (context, snapshot) {
                   return OfferMultiLineTextField(
-                    header: "Desc English",
+                    header: AppLocalizations.of(context).translate(LocalizedKey.addOfferDescEnTitle),
                     controller: offerDescEnController,
                     onChange: _offerBloc.offerDescEnChange,
                     isError: snapshot.hasError,
@@ -174,7 +175,7 @@ class _AddOfferContentState extends State<AddOfferContent> {
                 stream: _offerBloc.price,
                 builder: (context, snapshot) {
                   return OfferTextField(
-                    header: "Price",
+                    header: AppLocalizations.of(context).translate(LocalizedKey.addOfferPriceTitle),
                     controller: priceController,
                     onChange: _offerBloc.priceChange,
                     keyboardType: TextInputType.number,
@@ -186,7 +187,7 @@ class _AddOfferContentState extends State<AddOfferContent> {
                 stream: _offerBloc.quantity,
                 builder: (context, snapshot) {
                   return OfferTextField(
-                    header: "Qauntity",
+                    header: AppLocalizations.of(context).translate(LocalizedKey.addOfferQtyTitle),
                     controller: quantityController,
                     onChange: _offerBloc.quantityChange,
                     keyboardType: TextInputType.number,
@@ -201,7 +202,7 @@ class _AddOfferContentState extends State<AddOfferContent> {
                 stream: _offerBloc.isValidAddFields,
                 builder: (context, snapshot) {
                   return CommonButton(
-                    title: "ADD",
+                    title: AppLocalizations.of(context).translate(LocalizedKey.addOfferAddButtonTitle),
                     onPressed: snapshot.hasData ? () => _showConformatiomAlert() : null,
                   );
                 }
@@ -316,13 +317,14 @@ class ServiceDropDown extends StatelessWidget {
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton(
-            hint: Text("Select service"),
+            hint: Text(
+              AppLocalizations.of(context).translate(LocalizedKey.addOfferDropDownPlaceholderTitle)),
             value: service,
             isExpanded: true,
             onChanged: onChanged,
             items: servicesList
                 .map((serv) => DropdownMenuItem(
-                      child: Text(serv.nameEn),
+                      child: Text(AppLocalizations.of(context).isArabic() ? serv.nameAr : serv.nameEn),
                       value: serv,
                     ))
                 .toList(),

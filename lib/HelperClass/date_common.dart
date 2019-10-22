@@ -1,3 +1,4 @@
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -5,29 +6,30 @@ import 'package:intl/intl.dart';
 class DateConvert{
   String dateFormula = 'EEEE dd MMM, yyyy';
 
-  String toStringFromTimestamp({@required int timestamp}){
+  String toStringFromTimestamp({@required int timestamp, String locale}){
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    final dateFormat = DateFormat(dateFormula).format(date);
+    final dateFormat = DateFormat(dateFormula, locale).format(date);
 
     return dateFormat;
   }
 
-  String toStringFromDate({@required DateTime date}){
-    return DateFormat(dateFormula).format(date);
+  String toStringFromDate({@required DateTime date, String locale}){
+    return DateFormat(dateFormula, locale).format(date);
   }
 
-  String timeToString(TimeOfDay timeOfDay){
+  String timeToString(TimeOfDay timeOfDay, BuildContext context){
+    bool isArabic = AppLocalizations.of(context).isArabic();
     String time = 
           timeOfDay.hourOfPeriod.toString() 
           + ":" + timeOfDay.minute.toString() 
-          + " " + _getCurrentPeriod(timeOfDay.period);
+          + " " + _getCurrentPeriod(timeOfDay.period, isArabic);
     return time;
   }
 
-  String _getCurrentPeriod(DayPeriod period){
+  String _getCurrentPeriod(DayPeriod period, bool isArabic){
     if (period == DayPeriod.am){
-      return "AM";
+      return isArabic ? "صباحاً" : "AM";
     }
-    return "PM";
+    return isArabic ? "مساءاً" : "PM";
   }
 }

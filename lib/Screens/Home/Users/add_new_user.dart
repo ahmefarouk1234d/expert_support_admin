@@ -1,7 +1,9 @@
 import 'package:expert_support_admin/BlocResources/base_provider.dart';
 import 'package:expert_support_admin/BlocResources/user_bloc.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/admin_role.dart';
 import 'package:expert_support_admin/SharedWidget/commom_button.dart';
@@ -19,7 +21,7 @@ class AddNewUser extends StatelessWidget {
       onDispose: (context, userBloc) => userBloc.dispose(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("New User"),
+          title: Text(AppLocalizations.of(context).translate(LocalizedKey.userNewAppBarTitle)),
           elevation: 0.0,
         ),
         body: AddNewUserContent()
@@ -43,9 +45,9 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
   UserBloc _userBloc;
 
   _showConformatiomAlert() {
-    String message = "Are are sure you want to add new user";
+    String message = AppLocalizations.of(context).translate(LocalizedKey.userAddAlertMessage);
     Alert().conformation(
-        context, "Conformation", message, () => _handleAddingNewUser());
+        context, AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, () => _handleAddingNewUser());
   }
  
   _saveAdminInfo(String id) async{
@@ -61,7 +63,7 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
       await firebaseUser.sendEmailVerification();
     } on PlatformException catch(e){
       print(e.message);
-      String alertMessage = "Could not be able to send email verification.";
+      String alertMessage = AppLocalizations.of(context).translate(LocalizedKey.userEmailErrorAlertMessage);
       Alert().error(context, alertMessage, (){
         Common().dismiss(context);
       });
@@ -84,10 +86,10 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
       Common().loading(context);
       await _userBloc.signUp(
         onSuccess: (firebaseUser) async{
-          await _saveAdminInfo(firebaseUser.uid);
-          _sendEmailVerification(firebaseUser);
+          await _saveAdminInfo(firebaseUser.user.uid);
+          _sendEmailVerification(firebaseUser.user);
           Common().dismiss(context);
-          _showCompletedAlert(message: "User has been added successfully");
+          _showCompletedAlert(message: AppLocalizations.of(context).translate(LocalizedKey.userAddSuccessAlertMessage));
         }, 
         onError: (error){
           Common().dismiss(context);
@@ -112,7 +114,7 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
               stream: _userBloc.name,
               builder: (context, snapshot) {
                 return NewUserTextFieldForm(
-                  hint: "Name",
+                  hint: AppLocalizations.of(context).translate(LocalizedKey.usernameTitle),
                   controller: nameController,
                   onChange: _userBloc.nameChange,
                   isError: snapshot.hasError,
@@ -123,7 +125,8 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
               stream: _userBloc.phone,
               builder: (context, snapshot) {
                 return NewUserTextFieldForm(
-                  hint: "Phone (ex: 512345678)",
+                  hint:  AppLocalizations.of(context).translate(LocalizedKey.userPhoneTitle) 
+                        + " " + AppLocalizations.of(context).translate(LocalizedKey.userPhoneExample),
                   controller: phoneController,
                   onChange: _userBloc.phoneChange,
                   isError: snapshot.hasError,
@@ -136,7 +139,8 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
               stream: _userBloc.email,
               builder: (context, snapshot) {
                 return NewUserTextFieldForm(
-                  hint: "Email (ex: example@email.com)",
+                  hint:  AppLocalizations.of(context).translate(LocalizedKey.userEmailTitle) 
+                        + " " + AppLocalizations.of(context).translate(LocalizedKey.userEmailExample),
                   controller: emailController,
                   onChange: _userBloc.emailChange,
                   isError: snapshot.hasError,
@@ -148,7 +152,7 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
               stream: _userBloc.password,
               builder: (context, snapshot) {
                 return NewUserTextFieldForm(
-                  hint: "User's Password",
+                  hint: AppLocalizations.of(context).translate(LocalizedKey.userPasswordPlaceholderText),
                   controller: passwordController,
                   onChange: _userBloc.passwordChange,
                   isError: snapshot.hasError,
@@ -160,7 +164,7 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
               stream: _userBloc.reEnterPassword,
               builder: (context, snapshot) {
                 return NewUserTextFieldForm(
-                  hint: "Re-enter User's Password",
+                  hint: AppLocalizations.of(context).translate(LocalizedKey.userReEnterPasswordPlaceholderText),
                   controller: reEnterPasswordController,
                   onChange: _userBloc.reEnterPasswordChange,
                   isError: snapshot.hasError,
@@ -184,7 +188,7 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
               stream: _userBloc.isValidAddFields,
               builder: (context, snapshot) {
                 return CommonButton(
-                  title: "ADD",
+                  title: AppLocalizations.of(context).translate(LocalizedKey.userAddButtonTitle),
                   onPressed: snapshot.hasData ? () => _showConformatiomAlert() : null,
                 );
               }
@@ -274,13 +278,13 @@ class UserTypeDropDown extends StatelessWidget {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton(
-          hint: Text("User Type"),
+          hint: Text(AppLocalizations.of(context).translate(LocalizedKey.userTypeDropDownPlaceholderText)),
           value: userRole,
           isExpanded: true,
           onChanged: onUserRoleSelect,
           items: userRoleList
               .map((role) => DropdownMenuItem(
-                    child: Container(child: Text(AdminRole().getDisplayRole(role: role)),),
+                    child: Container(child: Text(AdminRole().getDisplayRole(role: role, context: context)),),
                     value: role,
                   ))
               .toList(),

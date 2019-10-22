@@ -1,4 +1,7 @@
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
+import 'package:expert_support_admin/HelperClass/date_common.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
+import 'package:expert_support_admin/Models/status.dart';
 import 'package:flutter/material.dart';
 
 class OrderList extends StatelessWidget {
@@ -15,11 +18,20 @@ class OrderList extends StatelessWidget {
             separatorBuilder: (context, index) => Divider(color: Colors.black12,),
             itemBuilder: (context, index) {
               final OrderInfo order = orders[index];
+              final String orderStatus = 
+                order.status != null 
+                ? OrderStatus().getDisplayStatus(status: order.status, context: context)
+                : "";
+              bool hasDateCreated = order.dateCreated != null;
               return ListTile(
                 onTap: () => onTap(order, index),
                 title: Text(order.id ?? ""),
-                subtitle: Text(order.dateCreated ?? ""),
-                trailing: Text(order.status ?? "")
+                subtitle: Text(
+                  hasDateCreated ?
+                  DateConvert().toStringFromDate(
+                    date: order.dateCreated, 
+                    locale: AppLocalizations.of(context).locale.languageCode) : ""),
+                trailing: Text(orderStatus)
               );
             }
           )

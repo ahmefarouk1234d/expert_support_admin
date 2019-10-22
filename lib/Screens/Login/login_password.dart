@@ -1,5 +1,6 @@
 import 'package:expert_support_admin/BlocResources/auth_bloc.dart';
-import 'package:expert_support_admin/HelperClass/string.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +31,8 @@ class LoginPasswordTextField extends StatelessWidget {
                 keyboardType: TextInputType.text,
                 obscureText: true,
                 decoration:
-                    InputDecoration.collapsed(hintText: TextContent.passwordPlaceholder),
+                    InputDecoration.collapsed(
+                      hintText: AppLocalizations.of(context).translate(LocalizedKey.passwordPlaceholder)),
               );
             }));
   }

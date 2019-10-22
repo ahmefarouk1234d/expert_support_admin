@@ -6,9 +6,9 @@ class SendVerificationEmail extends StatelessWidget {
   static const String route = "/SendVerificationEmail";
   final TextEditingController emailController = TextEditingController();
 
-  _handleSendingVerificationEmail(){
+  // _handleSendingVerificationEmail(){
 
-  }
+  // }
 
   @override
   Widget build(BuildContext context) {

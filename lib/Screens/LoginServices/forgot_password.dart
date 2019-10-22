@@ -1,6 +1,8 @@
 import 'package:expert_support_admin/BlocResources/login_services.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/SharedWidget/commom_button.dart';
 import 'package:expert_support_admin/SharedWidget/under_line_textfield.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +40,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   }
 
   _showCompletedAlert(){
-    Alert().success(context, "Password change successfully", () {
+    Alert().success(context, AppLocalizations.of(context).translate(LocalizedKey.forgotPasswordSuccessAlertMessage), 
+    () {
       Common().dismiss(context);
       emailController.clear();
       _bloc.emailChange(null);
@@ -49,7 +52,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Forgot password"),
+        title: Text(AppLocalizations.of(context).translate(LocalizedKey.forgotPasswordAppBarTitle)),
         elevation: 0.0,
       ),
       body: SingleChildScrollView(
@@ -61,7 +64,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 stream: _bloc.email,
                 builder: (context, snapshot) {
                   return UnderLineTextField(
-                    hint: "Enter your email", 
+                    hint: AppLocalizations.of(context).translate(LocalizedKey.forgotPasswordPlaceholderText), 
                     controller: emailController,
                     onChange: _bloc.emailChange,
                     isError: snapshot.hasError,
@@ -74,7 +77,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 stream: _bloc.isValidField,
                 builder: (context, snapshot) {
                   return CommonButton(
-                    title: "SEND",
+                    title: AppLocalizations.of(context).translate(LocalizedKey.forgotPasswordSendButtonTitle),
                     onPressed: snapshot.hasData ? () => _handleSendingResetPassword() : null,
                   );
                 }

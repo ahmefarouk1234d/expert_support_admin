@@ -1,6 +1,8 @@
 import 'package:expert_support_admin/BlocResources/change_password_bloc.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/SharedWidget/commom_button.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +33,9 @@ class _ChangePasswordContentState extends State<ChangePasswordContent> {
   }
 
   _showCompletedAlert(){
-    Alert().success(context, "Password change successfully", () {
+    Alert().success(context, 
+    AppLocalizations.of(context).translate(LocalizedKey.changePasswordSuccessAlertMessage), 
+    () {
       Common().dismiss(context);
       newPasswordController.clear();
       _changePasswordBloc.newPasswordChange(null);
@@ -52,7 +56,7 @@ class _ChangePasswordContentState extends State<ChangePasswordContent> {
   }
 
   _showConformatiomAlert() {
-    String message = "Are are sure you want to change password";
+    String message = AppLocalizations.of(context).translate(LocalizedKey.changePasswordAlertMessage);
     Alert().conformation(
         context, "Conformation", message, () => _handleChangePassword());
   }
@@ -68,7 +72,7 @@ class _ChangePasswordContentState extends State<ChangePasswordContent> {
               stream: _changePasswordBloc.newPassword,
               builder: (context, snapshot) {
                 return ChangePasswordTextField(
-                  hint: "New password", 
+                  hint: AppLocalizations.of(context).translate(LocalizedKey.newPasswordPlaceholderText), 
                   controller: newPasswordController,
                   isError: snapshot.hasError,
                   onChange: _changePasswordBloc.newPasswordChange,);
@@ -79,7 +83,7 @@ class _ChangePasswordContentState extends State<ChangePasswordContent> {
               stream: _changePasswordBloc.isValidField,
               builder: (context, snapshot) {
                 return CommonButton(
-                  title: "Change Password",
+                  title: AppLocalizations.of(context).translate(LocalizedKey.changePasswordButtonTitle),
                   onPressed: snapshot.hasData ? () => _showConformatiomAlert() : null,
                 );
               }

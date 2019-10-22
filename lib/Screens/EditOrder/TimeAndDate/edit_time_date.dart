@@ -1,9 +1,12 @@
 import 'package:expert_support_admin/BlocResources/order_bloc.dart';
 import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
 import 'package:expert_support_admin/HelperClass/date_common.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
+import 'package:expert_support_admin/Models/day_time_model.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/SharedWidget/commom_button.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +23,9 @@ class EditTimeDate extends StatefulWidget {
 
 class _EditTimeDateState extends State<EditTimeDate> {
   String _time;
-  String _dateformated;
+  TimeOfDay _timeOfDayDB;
   DateTime _actualDate;
+  DateTime _completeDateAndTime;
   TimeOfDay _timeOfDay;
   FirebaseManager _firebaseManager;
   OrderBloc _orderBloc;
@@ -30,8 +34,13 @@ class _EditTimeDateState extends State<EditTimeDate> {
   @override
   void initState() {
     _time = widget.order.visitTime;
-    _dateformated = widget.order.visitDateFormatted;
     _actualDate = widget.order.visitDate;
+    if (widget.order.visitDateAndTime != null){
+      _timeOfDayDB = TimeOfDay(
+        hour: widget.order.visitDateAndTime.hour,
+        minute: widget.order.visitDateAndTime.minute
+      );
+    }
     _firebaseManager = FirebaseManager();
     _orderBloc = widget.orderBloc;
     _orderInfo = widget.order;
@@ -41,11 +50,13 @@ class _EditTimeDateState extends State<EditTimeDate> {
   Future<void> _handleTime() async{
     _timeOfDay = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now()
+      initialTime: TimeOfDay.now(),
     );
     if (_timeOfDay != null){
       setState(() {
-        _time = _timeOfDay.format(context);
+        _timeOfDayDB = _timeOfDay;
+        _time = DayTime().getTimeOfDayDB(period: _timeOfDay.period);
+        _completeDateAndTime = DateTime(_actualDate.year, _actualDate.month, _actualDate.day, _timeOfDay.hour, _timeOfDay.minute);
       });
     } 
   }
@@ -60,7 +71,7 @@ class _EditTimeDateState extends State<EditTimeDate> {
     if (dateSelected != null){
       setState(() {
         _actualDate = dateSelected;
-        _dateformated = DateConvert().toStringFromDate(date: dateSelected);
+        _completeDateAndTime = DateTime(_actualDate.year, _actualDate.month, _actualDate.day, _timeOfDay.hour, _timeOfDay.minute);
       });
     }
   }
@@ -68,8 +79,8 @@ class _EditTimeDateState extends State<EditTimeDate> {
   _showConformatiomAlert(){
     Alert().conformation(
       context, 
-      "Conformation", 
-      "Are are sure you want to save the changes", 
+      AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), 
+      AppLocalizations.of(context).translate(LocalizedKey.editDateSaveAlertTitle), 
       () => _handleSaveChange());
   }
 
@@ -77,8 +88,8 @@ class _EditTimeDateState extends State<EditTimeDate> {
     try{
       Common().loading(context);
       _orderInfo.visitDate = _actualDate;
-      _orderInfo.visitDateFormatted = _dateformated;
       _orderInfo.visitTime = _time;
+      _orderInfo.visitDateAndTime = _completeDateAndTime;
       await _firebaseManager.updateTimeDate(_orderInfo, widget.orderDocID);
       _orderBloc.ordersChange.add(_orderInfo);
       Common().dismiss(context);
@@ -93,29 +104,38 @@ class _EditTimeDateState extends State<EditTimeDate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Time and Date"),
+        title: Text(AppLocalizations.of(context).translate(LocalizedKey.editOrderAppBarTitle)),
         elevation: 0.0,
       ),
       body: Container(
         padding: EdgeInsets.all(16),
         child: Column(
           children: <Widget>[
-            DateTimeInfoRow(title: "Time", value: _time,),
+            DateTimeInfoRow(
+              title: AppLocalizations.of(context).translate(LocalizedKey.editDateTimeTitle), 
+              value: 
+                _timeOfDayDB != null 
+                ? _timeOfDayDB.format(context)
+                : DayTime().getDisplayStatus(dayTime: _time, context: context),),
             Container(height: 8,),
-            DateTimeInfoRow(title: "Date", value: _dateformated,),
+            DateTimeInfoRow(
+              title: AppLocalizations.of(context).translate(LocalizedKey.editDateDateTitle), 
+              value: DateConvert().toStringFromDate(
+                date: _actualDate, 
+                locale: AppLocalizations.of(context).locale.languageCode),),
             Container(height: 16,),
             CommonButton(
-              title: "CHANGE TIME",
+              title: AppLocalizations.of(context).translate(LocalizedKey.editDateChangeTimeButtonTitle),
               onPressed: _handleTime,
             ),
             Container(height: 8,),
             CommonButton(
-              title: "CHANGE DATE",
+              title: AppLocalizations.of(context).translate(LocalizedKey.editDateChangeDateButtonTitle),
               onPressed: _handleDate,
             ),
             Container(height: 16,),
             CommonButton(
-              title: "SAVE CHANGE",
+              title: AppLocalizations.of(context).translate(LocalizedKey.editDateSaveChangeButtonTitle),
               onPressed: _showConformatiomAlert,
             )
           ],

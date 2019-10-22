@@ -1,3 +1,4 @@
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 
 class OrderStatus {
@@ -5,9 +6,9 @@ class OrderStatus {
   static const String inProcessEn = "In process";
   static const String inProcessAr = "تحت المعالجة";
   static const String doneEn = "Done";
-  static const String doneAr = "منحز";
+  static const String doneAr = "منجز";
   static const String canceledEn = "Canceled";
-  static const String canceledAr = "ملغى";
+  static const String canceledAr = "ملغي";
   static const String pendingEn = "Pending";
   static const String pendingAr = "معلق";
   static const String requestChangeEn = "Request Change";
@@ -23,20 +24,21 @@ class OrderStatus {
   static const String requestChange = "RequestChange";
   static const String unknown = "unknow";
 
-  String getDisplayStaus({@required String status}) {
+  String getDisplayStatus({@required String status, @required BuildContext context}) {
+    bool isArabic = AppLocalizations.of(context).isArabic();
     switch (status) {
       case inProcess:
-        return inProcessEn;
+        return isArabic ? inProcessAr : inProcessEn;
       case pending:
-        return pendingEn;
+        return isArabic ? pendingAr : pendingEn;
       case done:
-        return doneEn;
+        return isArabic ? doneAr : doneEn;
       case canceled:
-        return canceledEn;
+        return isArabic ? canceledAr : canceledEn;
       case requestChange:
-        return requestChangeEn;
+        return isArabic ? requestChangeAr : requestChangeEn;
       default:
-        return unknownEn;
+        return isArabic ? unknownAr : unknownEn;
     }
   }
 }

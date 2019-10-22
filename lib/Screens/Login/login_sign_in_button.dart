@@ -1,7 +1,9 @@
 import 'package:expert_support_admin/BlocResources/app_bloc.dart';
 import 'package:expert_support_admin/BlocResources/auth_bloc.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/string.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
@@ -43,8 +45,8 @@ class LoginButton extends StatelessWidget {
         //   });
         // }
 
-        await bloc.updateFcmToken(admin.uid);
-        _updateAdminInfo(context, bloc, appBloc, admin);
+        await bloc.updateFcmToken(admin.user.uid);
+        _updateAdminInfo(context, bloc, appBloc, admin.user);
         Common().dismiss(context); 
         onSignedIn();
       }, 
@@ -69,7 +71,9 @@ class LoginButton extends StatelessWidget {
           builder: (context, snapshot) {
             return RaisedButton(
               onPressed: snapshot.hasData ? () =>  _handleLogin(context, bloc, appBloc) : null,
-              child: Text(TextContent.loginButtonTitle, style: TextStyle(fontSize: Screen.fontSize(size: 20)),),
+              child: Text(
+                AppLocalizations.of(context).translate(LocalizedKey.loginButtontitle), 
+                style: TextStyle(fontSize: Screen.fontSize(size: 20)),),
               textColor: Colors.white,
               color: Theme.of(context).primaryColor,
             );

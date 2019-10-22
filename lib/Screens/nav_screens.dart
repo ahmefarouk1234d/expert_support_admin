@@ -1,8 +1,9 @@
 import 'package:expert_support_admin/BlocResources/app_bloc.dart';
 import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/menu_list.dart';
-import 'package:expert_support_admin/HelperClass/string.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Screens/Home/Offers/add_offer.dart';
 import 'package:expert_support_admin/Screens/Home/Users/add_new_user.dart';
@@ -34,8 +35,9 @@ class _NavigatorScreensState extends State<NavigatorScreens> {
   }
 
   _handleMenuTapped(int index) async{
-    if (_navScreenList.menuList[index] == TextContent.signOutMenu){
-      _signOutConformation();
+    String signOutMenuTitle = AppLocalizations.of(context).translate(LocalizedKey.signOutMenuTitle);
+    if (_navScreenList.menuList[index] == signOutMenuTitle){
+      _signOutConformation(signOutMenuTitle);
     } else {
       setState(() {
         _selectedScreen = index;
@@ -43,8 +45,9 @@ class _NavigatorScreensState extends State<NavigatorScreens> {
     }
   }
 
-  _signOutConformation(){
-    Alert().conformation(context, "Sign Out", "Are you sure you want to sign out?", () => _signOut());
+  _signOutConformation(String title){
+    String signOutMenuAlertMessage = AppLocalizations.of(context).translate(LocalizedKey.signOutAlertMessage);
+    Alert().conformation(context, title, signOutMenuAlertMessage, () => _signOut());
   }
 
   _signOut() async{
@@ -63,7 +66,7 @@ class _NavigatorScreensState extends State<NavigatorScreens> {
       stream: _appBloc.admin,
       builder: (context, snapshot){
         if (snapshot.hasData){
-          _navScreenList = MenuList().getMenuList(snapshot.data.role);
+          _navScreenList = MenuList(context).getMenuList(snapshot.data.role);
           return Scaffold(
             appBar: AppBar(
               title: Text(_navScreenList.navWidget[_selectedScreen].title),
@@ -100,11 +103,11 @@ class ActionsAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (title == TextContent.usersTitle){
+    if (title == AppLocalizations.of(context).translate(LocalizedKey.usersMenuTitle)){
       return AddButtonBar(
         onPressed: () => _handleAddingNewUser(context),
       );
-    } else if (title == TextContent.offerTitle){
+    } else if (title == AppLocalizations.of(context).translate(LocalizedKey.offerMenuTitle)){
       return AddButtonBar(
         onPressed: () => _handleAddingNewOffer(context),
       );

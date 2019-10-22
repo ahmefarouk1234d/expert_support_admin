@@ -13,11 +13,11 @@ class FirebaseManager{
 
   // -------------------- Auth Services -------------------
   
-  Future<void> signIn({@required String email, @required String password, @required Function(FirebaseUser) onSuccess, @required Function(String) onError}){
+  Future<void> signIn({@required String email, @required String password, @required Function(AuthResult) onSuccess, @required Function(String) onError}){
     return _auth.signIn(email, password, onSuccess, onError);
   }
 
-  Future<void> signUp({@required String email, @required String password, @required Function(FirebaseUser) onSuccess, @required Function(String) onError}){
+  Future<void> signUp({@required String email, @required String password, @required Function(AuthResult) onSuccess, @required Function(String) onError}){
     return _auth.signUp(email, password, onSuccess, onError);
   }
 

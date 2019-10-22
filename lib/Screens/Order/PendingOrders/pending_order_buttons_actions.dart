@@ -2,8 +2,9 @@ import 'package:expert_support_admin/BlocResources/app_bloc.dart';
 import 'package:expert_support_admin/BlocResources/order_bloc.dart';
 import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
-import 'package:expert_support_admin/HelperClass/string.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/Models/status.dart';
@@ -47,11 +48,10 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
     _borderColor = Colors.black;
   }
 
-  _showConformatiomAlert(String status, String action, AdminUserInfo admin){
-    String message = "Are are sure you want to $action order";
-    Alert().conformation(
-      context, "Conformation", message, 
-      () => _handleStatusChange(status, admin));
+  _showConformatiomAlert(String status, String message, AdminUserInfo admin){
+    Alert().conformation(context, 
+      AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), 
+      message, () => _handleStatusChange(status, admin));
   }
 
   _handleStatusChange(String status, AdminUserInfo admin) async{
@@ -116,12 +116,12 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
           child: Column(
             children: <Widget>[
               CommonButton(
-                title: TextContent.viewImageButtonTitle,
+                title: AppLocalizations.of(context).translate(LocalizedKey.viewImageButtonTitle),
                 onPressed: _isViewImageEnabled ? () => _navigateToViewImage() : null,
               ),
               Container(height: 8,),
               CommonButton(
-                title: TextContent.editServButtonTitle,
+                title: AppLocalizations.of(context).translate(LocalizedKey.editServButtonTitle),
                 onPressed: _isEnabled ? () {
                   if (snapshot.hasData){
                     _navigateToEditOrder(snapshot.data);
@@ -131,7 +131,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
               ),
               Container(height: 8,),
               CommonButton(
-                title: TextContent.editTimeAndDateButtonTitle,
+                title: AppLocalizations.of(context).translate(LocalizedKey.editTimeAndDateButtonTitle),
                 onPressed: _isEnabled ? () {
                   if (snapshot.hasData){
                     _navigateToEditTimeDate(snapshot.data);
@@ -141,23 +141,26 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
               ),
               Container(height: 8,),
               CommonButton(
-                title: TextContent.acceptButtonTitle,
+                title: AppLocalizations.of(context).translate(LocalizedKey.acceptButtonTitle),
                 onPressed: _isEnabled ? () {
                   if (snapshot.hasData){
-                    _showConformatiomAlert(OrderStatus.inProcess, "accpet", snapshot.data);
+                    _showConformatiomAlert(
+                      OrderStatus.inProcess, 
+                      AppLocalizations.of(context).translate(LocalizedKey.acceptAlertMessage), 
+                      snapshot.data);
                   }
                 }
                 : null,
               ),
               Container(height: 16,),
               MultipleLineText(
-                hint: "Enter cancel reason",
+                hint: AppLocalizations.of(context).translate(LocalizedKey.cnacelReasonPlaceholderText),
                 borderColor: _borderColor,
                 controller: widget.controller,
               ),
               Container(height: 8,),
               CommonButton(
-                title: TextContent.cancelButtonTitle,
+                title: AppLocalizations.of(context).translate(LocalizedKey.cancelButtonTitle),
                 onPressed: 
                 _isEnabled 
                 ? () {
@@ -170,7 +173,10 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
                       _borderColor = Colors.black;
                     });
                     if (snapshot.hasData){
-                      _showConformatiomAlert(OrderStatus.canceled, "cancel", snapshot.data);
+                      _showConformatiomAlert(
+                        OrderStatus.canceled, 
+                        AppLocalizations.of(context).translate(LocalizedKey.cancelAlertMessage), 
+                        snapshot.data);
                     }
                   }
                 }
