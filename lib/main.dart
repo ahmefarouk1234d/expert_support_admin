@@ -1,15 +1,21 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expert_support_admin/BlocResources/app_bloc.dart';
+import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 import 'package:expert_support_admin/HelperClass/enums.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
+import 'package:expert_support_admin/Models/admin_model.dart';
+import 'package:expert_support_admin/Models/code.dart';
 import 'package:expert_support_admin/Screens/Home/Offers/add_offer.dart';
+import 'package:expert_support_admin/Screens/Home/Offers/add_order_offer.dart';
 import 'package:expert_support_admin/Screens/Home/Users/add_new_user.dart';
 import 'package:expert_support_admin/Screens/Home/Users/users.dart';
 import 'package:expert_support_admin/Screens/Home/no_role_inbox.dart';
 import 'package:expert_support_admin/Screens/LoginServices/forgot_password.dart';
 import 'package:expert_support_admin/Screens/LoginServices/send_verification_emai.dart';
 import 'package:expert_support_admin/Screens/nav_screens.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'HelperClass/app_localizations.dart';
 import 'Screens/Login/login.dart';
@@ -17,6 +23,7 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'Screens/Order/Common/order_details.dart';
+import 'SharedWidget/loading.dart';
 
 void main() {
   runApp(MyApp());
@@ -40,10 +47,7 @@ class MyApp extends StatelessWidget {
               primarySwatch: CommonData.mainMaterialColor,
               fontFamily: 'BigVesta'),
           // List all of the app's supported locales here
-          supportedLocales: [
-            Locale('en', 'US'),
-            Locale('ar', 'SA'),
-          ],
+          supportedLocales: Code.localCodes,
           //These delegates make sure that the localization data for the proper language is loaded
           localizationsDelegates: [
             // A class which loads the translations from JSON files
@@ -83,6 +87,7 @@ class MyApp extends StatelessWidget {
             OrderDetails.route: (BuildContext context) => OrderDetails(),
             AddNewUser.route: (BuildContext context) => AddNewUser(),
             AddOffer.route: (BuildContext context) => AddOffer(),
+            AddOrderOffer.route: (BuildContext context) => AddOrderOffer(),
             Users.route: (BuildContext context) => Users(),
             ForgotPassword.route: (BuildContext context) => ForgotPassword(),
             SendVerificationEmail.route: (BuildContext context) =>
@@ -100,7 +105,10 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
-  AuthStatus _authStatus = AuthStatus.notSingedIn;
+  AuthStatus _authStatus;// = AuthStatus.notSingedIn;
+  final _firebaseManager = FirebaseManager();
+
+  get adminID => null;
 
   @override
   void initState() {
@@ -119,15 +127,38 @@ class _MainState extends State<Main> {
     });
   }
 
+  _checkSignIn(AppBloc appBloc) async{
+    FirebaseUser user = await _firebaseManager.getUser();
+    if (user == null){
+      setState(() {
+        _authStatus = AuthStatus.notSingedIn;
+      });
+    } else {
+      DocumentSnapshot _adminDoc = await _firebaseManager.getAdminInfo(user.uid);
+      AdminUserInfo _adminInfo = AdminUserInfo.fromMap(_adminDoc)..id = user.uid;
+      appBloc.adminChange.add(_adminInfo);
+      setState(() {
+        _authStatus = AuthStatus.signedIn;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (_authStatus == AuthStatus.signedIn) {
-      return NavigatorScreens(
-        onSignedOut: _signedOut,
-      );
+    //Screen.instance.init(context);
+    AppBloc _appBloc = Provider.of<AppBloc>(context);
+    if (_authStatus != null){
+      if (_authStatus == AuthStatus.signedIn) {
+        return NavigatorScreens(onSignedOut: _signedOut,);
+      }
+      return Login(onSignedIn: _signedIn,);
     }
-    return Login(
-      onSignedIn: _signedIn,
+    _checkSignIn(_appBloc);
+    return Scaffold(
+      appBar: AppBar(elevation: 0.0,),
+      body: Loading(),
     );
   }
 }
+
+

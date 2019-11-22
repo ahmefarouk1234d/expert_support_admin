@@ -6,6 +6,11 @@ import 'package:flutter/services.dart';
 class Auth{
   FirebaseAuth _auth = FirebaseAuth.instance;
 
+  Future<FirebaseUser> getUser() async{
+    FirebaseUser user = await _auth.currentUser();
+    return user;
+  }
+
   Future<void> signIn(
     String email, 
     String password,

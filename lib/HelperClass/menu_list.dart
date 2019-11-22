@@ -4,6 +4,7 @@ import 'package:expert_support_admin/HelperClass/string.dart';
 import 'package:expert_support_admin/Models/admin_role.dart';
 import 'package:expert_support_admin/Models/status.dart';
 import 'package:expert_support_admin/Screens/Home/Offers/offers.dart';
+import 'package:expert_support_admin/Screens/Home/Offers/order_offers.dart';
 import 'package:expert_support_admin/Screens/Home/Order/inbox.dart';
 import 'package:expert_support_admin/Screens/Home/Password/change_password.dart';
 import 'package:expert_support_admin/Screens/Home/Users/users.dart';
@@ -27,6 +28,7 @@ class MenuList {
   final BuildContext context;
   String pendingTitle = "";
   String changeRequestTitle = "";
+  String changeRequestReplyTitle = "";
   String inProcessTitle = "";
   String doneTitle = "";
   String cancelTitle = "";
@@ -41,6 +43,8 @@ class MenuList {
         .translate(LocalizedKey.pendingOrderMenuTitle);
     this.changeRequestTitle = AppLocalizations.of(context)
         .translate(LocalizedKey.changeRequestOrderMenuTitle);
+    this.changeRequestReplyTitle = AppLocalizations.of(context)
+        .translate(LocalizedKey.changeRequestReplyOrderMenuTitle);
     this.inProcessTitle = AppLocalizations.of(context)
         .translate(LocalizedKey.inProcessOrderMenuTitle);
     this.doneTitle =
@@ -64,12 +68,12 @@ class MenuList {
       NavWidget(
           title: pendingTitle,
           widget: OrderInbox(
-            orderStatus: OrderStatus.pending,
+            workflowStatus: WorkflowStatus.pending,
           )),
       NavWidget(
           title: changeRequestTitle,
           widget: OrderInbox(
-            orderStatus: OrderStatus.requestChange,
+            workflowStatus: WorkflowStatus.requestChange,
           )),
       NavWidget(title: changePasswordTitle, widget: ChangePassword()),
     ], menuList: [
@@ -86,12 +90,18 @@ class MenuList {
       NavWidget(
           title: ordersTitle,
           widget: OrderInbox(
-            orderStatus: OrderStatus.inProcess,
+            workflowStatus: WorkflowStatus.inProcess,
+          )),
+      NavWidget(
+          title: changeRequestReplyTitle,
+          widget: OrderInbox(
+            workflowStatus: WorkflowStatus.requestChangeReply,
           )),
       NavWidget(
           title: changePasswordTitle, widget: ChangePassword()),
     ], menuList: [
       ordersTitle,
+      changeRequestReplyTitle,
       changePasswordTitle,
       signOutTitle
     ]);
@@ -103,7 +113,7 @@ class MenuList {
       NavWidget(
           title: ordersTitle,
           widget: OrderInbox(
-            orderStatus: OrderStatus.done,
+            workflowStatus: WorkflowStatus.done,
           )),
       NavWidget(
           title: changePasswordTitle, widget: ChangePassword()),
@@ -120,35 +130,41 @@ class MenuList {
       NavWidget(
           title: pendingTitle,
           widget: OrderInbox(
-            orderStatus: OrderStatus.pending,
+            workflowStatus: WorkflowStatus.pending,
           )),
       NavWidget(
           title: changeRequestTitle,
           widget: OrderInbox(
-            orderStatus: OrderStatus.requestChange,
+            workflowStatus: WorkflowStatus.requestChange,
           )),
       NavWidget(
           title: inProcessTitle,
           widget: OrderInbox(
-            orderStatus: OrderStatus.inProcess,
+            workflowStatus: WorkflowStatus.inProcess,
+          )),
+      NavWidget(
+          title: changeRequestReplyTitle,
+          widget: OrderInbox(
+            workflowStatus: WorkflowStatus.requestChangeReply,
           )),
       NavWidget(
           title: doneTitle,
           widget: OrderInbox(
-            orderStatus: OrderStatus.done,
+            workflowStatus: WorkflowStatus.done,
           )),
       NavWidget(
           title: cancelTitle,
           widget: OrderInbox(
-            orderStatus: OrderStatus.canceled,
+            workflowStatus: WorkflowStatus.canceled,
           )),
-      NavWidget(title: offersTitle, widget: Offers()),
+      NavWidget(title: offersTitle, widget: OrderOffer()),
       NavWidget(
           title: changePasswordTitle, widget: ChangePassword()),
     ], menuList: [
       pendingTitle,
       changeRequestTitle,
       inProcessTitle,
+      changeRequestReplyTitle,
       doneTitle,
       cancelTitle,
       offersTitle,
@@ -163,9 +179,9 @@ class MenuList {
       NavWidget(
           title: ordersTitle,
           widget: OrderInbox(
-            orderStatus: OrderStatus.unknown,
+            workflowStatus: WorkflowStatus.unknown,
           )),
-      NavWidget(title: offersTitle, widget: Offers()),
+      NavWidget(title: offersTitle, widget: OrderOffer()),
       NavWidget(title: usersTitle, widget: Users()),
       NavWidget(
           title: changePasswordTitle, widget: ChangePassword()),

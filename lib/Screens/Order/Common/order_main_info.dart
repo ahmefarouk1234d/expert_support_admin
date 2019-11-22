@@ -17,7 +17,7 @@ class OrderMainInfo extends StatelessWidget {
     String localCode = AppLocalizations.of(context).locale.languageCode;
     String visitDate = DateConvert().toStringFromDate(date: order.visitDate, locale: localCode);
     AppLocalizations localizations = AppLocalizations.of(context);
-    String orderStatus = OrderStatus().getDisplayStatus(status: order.status, context: context);
+    String workflowStatus = WorkflowStatus().getDisplayStatus(status: order.workflowStatus, context: context);
     String visitTime = 
       order.visitDateAndTime != null
       ? TimeOfDay(
@@ -36,7 +36,7 @@ class OrderMainInfo extends StatelessWidget {
                 value: phone,),
               OrderInfoRow(
                 title: localizations.translate(LocalizedKey.statusTitle), 
-                value: orderStatus,),
+                value: workflowStatus,),
               OrderInfoRow(
                 title: localizations.translate(LocalizedKey.dateTitle), 
                 value: "$visitDate",),

@@ -12,6 +12,10 @@ class FirebaseManager{
   final _db = DataBase();
 
   // -------------------- Auth Services -------------------
+
+  Future<FirebaseUser> getUser() async{
+    return _auth.getUser();
+  }
   
   Future<void> signIn({@required String email, @required String password, @required Function(AuthResult) onSuccess, @required Function(String) onError}){
     return _auth.signIn(email, password, onSuccess, onError);
@@ -65,6 +69,10 @@ class FirebaseManager{
     return _db.getInProcessOrders();
   }
 
+  Stream<QuerySnapshot> getRequestChangeReplyOrders(){
+    return _db.getRequestChangeReplyOrders();
+  }
+
   Stream<QuerySnapshot> getDoneOrders(){
     return _db.getDoneOrders();
   }
@@ -77,9 +85,9 @@ class FirebaseManager{
     return _db.getOrders();
   }
 
-  Future<void> updateOrderStatus(String id, String status, AdminUserInfo admin, {String cancelReason,
+  Future<void> updateOrderStatus(String id, String orderStatus, String workflowStatus, AdminUserInfo admin, {String cancelReason,
     String changeRequestDetails}){
-    return _db.updateOrderStatus(id, status, admin, cancelReason: cancelReason, changeRequestDetails: changeRequestDetails);
+    return _db.updateOrderStatus(id, orderStatus, workflowStatus, admin, cancelReason: cancelReason, changeRequestDetails: changeRequestDetails);
   }
 
   Future<void> updateServices(OrderInfo order, String docId){
@@ -120,6 +128,22 @@ class FirebaseManager{
 
   Stream<QuerySnapshot> getAllOffers(){
     return _db.getAllOffers();
+  }
+
+  Future<void> saveOrderOffer(OrderOfferInfo offer){
+    return _db.saveOrderOffer(offer);
+  }
+
+  Future<void> updateAllOrderOffer(OrderOfferInfo offer) {
+    return _db.updateAllOrderOffer(offer);
+  }
+
+  Future<void> updateOrderOfferStatus(OrderOfferInfo offer) {
+    return _db.updateOrderOfferStatus(offer);
+  }
+
+  Stream<QuerySnapshot> getAllOrderOffers(){
+    return _db.getAllOrderOffers();
   }
 
   // -------------------- End Database Services -------------------

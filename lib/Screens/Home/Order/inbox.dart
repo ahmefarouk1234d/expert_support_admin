@@ -11,18 +11,18 @@ import 'package:flutter/material.dart';
 
 class OrderInbox extends StatelessWidget {
   static const route = "/OrderInbox";
-  final String orderStatus;
-  OrderInbox({this.orderStatus});
+  final String workflowStatus;
+  OrderInbox({this.workflowStatus});
 
   @override
   Widget build(BuildContext context) {
-    return OrdersList(orderStatus: orderStatus,);
+    return OrdersList(workflowStatus: workflowStatus,);
   }
 }
 
 class OrdersList extends StatefulWidget {
-  final String orderStatus;
-  OrdersList({this.orderStatus});
+  final String workflowStatus;
+  OrdersList({this.workflowStatus});
 
   @override
   _OrdersListState createState() => _OrdersListState();
@@ -31,7 +31,7 @@ class OrdersList extends StatefulWidget {
 class _OrdersListState extends State<OrdersList> {
   List<OrderInfo> orderList;
   AppBloc _appBloc;
-  String orderStatus;
+  String workflowStatus;
 
   @override
   void initState() {
@@ -41,28 +41,31 @@ class _OrdersListState extends State<OrdersList> {
 
   _navigateToOrderDetails(OrderInfo order, int index){
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => OrderDetails(order: order, index: index, orderStatus: widget.orderStatus,)));
+      builder: (context) => OrderDetails(order: order, index: index, workflowStatus: widget.workflowStatus,)));
   }
 
   Stream<QuerySnapshot> getOrderDoc(){
     Stream<QuerySnapshot> orderStream;
-    switch(widget.orderStatus){
-      case OrderStatus.pending: 
+    switch(widget.workflowStatus){
+      case WorkflowStatus.pending: 
         orderStream = _appBloc.pendingOrderDocument;
         break;
-      case OrderStatus.requestChange: 
+      case WorkflowStatus.requestChange: 
         orderStream = _appBloc.requestChangeOrderDocument;
         break;
-      case OrderStatus.inProcess: 
+      case WorkflowStatus.inProcess: 
         orderStream = _appBloc.inProcessOrderDocument;
         break;
-      case OrderStatus.done: 
+      case WorkflowStatus.requestChangeReply: 
+        orderStream = _appBloc.requestChangeReplyOrderDocument;
+        break;
+      case WorkflowStatus.done: 
         orderStream = _appBloc.doneOrderDocument;
         break;
-      case OrderStatus.canceled: 
+      case WorkflowStatus.canceled: 
         orderStream = _appBloc.canceledOrderDocument;
         break;
-      case OrderStatus.unknown:
+      case WorkflowStatus.unknown:
         orderStream = _appBloc.orderDocument;
     }
     return orderStream;

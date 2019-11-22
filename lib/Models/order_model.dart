@@ -5,7 +5,8 @@ class OrderInfo{
   String id;
   String username;
   String userPhone;
-  String status;
+  String orderStatus;
+  String workflowStatus;
   DateTime dateCreated;
   List<OrderService> orderService;
   List<String> imagesUrl;
@@ -26,7 +27,7 @@ class OrderInfo{
   String cancelReason;
   String changeRequestDetails;
 
-  OrderInfo({this.documentID ,this.id, this.username, this.userPhone, this.status, this.dateCreated, this.orderService, this.imagesUrl, this.comment, this.visitDate , this.visitTime, this.coordinate, this.discountPercent, this.totalDiscountAmount, this.totalPriceAfterDiscount, this.totalPriceBeforeDiscount, this.totalPriceWithVAT, this.vatTotal,
+  OrderInfo({this.documentID ,this.id, this.username, this.userPhone, this.orderStatus, this.workflowStatus, this.dateCreated, this.orderService, this.imagesUrl, this.comment, this.visitDate , this.visitTime, this.coordinate, this.discountPercent, this.totalDiscountAmount, this.totalPriceAfterDiscount, this.totalPriceBeforeDiscount, this.totalPriceWithVAT, this.vatTotal,
   this.adminID, this.adminName, this.adminRole, this.cancelReason, this.changeRequestDetails, this.visitDateAndTime});
 
   _orderMapToList(DocumentSnapshot orderDocData){
@@ -43,7 +44,8 @@ class OrderInfo{
       this.id = orderData["orderID"];
       this.username = orderData["username"];
       this.userPhone = orderData["userPhone"];
-      this.status = orderData["OrderStatus"];
+      this.orderStatus = orderData["OrderStatus"];
+      this.workflowStatus = orderData["WorkflowStatus"];
       this.dateCreated = DateTime.fromMillisecondsSinceEpoch(dateCreated);
       this.visitDate = DateTime.fromMillisecondsSinceEpoch(visitedDate);
       this.visitTime = orderData["VisitTime"];
@@ -96,7 +98,8 @@ class OrderInfo{
     this.id = order.id;
     this.username = order.username;
     this.userPhone = order.userPhone;
-    this.status = order.status;
+    this.orderStatus = order.orderStatus;
+    this.workflowStatus = order.workflowStatus;
     this.dateCreated = order.dateCreated;
     this.visitDate = order.visitDate;
     this.visitTime = order.visitTime;

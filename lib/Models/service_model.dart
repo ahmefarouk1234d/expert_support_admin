@@ -34,15 +34,17 @@ class Service{
 }
 
 class SubService{
+  String id;
   String nameAr;
   String nameEn;
   String descAr;
   String descEn;
   List<SubSubService> subSubServices;
 
-  SubService({this.nameEn, this.nameAr, this.descAr, this.descEn, this.subSubServices});
+  SubService({this.id, this.nameEn, this.nameAr, this.descAr, this.descEn, this.subSubServices});
 
   _subSerivceMapToList(Map<dynamic, dynamic> subService){
+    this.id = subService["ID"];
     this.nameAr = subService["NameAr"];
     this.nameEn = subService["NameEn"];
     this.descAr = subService["DescAr"];
@@ -66,13 +68,15 @@ class SubService{
 }
 
 class SubSubService{
+  String id;
   String nameAr;
   String nameEn;
   List<ServicePrice> servicePrice;
 
-  SubSubService({this.nameEn, this.nameAr, this.servicePrice});
+  SubSubService({this.id, this.nameEn, this.nameAr, this.servicePrice});
 
   _subSubSerivceMapToList(Map<dynamic, dynamic> subSubService){
+    this.id = subSubService["ID"];
     this.nameAr = subSubService["NameAr"];
     this.nameEn = subSubService["NameEn"];
     this.servicePrice = ServicePrice.fromListMap(subSubService["Prices"]);

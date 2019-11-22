@@ -4,8 +4,10 @@ import 'package:expert_support_admin/HelperClass/alert.dart';
 import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/menu_list.dart';
+import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Screens/Home/Offers/add_offer.dart';
+import 'package:expert_support_admin/Screens/Home/Offers/add_order_offer.dart';
 import 'package:expert_support_admin/Screens/Home/Users/add_new_user.dart';
 import 'package:expert_support_admin/Screens/Home/main_drawer.dart';
 import 'package:expert_support_admin/SharedWidget/loading.dart';
@@ -62,6 +64,7 @@ class _NavigatorScreensState extends State<NavigatorScreens> {
   @override
   Widget build(BuildContext context) {
     _appBloc = Provider.of<AppBloc>(context);
+    Screen.instance.init(context);
     return StreamBuilder<AdminUserInfo>(
       stream: _appBloc.admin,
       builder: (context, snapshot){
@@ -97,8 +100,8 @@ class ActionsAppBar extends StatelessWidget {
     Navigator.of(context).pushNamed(AddNewUser.route);
   }
 
-  _handleAddingNewOffer(BuildContext context){
-    Navigator.of(context).pushNamed(AddOffer.route);
+  _handleAddingNewOrderOffer(BuildContext context){
+    Navigator.of(context).pushNamed(AddOrderOffer.route);
   }
 
   @override
@@ -109,7 +112,7 @@ class ActionsAppBar extends StatelessWidget {
       );
     } else if (title == AppLocalizations.of(context).translate(LocalizedKey.offerMenuTitle)){
       return AddButtonBar(
-        onPressed: () => _handleAddingNewOffer(context),
+        onPressed: () => _handleAddingNewOrderOffer(context),
       );
     }
     return Container();

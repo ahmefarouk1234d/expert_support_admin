@@ -3,11 +3,13 @@ import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Models/offer_model.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/Models/status.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 class DataBase{
   final adminUserCollection = Firestore.instance.collection("AdminUser");
   final ordersCollection = Firestore.instance.collection("OrdersList");
   final servicesCollection = Firestore.instance.collection("Services");
   final offerCollection = Firestore.instance.collection("Offers");
+  final orderOfferCollection = Firestore.instance.collection("OrderOffers");
 
   Future<void> saveAdminUser(AdminUserInfo admin) {
     Map<String, dynamic> adminUserMap = AdminUserInfo().toMap(admin);
@@ -26,35 +28,42 @@ class DataBase{
 
   Stream<QuerySnapshot> getPendingOrders(){
     final orders = ordersCollection
-      .where("OrderStatus", isEqualTo: OrderStatus.pending)
+      .where("WorkflowStatus", isEqualTo: WorkflowStatus.pending)
       .snapshots(includeMetadataChanges: true);
     return orders;
   }
 
   Stream<QuerySnapshot> getRequestChangeOrders(){
     final orders = ordersCollection
-      .where("OrderStatus", isEqualTo: OrderStatus.requestChange)
+      .where("WorkflowStatus", isEqualTo: WorkflowStatus.requestChange)
       .snapshots(includeMetadataChanges: true);
     return orders;
   }
 
   Stream<QuerySnapshot> getInProcessOrders(){
     final orders = ordersCollection
-      .where("OrderStatus", isEqualTo: OrderStatus.inProcess)
+      .where("WorkflowStatus", isEqualTo: WorkflowStatus.inProcess)
+      .snapshots();
+    return orders;
+  }
+
+  Stream<QuerySnapshot> getRequestChangeReplyOrders(){
+    final orders = ordersCollection
+      .where("WorkflowStatus", isEqualTo: WorkflowStatus.requestChangeReply)
       .snapshots();
     return orders;
   }
 
   Stream<QuerySnapshot> getDoneOrders(){
     final orders = ordersCollection
-      .where("OrderStatus", isEqualTo: OrderStatus.done)
+      .where("WorkflowStatus", isEqualTo: WorkflowStatus.done)
       .snapshots();
     return orders;
   }
 
   Stream<QuerySnapshot> getCanceledOrders(){
     final orders = ordersCollection
-      .where("OrderStatus", isEqualTo: OrderStatus.canceled)
+      .where("WorkflowStatus", isEqualTo: WorkflowStatus.canceled)
       .snapshots();
     return orders;
   }
@@ -66,7 +75,8 @@ class DataBase{
 
   Future<void> updateOrderStatus(
     String id, 
-    String status, 
+    String orderStatus,
+    String workflowStatus, 
     AdminUserInfo admin,
     {String cancelReason,
     String changeRequestDetails}){
@@ -75,7 +85,8 @@ class DataBase{
 
       DocumentReference ordersDocRef = ordersCollection.document(id);
       batch.updateData(ordersDocRef, {
-        "OrderStatus": status,
+        "OrderStatus": orderStatus,
+        "WorkflowStatus": workflowStatus,
         "adminName": admin.name,
         "adminID": admin.id,
         "adminRole": admin.role,
@@ -86,7 +97,7 @@ class DataBase{
 
       DocumentReference ordersDocWorkflowRef = ordersDocRef.collection("workflow").document();
       batch.setData(ordersDocWorkflowRef, {
-        "OrderStatus": status,
+        "WorkflowStatus": workflowStatus,
         "adminName": admin.name,
         "adminID": admin.id,
         "adminRole": admin.role,
@@ -173,4 +184,24 @@ class DataBase{
   Stream<QuerySnapshot> getAllOffers(){
     return offerCollection.snapshots();
   }
+
+  Future<void> saveOrderOffer(OrderOfferInfo offer){
+    Map<String, dynamic> offerMap = OrderOfferInfo().toMapOnCreate(offer);
+    return orderOfferCollection.document().setData(offerMap);
+  }
+
+  Future<void> updateAllOrderOffer(OrderOfferInfo offer) {
+    Map<String, dynamic> offerMap = OrderOfferInfo().toMapOnUpdateAll(offer);
+    return orderOfferCollection.document(offer.id).updateData(offerMap);
+  }
+
+  Future<void> updateOrderOfferStatus(OrderOfferInfo offer) {
+    Map<String, dynamic> offerMap = OrderOfferInfo().toMapOnUpdateStatus(offer);
+    return orderOfferCollection.document(offer.id).updateData(offerMap);
+  }
+
+  Stream<QuerySnapshot> getAllOrderOffers(){
+    return orderOfferCollection.snapshots();
+  }
+
 }

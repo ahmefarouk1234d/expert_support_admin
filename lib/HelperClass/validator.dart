@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:expert_support_admin/Models/service_model.dart';
 import 'package:expert_support_admin/Models/status.dart';
+import 'package:expert_support_admin/Screens/NewServices/add_new_service.dart';
 
 class Validator{
   final validateUsername = StreamTransformer<String, String>.fromHandlers(
@@ -65,7 +66,7 @@ class Validator{
 
   final validateOrderActionButton = StreamTransformer<String, bool>.fromHandlers(
     handleData: (status, sink){
-      if (status == OrderStatus.pending || status == OrderStatus.inProcess){
+      if (status == WorkflowStatus.pending || status == WorkflowStatus.inProcess){
         sink.add(true);
       } else {
         sink.add(false);
@@ -75,7 +76,7 @@ class Validator{
 
   final validateOrderEditButton = StreamTransformer<String, bool>.fromHandlers(
     handleData: (status, sink){
-      if (status == OrderStatus.pending || status == OrderStatus.inProcess){
+      if (status == WorkflowStatus.pending || status == WorkflowStatus.inProcess){
         sink.add(true);
       } else {
         sink.add(false);
@@ -85,7 +86,7 @@ class Validator{
 
   final validateOrderCancelButton = StreamTransformer<String, bool>.fromHandlers(
     handleData: (status, sink){
-      if (status == OrderStatus.pending || status == OrderStatus.inProcess){
+      if (status == WorkflowStatus.pending || status == WorkflowStatus.inProcess){
         sink.add(true);
       } else {
         sink.add(false);
@@ -103,12 +104,45 @@ class Validator{
     }
   );
 
+  final validateNumberTextField = StreamTransformer<String, String>.fromHandlers(
+    handleData: (text, sink){
+      RegExp regExpForNum = RegExp("^\\d+\$");
+      if (text.isEmpty) {
+        sink.addError("Field should not be empty");
+      } else if (!regExpForNum.hasMatch(text)){
+        sink.addError("Field should not be number only");
+      } else {
+        sink.add(text);
+      }
+    }
+  );
+
   final validateService = StreamTransformer<Service, Service>.fromHandlers(
     handleData: (service, sink){
       if(service == null){
         sink.addError("Service should not be empty");
       } else {
         sink.add(service);
+      }
+    }
+  );
+
+  final validateSubService = StreamTransformer<SubService, SubService>.fromHandlers(
+    handleData: (subService, sink){
+      if(subService == null){
+        sink.addError("Service should not be empty");
+      } else {
+        sink.add(subService);
+      }
+    }
+  );
+
+  final validateSubSubService = StreamTransformer<SubSubService, SubSubService>.fromHandlers(
+    handleData: (subSubService, sink){
+      if(subSubService == null){
+        sink.addError("Service should not be empty");
+      } else {
+        sink.add(subSubService);
       }
     }
   );

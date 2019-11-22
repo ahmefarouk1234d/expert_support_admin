@@ -17,8 +17,8 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
    static String route = "/OrderDetails";
    final int index;
    final OrderInfo order;
-   final String orderStatus;
-   OrderDetails({this.order, this.index, this.orderStatus});
+   final String workflowStatus;
+   OrderDetails({this.order, this.index, this.workflowStatus});
    
    @override
    Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
          builder: (context, _orderBloc) => _orderBloc ?? OrderBloc(),
          onDispose: (context, _orderBloc) => _orderBloc.dispose(),
          child: Container(
-           child: OrderDetailsContent(order: order, orderStatus: orderStatus,),
+           child: OrderDetailsContent(order: order, workflowStatus: workflowStatus,),
          ),
        ),
      );
@@ -40,8 +40,8 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
 
  class OrderDetailsContent extends StatefulWidget {
    final OrderInfo order;
-   final String orderStatus;
-   OrderDetailsContent({this.order, this.orderStatus});
+   final String workflowStatus;
+   OrderDetailsContent({this.order, this.workflowStatus});
 
    @override
    _OrderDetailsContentState createState() => _OrderDetailsContentState();
@@ -67,11 +67,11 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
       OrderPrices(order), 
     ];
 
-    switch(widget.orderStatus){
-      case OrderStatus.pending: 
+    switch(widget.workflowStatus){
+      case WorkflowStatus.pending: 
         widgets.add(PendingOrderActionButtons(order, cancelReasonController));
         break;
-      case OrderStatus.requestChange: 
+      case WorkflowStatus.requestChange: 
         if (order.changeRequestDetails != null){
           widgets.add(
             ReasonLabel(header: AppLocalizations.of(context).translate(LocalizedKey.requestChangeDetailsTitle), 
@@ -82,18 +82,19 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
         }
         widgets.add(PendingOrderActionButtons(order, cancelReasonController));
         break;
-      case OrderStatus.inProcess:
+      case WorkflowStatus.inProcess:
+      case WorkflowStatus.requestChangeReply:
         if (order.adminName != null && order.adminRole != null){
           widgets.add(OrderUpdatedByView(name: order.adminName, role: order.adminRole,),);
         }
         widgets.add(InProcessActionButtons(order, changeDetailsControl));
         break;
-      case OrderStatus.done: 
+      case WorkflowStatus.done: 
         if (order.adminName != null && order.adminRole != null){
           widgets.add(OrderUpdatedByView(name: order.adminName, role: order.adminRole,),);
         }
         break;
-      case OrderStatus.canceled: 
+      case WorkflowStatus.canceled: 
         if (order.cancelReason != null){
           widgets.add(
             ReasonLabel(
@@ -104,7 +105,7 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
           widgets.add(OrderUpdatedByView(name: order.adminName, role: order.adminRole,),);
         }
         break;
-      case OrderStatus.unknown:
+      case WorkflowStatus.unknown:
         if (order.cancelReason != null){
           widgets.add(
             ReasonLabel(

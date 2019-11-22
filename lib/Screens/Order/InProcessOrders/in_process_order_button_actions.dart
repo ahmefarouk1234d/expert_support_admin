@@ -41,15 +41,15 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
 
   _setUp(){
     _order = widget.order;
-    _isEnabled = _order.status == OrderStatus.inProcess;
+    _isEnabled = _order.workflowStatus == WorkflowStatus.inProcess;
     _isViewImageEnabled = _order.imagesUrl.isNotEmpty;
     _borderColor = Colors.black;
   }
 
-  _showConformatiomAlert({@required String status, @required String message, @required AdminUserInfo admin}){
+  _showConformatiomAlert({@required String orderStatus, @required String workflowStatus, @required String message, @required AdminUserInfo admin}){
     Alert().conformation(
       context, AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, 
-      () => _handleAction(status: status, admin: admin));
+      () => _handleAction(orderStatus: orderStatus, workflowStatus: workflowStatus, admin: admin));
   }
 
   _handleViewImages() async{
@@ -57,13 +57,14 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
       MaterialPageRoute(builder: (context) => OrderImages(imageUrls: _order.imagesUrl,)));
   }
 
-  _handleAction({@required String status, @required AdminUserInfo admin}) async{
+  _handleAction({@required String orderStatus, @required String workflowStatus, @required AdminUserInfo admin}) async{
     setState(() =>_borderColor = Colors.black);
     Common().loading(context);
     String changeRequestDeatils = widget.controller.text.isNotEmpty ? widget.controller.text : null;
-    await _firebaseManager.updateOrderStatus(_order.documentID, status, admin, changeRequestDetails: changeRequestDeatils);
+    await _firebaseManager.updateOrderStatus(_order.documentID, orderStatus, workflowStatus, admin, changeRequestDetails: changeRequestDeatils);
     Common().dismiss(context);
-    _order.status = status;
+    _order.orderStatus = orderStatus;
+    _order.workflowStatus = workflowStatus;
     _orderBloc.ordersChange.add(_order);
     setState(() {
       _isEnabled = false;
@@ -91,7 +92,8 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
                 onPressed: _isEnabled ? () {
                   if (snapshot.hasData){
                     _showConformatiomAlert(
-                      status: OrderStatus.done, 
+                      orderStatus: OrderStatus.done, 
+                      workflowStatus: WorkflowStatus.done,
                       message: AppLocalizations.of(context).translate(LocalizedKey.doneAlertMessage), 
                       admin: snapshot.data);
                   }
@@ -117,7 +119,8 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
                   } else {
                     if (snapshot.hasData){
                       _showConformatiomAlert(
-                        status: OrderStatus.requestChange, 
+                        orderStatus: OrderStatus.inProcess,
+                        workflowStatus: WorkflowStatus.requestChange, 
                         message: AppLocalizations.of(context).translate(LocalizedKey.requestChangeAlertMessage), 
                         admin: snapshot.data);
                     }

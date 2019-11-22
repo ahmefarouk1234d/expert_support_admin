@@ -12,6 +12,7 @@ class LocalizedKey{
   static const String notCompleteRequestAlertTitle = "not_complete_request_error";
   static const String inProcessOrderMenuTitle = "inProcess_order_menu_title";
   static const String changeRequestOrderMenuTitle = "change_request_order_menu_title";
+  static const String changeRequestReplyOrderMenuTitle = "change_request_reply_order_menu_title";
   static const String pendingOrderMenuTitle = "pending_order_menu_title";
   static const String doneMenuTitle = "done_order_menu_title";
   static const String cancelMeunTitle = "cancel_order_menu_title";
@@ -73,6 +74,9 @@ class LocalizedKey{
   static const String offerDeactiveButtonTitle = "offer_deactive_button_title";
   static const String addOfferAppBarTitle = "add_offer_app_bar_title";
   static const String addOfferDropDownPlaceholderTitle = "add_offer_dropdown_placehoder_title";
+  static const String addOfferServiceDropDownPlaceholderTitle = "add_offer_service_dropdown_placehoder_title";
+  static const String addOfferSubServiceDropDownPlaceholderTitle = "add_offer_sub_sevice_dropdown_placehoder_title";
+  static const String addOfferSubSubServiceDropDownPlaceholderTitle = "add_offer_sub_sub_service_dropdown_placehoder_title";
   static const String addOdderTitleArTitle = "add_offer_title_arabic_title";
   static const String addOfferTitleEnTitle = "add_offer_title_english_title";
   static const String addOfferDescArTitle = "add_offer_desc_arabic_title";

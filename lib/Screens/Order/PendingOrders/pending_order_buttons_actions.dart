@@ -34,6 +34,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
   OrderBloc _orderBloc;
   AppBloc _appBloc;
   Color _borderColor;
+  String actionWorkflowState;
 
   @override
   void initState() {
@@ -43,25 +44,29 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
 
   _setUp(){
     _order = widget.order;
-    _isEnabled = _order.status == OrderStatus.pending || _order.status == OrderStatus.requestChange;
+    _isEnabled = _order.workflowStatus == WorkflowStatus.pending || _order.workflowStatus == WorkflowStatus.requestChange;
     _isViewImageEnabled = _order.imagesUrl.isNotEmpty;
     _borderColor = Colors.black;
+
+    actionWorkflowState = _order.workflowStatus == WorkflowStatus.requestChange 
+      ?  WorkflowStatus.requestChangeReply : WorkflowStatus.inProcess;
   }
 
-  _showConformatiomAlert(String status, String message, AdminUserInfo admin){
+  _showConformatiomAlert(String orderStatus, String workflowStatus, String message, AdminUserInfo admin){
     Alert().conformation(context, 
       AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), 
-      message, () => _handleStatusChange(status, admin));
+      message, () => _handleStatusChange(orderStatus, workflowStatus, admin));
   }
 
-  _handleStatusChange(String status, AdminUserInfo admin) async{
+  _handleStatusChange(String orderStatus, String workflowStatus, AdminUserInfo admin) async{
     setState(() =>_borderColor = Colors.black);
     Common().loading(context);
     String cancelReason = widget.controller.text.isNotEmpty ? widget.controller.text : null;
-    await _firebaseManager.updateOrderStatus(_order.documentID, status, admin, 
+    await _firebaseManager.updateOrderStatus(_order.documentID, orderStatus, workflowStatus, admin, 
       cancelReason: cancelReason);
     Common().dismiss(context);
-    _order.status = status;
+    _order.orderStatus = orderStatus;
+    _order.workflowStatus = workflowStatus;
     _orderBloc.ordersChange.add(_order);
     setState(() {
       _isEnabled = false;
@@ -146,6 +151,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
                   if (snapshot.hasData){
                     _showConformatiomAlert(
                       OrderStatus.inProcess, 
+                      actionWorkflowState,
                       AppLocalizations.of(context).translate(LocalizedKey.acceptAlertMessage), 
                       snapshot.data);
                   }
@@ -175,6 +181,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
                     if (snapshot.hasData){
                       _showConformatiomAlert(
                         OrderStatus.canceled, 
+                        WorkflowStatus.done,
                         AppLocalizations.of(context).translate(LocalizedKey.cancelAlertMessage), 
                         snapshot.data);
                     }

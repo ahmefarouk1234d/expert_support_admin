@@ -18,9 +18,9 @@ class OrderList extends StatelessWidget {
             separatorBuilder: (context, index) => Divider(color: Colors.black12,),
             itemBuilder: (context, index) {
               final OrderInfo order = orders[index];
-              final String orderStatus = 
-                order.status != null 
-                ? OrderStatus().getDisplayStatus(status: order.status, context: context)
+              final String workflowStatus = 
+                order.workflowStatus != null 
+                ? WorkflowStatus().getDisplayStatus(status: order.workflowStatus, context: context)
                 : "";
               bool hasDateCreated = order.dateCreated != null;
               return ListTile(
@@ -31,7 +31,7 @@ class OrderList extends StatelessWidget {
                   DateConvert().toStringFromDate(
                     date: order.dateCreated, 
                     locale: AppLocalizations.of(context).locale.languageCode) : ""),
-                trailing: Text(orderStatus)
+                trailing: Text(workflowStatus)
               );
             }
           )
