@@ -23,7 +23,7 @@ class AuthBloc with Validator{
 
   Stream<String> get email => _email.stream.transform(validateEmail);
   Stream<String> get password => _password.stream.transform(validatePassword);
-  Stream<bool> get isValidSignUpFields => Observable.combineLatest2(email, password, (e, p) => true);
+  Stream<bool> get isValidSignUpFields => Rx.combineLatest2(email, password, (e, p) => true);
   Stream<String> get fcmToken => _fcmToken.stream;
   Stream<AdminUserInfo> get admin => _admin.stream;
   

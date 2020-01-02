@@ -7,9 +7,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 class DataBase{
   final adminUserCollection = Firestore.instance.collection("AdminUser");
   final ordersCollection = Firestore.instance.collection("OrdersList");
-  final servicesCollection = Firestore.instance.collection("Services");
+  final servicesCollection = Firestore.instance.collection("ServiceList");
   final offerCollection = Firestore.instance.collection("Offers");
   final orderOfferCollection = Firestore.instance.collection("OrderOffers");
+  final dateAvailabilityCollection = Firestore.instance.collection("DateAvailabilityLog");
 
   Future<void> saveAdminUser(AdminUserInfo admin) {
     Map<String, dynamic> adminUserMap = AdminUserInfo().toMap(admin);
@@ -28,28 +29,16 @@ class DataBase{
 
   Stream<QuerySnapshot> getPendingOrders(){
     final orders = ordersCollection
-      .where("WorkflowStatus", isEqualTo: WorkflowStatus.pending)
-      .snapshots(includeMetadataChanges: true);
-    return orders;
-  }
-
-  Stream<QuerySnapshot> getRequestChangeOrders(){
-    final orders = ordersCollection
-      .where("WorkflowStatus", isEqualTo: WorkflowStatus.requestChange)
+      .where("WorkflowStatus", whereIn: [WorkflowStatus.pending, WorkflowStatus.requestChange])
+      .orderBy("OrderDateUpdated")
       .snapshots(includeMetadataChanges: true);
     return orders;
   }
 
   Stream<QuerySnapshot> getInProcessOrders(){
     final orders = ordersCollection
-      .where("WorkflowStatus", isEqualTo: WorkflowStatus.inProcess)
-      .snapshots();
-    return orders;
-  }
-
-  Stream<QuerySnapshot> getRequestChangeReplyOrders(){
-    final orders = ordersCollection
-      .where("WorkflowStatus", isEqualTo: WorkflowStatus.requestChangeReply)
+      .where("WorkflowStatus", whereIn: [WorkflowStatus.inProcess, WorkflowStatus.requestChangeReply])
+      .orderBy("OrderDateUpdated")
       .snapshots();
     return orders;
   }
@@ -57,6 +46,7 @@ class DataBase{
   Stream<QuerySnapshot> getDoneOrders(){
     final orders = ordersCollection
       .where("WorkflowStatus", isEqualTo: WorkflowStatus.done)
+      .orderBy("OrderDateUpdated")
       .snapshots();
     return orders;
   }
@@ -64,29 +54,30 @@ class DataBase{
   Stream<QuerySnapshot> getCanceledOrders(){
     final orders = ordersCollection
       .where("WorkflowStatus", isEqualTo: WorkflowStatus.canceled)
+      .orderBy("OrderDateUpdated")
       .snapshots();
     return orders;
   }
 
   Stream<QuerySnapshot> getOrders(){
-    final orders = ordersCollection.orderBy("OrderDateCreated", descending: true).snapshots();
+    final orders = ordersCollection.orderBy("OrderDateCreated", descending: true)
+      .orderBy("OrderDateUpdated")
+      .snapshots();
     return orders;
   }
 
   Future<void> updateOrderStatus(
-    String id, 
-    String orderStatus,
-    String workflowStatus, 
+    OrderInfo order, 
     AdminUserInfo admin,
     {String cancelReason,
     String changeRequestDetails}){
 
       WriteBatch batch = Firestore.instance.batch();
 
-      DocumentReference ordersDocRef = ordersCollection.document(id);
+      DocumentReference ordersDocRef = ordersCollection.document(order.documentID);
       batch.updateData(ordersDocRef, {
-        "OrderStatus": orderStatus,
-        "WorkflowStatus": workflowStatus,
+        "OrderStatus": order.orderStatus,
+        "WorkflowStatus": order.workflowStatus,
         "adminName": admin.name,
         "adminID": admin.id,
         "adminRole": admin.role,
@@ -97,7 +88,7 @@ class DataBase{
 
       DocumentReference ordersDocWorkflowRef = ordersDocRef.collection("workflow").document();
       batch.setData(ordersDocWorkflowRef, {
-        "WorkflowStatus": workflowStatus,
+        "WorkflowStatus": order.workflowStatus,
         "adminName": admin.name,
         "adminID": admin.id,
         "adminRole": admin.role,
@@ -105,6 +96,16 @@ class DataBase{
         "changeRequestDetails" : changeRequestDetails,
         "dateCreated": DateTime.now().toUtc().millisecondsSinceEpoch,
       });
+
+      // TODO: Handle when canceling order.
+      if (order.workflowStatus == WorkflowStatus.canceled){
+        final DocumentReference dateAvailabilityDoc = dateAvailabilityCollection.document("${order.visiteDateTimestamp}");
+        order.orderService.forEach((s){
+          batch.updateData(
+            dateAvailabilityDoc, 
+            <String, dynamic>{s.serviceCategoryId: FieldValue.arrayRemove([order.documentID])});
+        });
+      }
 
       return batch.commit();
   }
@@ -116,12 +117,15 @@ class DataBase{
     order.orderService.forEach((s) {
       Map<String, dynamic> serv = Map();
       serv = {
-        "IsPartNeededAvailable": s.hasParts,
+        "HasParts": s.hasParts,
         "Quantity": s.quantity,
+        "isSubMainService": s.isSubService,
+        "mainServiceID": s.mainServiceId,
         "priceForOnePiece": s.priceForOnePiece,
-        "serviceID": s.id,
+        "serviceCategoryID": s.serviceCategoryId,
         "serviceNameAr": s.nameAr,
         "serviceNameEn": s.nameEn,
+        "subMainServiceID": s.subMainServiceId,
         "totalPrice": s.total
       };
       servicesMap.add(serv);
@@ -151,7 +155,7 @@ class DataBase{
   }
 
   Future<QuerySnapshot> getServices(){
-    return servicesCollection.getDocuments();
+    return servicesCollection.orderBy("Order").getDocuments();
   }
 
   Future<DocumentSnapshot> getAdminInfo(String adminID){

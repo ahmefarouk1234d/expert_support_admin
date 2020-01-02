@@ -24,7 +24,7 @@ class OrderMainInfo extends StatelessWidget {
         hour: order.visitDateAndTime.hour, 
         minute: order.visitDateAndTime.minute).format(context)
       : DayTime().getDisplayStatus(dayTime: order.visitTime, context: context);
-
+    bool hasReminder = order.reminderOnDay || order.reminderOneHour;
     return Container(
           child: Column(
             children: <Widget>[
@@ -50,6 +50,13 @@ class OrderMainInfo extends StatelessWidget {
               OrderInfoRow(
                 title: localizations.translate(LocalizedKey.otherDetailsTitle), 
                 value: "${order.comment}",),
+              hasReminder ?
+                OrderReminderRow(
+                  title: "تذكير",
+                  isOneDayReminder: order.reminderOnDay,
+                  isOneHourReminder: order.reminderOneHour,
+                )
+                : Container()
             ],
           ),
         );
@@ -108,7 +115,7 @@ class OrderInfoMapRow extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 16),
       child: Row(
             children: <Widget>[
-              Text(title, style: TextStyle(fontWeight: FontWeight.w700),),
+              Text(title + ":", style: TextStyle(fontWeight: FontWeight.w700),),
               Container(width: 8,),
               Expanded(child: MapLauncher(latitude: latitude, logntitude: logntitude,))
             ],
@@ -161,6 +168,49 @@ class MapLauncher extends StatelessWidget {
       child: Text(
         AppLocalizations.of(context).translate(LocalizedKey.openMapsText), 
         style: TextStyle(color: Colors.blue)),
+    );
+  }
+}
+
+class OrderReminderRow extends StatelessWidget {
+  final String title;
+  final bool isOneDayReminder;
+  final bool isOneHourReminder;
+  OrderReminderRow({
+    @required this.title, 
+    @required this.isOneDayReminder, 
+    @required this.isOneHourReminder});
+
+  @override
+  Widget build(BuildContext context) {
+    final String oneDayReminderTitle = "تذكير قبل الموعد بيوم";
+    final String oneHourReminderTitle = "تذكير قبل الموعد بساعه";
+    return Container(
+      child: Row(
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(title + ":", style: TextStyle(fontWeight: FontWeight.w700),),
+              Container(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    isOneDayReminder ? 
+                      Text(oneDayReminderTitle, style: TextStyle(color: Colors.grey),)
+                      : Container(),
+                    Container(height: 8,),
+                    isOneHourReminder ? 
+                      Text(oneHourReminderTitle, style: TextStyle(color: Colors.grey),)
+                      : Container(),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

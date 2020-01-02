@@ -44,7 +44,9 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
 
   _setUp(){
     _order = widget.order;
-    _isEnabled = _order.workflowStatus == WorkflowStatus.pending || _order.workflowStatus == WorkflowStatus.requestChange;
+    _isEnabled = 
+      (_order.workflowStatus == WorkflowStatus.pending) || 
+      (_order.workflowStatus == WorkflowStatus.requestChange);
     _isViewImageEnabled = _order.imagesUrl.isNotEmpty;
     _borderColor = Colors.black;
 
@@ -61,13 +63,16 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
   _handleStatusChange(String orderStatus, String workflowStatus, AdminUserInfo admin) async{
     setState(() =>_borderColor = Colors.black);
     Common().loading(context);
-    String cancelReason = widget.controller.text.isNotEmpty ? widget.controller.text : null;
-    await _firebaseManager.updateOrderStatus(_order.documentID, orderStatus, workflowStatus, admin, 
-      cancelReason: cancelReason);
-    Common().dismiss(context);
+
     _order.orderStatus = orderStatus;
     _order.workflowStatus = workflowStatus;
     _orderBloc.ordersChange.add(_order);
+
+    String cancelReason = widget.controller.text.isNotEmpty ? widget.controller.text : null;
+    await _firebaseManager.updateOrderStatus(_order, admin, 
+      cancelReason: cancelReason);
+
+    Common().dismiss(context);
     setState(() {
       _isEnabled = false;
     });
@@ -181,7 +186,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
                     if (snapshot.hasData){
                       _showConformatiomAlert(
                         OrderStatus.canceled, 
-                        WorkflowStatus.done,
+                        WorkflowStatus.canceled,
                         AppLocalizations.of(context).translate(LocalizedKey.cancelAlertMessage), 
                         snapshot.data);
                     }

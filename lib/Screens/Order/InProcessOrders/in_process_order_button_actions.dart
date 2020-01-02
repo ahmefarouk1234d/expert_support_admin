@@ -41,7 +41,9 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
 
   _setUp(){
     _order = widget.order;
-    _isEnabled = _order.workflowStatus == WorkflowStatus.inProcess;
+    _isEnabled = 
+      (_order.workflowStatus == WorkflowStatus.inProcess) ||
+      (_order.workflowStatus == WorkflowStatus.requestChangeReply);
     _isViewImageEnabled = _order.imagesUrl.isNotEmpty;
     _borderColor = Colors.black;
   }
@@ -60,12 +62,16 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
   _handleAction({@required String orderStatus, @required String workflowStatus, @required AdminUserInfo admin}) async{
     setState(() =>_borderColor = Colors.black);
     Common().loading(context);
-    String changeRequestDeatils = widget.controller.text.isNotEmpty ? widget.controller.text : null;
-    await _firebaseManager.updateOrderStatus(_order.documentID, orderStatus, workflowStatus, admin, changeRequestDetails: changeRequestDeatils);
-    Common().dismiss(context);
+
     _order.orderStatus = orderStatus;
     _order.workflowStatus = workflowStatus;
     _orderBloc.ordersChange.add(_order);
+    
+    String changeRequestDeatils = widget.controller.text.isNotEmpty ? widget.controller.text : null;
+    await _firebaseManager.updateOrderStatus(_order, admin, changeRequestDetails: changeRequestDeatils);
+    
+    Common().dismiss(context);
+    
     setState(() {
       _isEnabled = false;
     });

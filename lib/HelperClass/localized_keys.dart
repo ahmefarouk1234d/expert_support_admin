@@ -74,9 +74,12 @@ class LocalizedKey{
   static const String offerDeactiveButtonTitle = "offer_deactive_button_title";
   static const String addOfferAppBarTitle = "add_offer_app_bar_title";
   static const String addOfferDropDownPlaceholderTitle = "add_offer_dropdown_placehoder_title";
-  static const String addOfferServiceDropDownPlaceholderTitle = "add_offer_service_dropdown_placehoder_title";
-  static const String addOfferSubServiceDropDownPlaceholderTitle = "add_offer_sub_sevice_dropdown_placehoder_title";
-  static const String addOfferSubSubServiceDropDownPlaceholderTitle = "add_offer_sub_sub_service_dropdown_placehoder_title";
+
+  static const String addOfferServiceCategoryDropDownPlaceholderTitle = "add_offer_service_category_dropdown_placehoder_title";
+  static const String addOfferServiceTypeDropDownPlaceholderTitle = "add_offer_sevice_type_dropdown_placehoder_title";
+  static const String addOfferMainServiceDropDownPlaceholderTitle = "add_offer_main_service_dropdown_placehoder_title";
+  static const String addOfferSubMainServiceDropDownPlaceholderTitle = "add_offer_sub_main_service_dropdown_placehoder_title";
+
   static const String addOdderTitleArTitle = "add_offer_title_arabic_title";
   static const String addOfferTitleEnTitle = "add_offer_title_english_title";
   static const String addOfferDescArTitle = "add_offer_desc_arabic_title";
@@ -123,9 +126,10 @@ class LocalizedKey{
   static const String editDateSaveAlertTitle = "edit_date_save_alert_message";
   static const String newServiceAppBarTitle = "new_service_app_bar_title";
   static const String newServiceAddAlertMessage = "new_service_add_alert_message";
-  static const String newServiceDropDownServicePlaceholderText = "new_service_dropdown_service_placeholder_text";
-  static const String newServiceDropDownSubServicePlaceholderText = "new_service_dropdown_subservice_placeholder_text";
-  static const String newServiceDropDownSubSubServicePlaceholderText = "new_service_dropdown_subsubservice_placeholder_text";
+  static const String newServiceDropDownServiceCategoryPlaceholderText = "new_service_dropdown_service_category_placeholder_text";
+  static const String newServiceDropDownServiceTypePlaceholderText = "new_service_dropdown_service_type_placeholder_text";
+  static const String newServiceDropDownMainServicePlaceholderText = "new_service_dropdown_mainService_placeholder_text";
+  static const String newServiceDropDownSubMainServicePlaceholderText = "new_service_dropdown_subMainService_placeholder_text";
   static const String newServicePriceForOne = "new_servive_price_for_one_title";
   static const String newSerivceAddServiceButtonTitle = "new_service_add_service_button_title";
 }

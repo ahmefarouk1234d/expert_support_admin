@@ -28,7 +28,7 @@ class UserBloc extends Validator{
   Stream<String> get role => _role.stream.transform(validateUserRole);
   Function(String) get roleChange => _role.sink.add;
 
-  Observable<bool> get isValidAddFields => Observable.combineLatest6(
+  Stream<bool> get isValidAddFields => Rx.combineLatest6(
     name, 
     email, 
     phone, 
@@ -40,7 +40,7 @@ class UserBloc extends Validator{
     }
   );
 
-  Observable<bool> get isValidUpdateFields => Observable.combineLatest4(
+  Stream<bool> get isValidUpdateFields => Rx.combineLatest4(
     name, 
     email, 
     phone, 

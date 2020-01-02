@@ -15,9 +15,7 @@ class AppBloc{
   Sink<AdminUserInfo> get adminChange => _admin.sink;
 
   Stream<QuerySnapshot> get pendingOrderDocument => _firebaseManager.getPendingOrders();
-  Stream<QuerySnapshot> get requestChangeOrderDocument => _firebaseManager.getRequestChangeOrders();
   Stream<QuerySnapshot> get inProcessOrderDocument => _firebaseManager.getInProcessOrders();
-  Stream<QuerySnapshot> get requestChangeReplyOrderDocument => _firebaseManager.getRequestChangeReplyOrders();
   Stream<QuerySnapshot> get doneOrderDocument => _firebaseManager.getDoneOrders();
   Stream<QuerySnapshot> get canceledOrderDocument => _firebaseManager.getCanceledOrders();
   Stream<QuerySnapshot> get orderDocument => _firebaseManager.getOrders();

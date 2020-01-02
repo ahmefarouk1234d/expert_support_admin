@@ -50,7 +50,7 @@ class PriceRow extends StatelessWidget {
             children: <Widget>[
               Expanded(child: Text(title, style: TextStyle(fontWeight: FontWeight.w700),),),
               Container(width: 8,),
-              Text("$price"),
+              Text("${price.toStringAsFixed(2)}"), //toStringAsFixed(2) to show two decimal point.
             ],
           ),
     );

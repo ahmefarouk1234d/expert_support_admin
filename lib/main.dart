@@ -7,7 +7,6 @@ import 'package:expert_support_admin/HelperClass/enums.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Models/code.dart';
-import 'package:expert_support_admin/Screens/Home/Offers/add_offer.dart';
 import 'package:expert_support_admin/Screens/Home/Offers/add_order_offer.dart';
 import 'package:expert_support_admin/Screens/Home/Users/add_new_user.dart';
 import 'package:expert_support_admin/Screens/Home/Users/users.dart';
@@ -86,7 +85,6 @@ class MyApp extends StatelessWidget {
             NoRoleInbox.route: (BuildContext context) => NoRoleInbox(),
             OrderDetails.route: (BuildContext context) => OrderDetails(),
             AddNewUser.route: (BuildContext context) => AddNewUser(),
-            AddOffer.route: (BuildContext context) => AddOffer(),
             AddOrderOffer.route: (BuildContext context) => AddOrderOffer(),
             Users.route: (BuildContext context) => Users(),
             ForgotPassword.route: (BuildContext context) => ForgotPassword(),

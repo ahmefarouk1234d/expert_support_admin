@@ -44,21 +44,19 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
 
-  List<Service> servicesList;
-  Service service;
-
-  List<SubService> subServicesList;
-  SubService subService;
-
-  List<SubSubService> subSubServicesList;
-  SubSubService subSubService;
+  List<ServiceCategory> serviceCategoryList;
+  List<ServiceType> serviceTypeList;
+  List<MainService> mainServiceList;
+  List<SubMainService> subMainServiceList;
 
   bool isLoading;
   OrderOfferBloc _orderOfferBloc;
+  bool hasSubService;
 
   @override
   void initState() {
-    servicesList = List();
+    serviceCategoryList = List();
+    hasSubService = false;
     _getServices();
     super.initState();
   }
@@ -68,7 +66,8 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
       QuerySnapshot querySnapshot = await FirebaseManager().getServices();
       if (querySnapshot.documents.length > 0) {
         setState(() {
-          servicesList = Service.fromListMap(docList: querySnapshot.documents);
+          serviceCategoryList =
+              ServiceCategory.fromListMap(docList: querySnapshot.documents);
           isLoading = false;
         });
       } else {
@@ -84,53 +83,79 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
     }
   }
 
-  _handleMainServiceChange(Service value) {
+  _handleServiceCategoryChange(ServiceCategory value) {
     setState(() {
-      servicesList.forEach((serv) {
-        if (value.docID == serv.docID) {
-          subServicesList = serv.subServices;
+      serviceCategoryList.forEach((servCat) {
+        if (value.id == servCat.id) {
+          serviceTypeList = servCat.serviceTypeList;
         }
       });
-      subService = null;
-      subSubServicesList = null;
+      _orderOfferBloc.serviceTypeChange(null);
+
+      _orderOfferBloc.mainServiceChange(null);
+      mainServiceList = null;
+
+      _orderOfferBloc.subMainServiceChange(null);
+      subMainServiceList = null;
     });
   }
 
-  _handleSubServiceChange(SubService value) {
+  _handleServiceTypeChange(ServiceType value) {
     setState(() {
-      subServicesList.forEach((sub) {
-        if (value.nameEn == sub.nameEn) {
-          subSubServicesList = sub.subSubServices;
+      serviceTypeList.forEach((servType) {
+        if (value.id == servType.id) {
+          mainServiceList = servType.mainServiceList;
         }
       });
-      subSubService = null;
+      _orderOfferBloc.mainServiceChange(null);
+      _orderOfferBloc.subMainServiceChange(null);
+      subMainServiceList = null;
+    });
+  }
+
+  _handleMainServiceChange(MainService value) {
+    setState(() {
+      mainServiceList.forEach((servType) {
+        if (value.id == servType.id) {
+          subMainServiceList = servType.subMainServiceList;
+        }
+      });
+      hasSubService = value.hasSub;
+      _orderOfferBloc.subMainServiceChange(null);
     });
   }
 
   _showConformatiomAlert() {
-    String message = AppLocalizations.of(context).translate(LocalizedKey.addOfferAlertMessage);
+    String message = AppLocalizations.of(context)
+        .translate(LocalizedKey.addOfferAlertMessage);
     Alert().conformation(
-        context, AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, () => _handleAddingNewOffer());
+        context,
+        AppLocalizations.of(context)
+            .translate(LocalizedKey.conformationAlertTitle),
+        message,
+        () => _handleAddingNewOffer());
   }
 
-  _navigateToOfferList(){
+  _navigateToOfferList() {
     Navigator.of(context).pop();
   }
 
-  _showCompletedAlert({String message}){
+  _showCompletedAlert({String message}) {
     Alert().success(context, message, () {
       Common().dismiss(context);
       _navigateToOfferList();
     });
   }
 
-  _handleAddingNewOffer() async{
-    try{
+  _handleAddingNewOffer() async {
+    try {
       Common().loading(context);
       await _orderOfferBloc.saveOrderOfferInfo();
       Common().dismiss(context);
-      _showCompletedAlert(message: AppLocalizations.of(context).translate(LocalizedKey.addOfferSuccessAlertMessage));
-    } on PlatformException catch(e){
+      _showCompletedAlert(
+          message: AppLocalizations.of(context)
+              .translate(LocalizedKey.addOfferSuccessAlertMessage));
+    } on PlatformException catch (e) {
       Common().dismiss(context);
       Alert().error(context, e.message, () => Common().dismiss(context));
     }
@@ -147,51 +172,72 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            StreamBuilder<Service>(
-                stream: _orderOfferBloc.service,
-                builder: (context, snapshot) {
-                  return ServiceDropDown(
-                    child: ServiceDropDownButton(
-                      serviceList: servicesList,
-                      service: snapshot.data,
-                      onChanged: (value){
-                        _orderOfferBloc.serviceChange(value);
-                        _handleMainServiceChange(value);
-                      },
-                    ),
-                  );
-                }),
+            StreamBuilder<ServiceCategory>(
+              stream: _orderOfferBloc.serviceCategory,
+              builder: (context, snapshot) {
+                return ServiceDropDown(
+                  child: ServiceCategoryDropDownButton(
+                    serviceCategoryList: serviceCategoryList,
+                    serviceCategory: snapshot.data,
+                    onChanged: (value){
+                      _handleServiceCategoryChange(value);
+                      _orderOfferBloc.serviceCategoryChange(value);
+                    },
+                  ),
+                );
+              }
+            ),
             Container(
               height: 16.0,
             ),
-            StreamBuilder<SubService>(
-                stream: _orderOfferBloc.subService,
-                builder: (context, snapshot) {
-                  return ServiceDropDown(
-                    child: SubServiceDropDownButton(
-                      subServiceList: subServicesList,
-                      subService: snapshot.data,
-                      onChanged: (value){
-                        _orderOfferBloc.subServiceChange(value);
-                        _handleSubServiceChange(value);
-                      },
-                    ),
-                  );
-                }),
+            StreamBuilder<ServiceType>(
+              stream: _orderOfferBloc.serviceType,
+              builder: (context, snapshot) {
+                return ServiceDropDown(
+                  child: ServiceTypeDropDownButton(
+                    serviceTypeList: serviceTypeList,
+                    serviceType: snapshot.data,
+                    onChanged: (value){
+                      _handleServiceTypeChange(value);
+                      _orderOfferBloc.serviceTypeChange(value);
+                    },
+                  ),
+                );
+              }
+            ),
             Container(
               height: 16.0,
             ),
-            StreamBuilder<SubSubService>(
-                stream: _orderOfferBloc.subSubService,
-                builder: (context, snapshot) {
-                  return ServiceDropDown(
-                    child: SubSubServiceDropDownButton(
-                      subSubServiceList: subSubServicesList,
-                      subSubService: snapshot.data,
-                      onChanged: _orderOfferBloc.subSubServiceChange,
-                    ),
-                  );
-                }),
+            StreamBuilder<MainService>(
+              stream: _orderOfferBloc.mainService,
+              builder: (context, snapshot) {
+                return ServiceDropDown(
+                  child: MainServiceDropDownButton(
+                    mainServiceList: mainServiceList,
+                    mainService: snapshot.data,
+                    onChanged: (value){
+                      _handleMainServiceChange(value);
+                      _orderOfferBloc.mainServiceChange(value);
+                    },
+                  ),
+                );
+              }
+            ),
+            Container(
+              height: 16.0,
+            ),
+            StreamBuilder<SubMainService>(
+              stream: _orderOfferBloc.subMainService,
+              builder: (context, snapshot) {
+                return ServiceDropDown(
+                  child: SubMainServiceDropDownButton(
+                    subMainServiceList: subMainServiceList,
+                    subMainService: snapshot.data,
+                    onChanged: _orderOfferBloc.subMainServiceChange,
+                  ),
+                );
+              }
+            ),
             Container(
               height: 16.0,
             ),
@@ -267,14 +313,16 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
               height: 16.0,
             ),
             StreamBuilder<bool>(
-                stream: _orderOfferBloc.isValidAddFields,
+                stream: hasSubService ? _orderOfferBloc.isValidAddFieldsWithSub : _orderOfferBloc.isValidAddFields,
                 builder: (context, snapshot) {
                   return CommonButton(
-                    title: AppLocalizations.of(context).translate(LocalizedKey.addOfferAddButtonTitle),
-                    onPressed: snapshot.hasData ? () => _showConformatiomAlert() : null,
+                    title: AppLocalizations.of(context)
+                        .translate(LocalizedKey.addOfferAddButtonTitle),
+                    onPressed: snapshot.hasData
+                        ? () => _showConformatiomAlert()
+                        : null,
                   );
-                }
-              ),
+                }),
           ],
         ),
       ),
@@ -390,77 +438,126 @@ class ServiceDropDown extends StatelessWidget {
           color: Colors.transparent,
           border: Border.all(color: Colors.black, width: 2),
         ),
-        child: DropdownButtonHideUnderline(
-          child: child
-        ));
+        child: DropdownButtonHideUnderline(child: child));
   }
 }
 
-class ServiceDropDownButton extends StatelessWidget {
-  final List<Service> serviceList;
-  final Service service;
-  final Function(Service) onChanged;
-  ServiceDropDownButton({@required this.serviceList, this.service, @required this.onChanged});
+class ServiceCategoryDropDownButton extends StatelessWidget {
+  final List<ServiceCategory> serviceCategoryList;
+  final ServiceCategory serviceCategory;
+  final Function(ServiceCategory) onChanged;
+  ServiceCategoryDropDownButton(
+      {@required this.serviceCategoryList,
+      this.serviceCategory,
+      @required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     final bool isArabic = AppLocalizations.of(context).isArabic();
     return DropdownButton(
-      hint: Text(AppLocalizations.of(context).translate(LocalizedKey.addOfferServiceDropDownPlaceholderTitle)),
-      value: service,
+      hint: Text(AppLocalizations.of(context).translate(
+          LocalizedKey.addOfferServiceCategoryDropDownPlaceholderTitle)),
+      value: serviceCategory,
       isExpanded: true,
       onChanged: onChanged,
-      items: serviceList == null || serviceList.isEmpty 
-        ? null 
-        : serviceList.map((serv) => DropdownMenuItem(
-          child: Text(isArabic ? serv.nameAr : serv.nameEn),
-          value: serv,)).toList(),
+      items: serviceCategoryList == null || serviceCategoryList.isEmpty
+          ? null
+          : serviceCategoryList
+              .map((serv) => DropdownMenuItem(
+                    child: Text(isArabic ? serv.nameAr : serv.nameEn),
+                    value: serv,
+                  ))
+              .toList(),
     );
   }
 }
 
-class SubServiceDropDownButton extends StatelessWidget {
-  final List<SubService> subServiceList;
-  final SubService subService;
-  final Function(SubService) onChanged;
-  SubServiceDropDownButton({@required this.subServiceList, this.subService, @required this.onChanged});
+class ServiceTypeDropDownButton extends StatelessWidget {
+  final List<ServiceType> serviceTypeList;
+  final ServiceType serviceType;
+  final Function(ServiceType) onChanged;
+  ServiceTypeDropDownButton(
+      {@required this.serviceTypeList,
+      this.serviceType,
+      @required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     final bool isArabic = AppLocalizations.of(context).isArabic();
     return DropdownButton(
-      hint: Text(AppLocalizations.of(context).translate(LocalizedKey.addOfferSubServiceDropDownPlaceholderTitle)),
-      value: subService,
+      hint: Text(AppLocalizations.of(context)
+          .translate(LocalizedKey.addOfferServiceTypeDropDownPlaceholderTitle)),
+      value: serviceType,
       isExpanded: true,
       onChanged: onChanged,
-      items: subServiceList == null || subServiceList.isEmpty 
-        ? null 
-        : subServiceList.map((serv) => DropdownMenuItem(
-          child: Text(isArabic ? serv.nameAr : serv.nameEn),
-          value: serv,)).toList(),
+      items: serviceTypeList == null || serviceTypeList.isEmpty
+          ? null
+          : serviceTypeList
+              .map((serv) => DropdownMenuItem(
+                    child: Text(isArabic ? serv.nameAr : serv.nameEn),
+                    value: serv,
+                  ))
+              .toList(),
     );
   }
 }
 
-class SubSubServiceDropDownButton extends StatelessWidget {
-  final List<SubSubService> subSubServiceList;
-  final SubSubService subSubService;
-  final Function(SubSubService) onChanged;
-  SubSubServiceDropDownButton({@required this.subSubServiceList, this.subSubService, @required this.onChanged});
+class MainServiceDropDownButton extends StatelessWidget {
+  final List<MainService> mainServiceList;
+  final MainService mainService;
+  final Function(MainService) onChanged;
+  MainServiceDropDownButton(
+      {@required this.mainServiceList,
+      this.mainService,
+      @required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     final bool isArabic = AppLocalizations.of(context).isArabic();
     return DropdownButton(
-      hint: Text(AppLocalizations.of(context).translate(LocalizedKey.addOfferSubSubServiceDropDownPlaceholderTitle)),
-      value: subSubService,
+      hint: Text(AppLocalizations.of(context)
+          .translate(LocalizedKey.addOfferMainServiceDropDownPlaceholderTitle)),
+      value: mainService,
       isExpanded: true,
       onChanged: onChanged,
-      items: subSubServiceList == null || subSubServiceList.isEmpty 
-        ? null 
-        : subSubServiceList.map((serv) => DropdownMenuItem(
-          child: Text(isArabic ? serv.nameAr : serv.nameEn),
-          value: serv,)).toList(),
+      items: mainServiceList == null || mainServiceList.isEmpty
+          ? null
+          : mainServiceList
+              .map((serv) => DropdownMenuItem(
+                    child: Text(isArabic ? serv.nameAr : serv.nameEn),
+                    value: serv,
+                  ))
+              .toList(),
+    );
+  }
+}
+
+class SubMainServiceDropDownButton extends StatelessWidget {
+  final List<SubMainService> subMainServiceList;
+  final SubMainService subMainService;
+  final Function(SubMainService) onChanged;
+  SubMainServiceDropDownButton(
+      {@required this.subMainServiceList,
+      this.subMainService,
+      @required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isArabic = AppLocalizations.of(context).isArabic();
+    return DropdownButton(
+      hint: Text(AppLocalizations.of(context).translate(
+          LocalizedKey.addOfferSubMainServiceDropDownPlaceholderTitle)),
+      value: subMainService,
+      isExpanded: true,
+      onChanged: onChanged,
+      items: subMainServiceList == null || subMainServiceList.isEmpty
+          ? null
+          : subMainServiceList
+              .map((serv) => DropdownMenuItem(
+                    child: Text(isArabic ? serv.nameAr : serv.nameEn),
+                    value: serv,
+                  ))
+              .toList(),
     );
   }
 }

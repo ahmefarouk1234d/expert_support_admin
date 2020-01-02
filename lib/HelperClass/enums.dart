@@ -10,3 +10,11 @@ enum AuthStatus{
   signedIn,
   notSingedIn
 }
+
+enum OrderToDisplay{
+  pending,
+  inProcess,
+  done,
+  canceled,
+  all
+}

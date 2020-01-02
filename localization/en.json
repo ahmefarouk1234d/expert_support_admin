@@ -74,9 +74,12 @@
     "offer_deactive_button_title": "DEACTIVE",
     "add_offer_app_bar_title": "Add new offer",
     "add_offer_dropdown_placehoder_title": "Select service",
-    "add_offer_service_dropdown_placehoder_title": "Select service",
-    "add_offer_sub_sevice_dropdown_placehoder_title": "Select sub service",
-    "add_offer_sub_sub_service_dropdown_placehoder_title": "Select sub sub service",
+
+    "add_offer_service_category_dropdown_placehoder_title": "Select service category",
+    "add_offer_sevice_type_dropdown_placehoder_title": "Select service type",
+    "add_offer_main_service_dropdown_placehoder_title": "Select main service",
+    "add_offer_sub_main_service_dropdown_placehoder_title": "Select sub main service",
+
     "add_offer_title_arabic_title": "Title Arabic",
     "add_offer_title_english_title": "Title English",
     "add_offer_desc_arabic_title": "Description Arabic",
@@ -123,9 +126,10 @@
     "edit_date_save_alert_message": "Are are sure you want to save the changes?",
     "new_service_app_bar_title": "New Service",
     "new_service_add_alert_message": "Are are sure you want to add new service?",
-    "new_service_dropdown_service_placeholder_text": "Select service",
-    "new_service_dropdown_subservice_placeholder_text": "Select sub service",
-    "new_service_dropdown_subsubservice_placeholder_text": "Select sub sub service",
+    "new_service_dropdown_service_category_placeholder_text": "Select service category",
+    "new_service_dropdown_service_type_placeholder_text": "Select service type",
+    "new_service_dropdown_mainService_placeholder_text": "Select service",
+    "new_service_dropdown_subMainService_placeholder_text": "Select sub service",
     "new_servive_price_for_one_title": "Price for one",
     "new_service_add_service_button_title": "ADD SERVICE"
 }

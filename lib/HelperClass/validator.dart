@@ -117,32 +117,42 @@ class Validator{
     }
   );
 
-  final validateService = StreamTransformer<Service, Service>.fromHandlers(
-    handleData: (service, sink){
-      if(service == null){
-        sink.addError("Service should not be empty");
+  final validateServiceCategory = StreamTransformer<ServiceCategory, ServiceCategory>.fromHandlers(
+    handleData: (serviceCategory, sink){
+      if(serviceCategory == null){
+        sink.addError("service category should not be empty");
       } else {
-        sink.add(service);
+        sink.add(serviceCategory);
       }
     }
   );
 
-  final validateSubService = StreamTransformer<SubService, SubService>.fromHandlers(
-    handleData: (subService, sink){
-      if(subService == null){
-        sink.addError("Service should not be empty");
+  final validateServiceType = StreamTransformer<ServiceType, ServiceType>.fromHandlers(
+    handleData: (serviceType, sink){
+      if(serviceType == null){
+        sink.addError("Service type should not be empty");
       } else {
-        sink.add(subService);
+        sink.add(serviceType);
       }
     }
   );
 
-  final validateSubSubService = StreamTransformer<SubSubService, SubSubService>.fromHandlers(
-    handleData: (subSubService, sink){
-      if(subSubService == null){
-        sink.addError("Service should not be empty");
+  final validateMainService = StreamTransformer<MainService, MainService>.fromHandlers(
+    handleData: (mainService, sink){
+      if(mainService == null){
+        sink.addError("Main service should not be empty");
       } else {
-        sink.add(subSubService);
+        sink.add(mainService);
+      }
+    }
+  );
+
+  final validateSubMainService = StreamTransformer<SubMainService, SubMainService>.fromHandlers(
+    handleData: (subMainService, sink){
+      if(subMainService == null){
+        sink.addError("Sub main service should not be empty");
+      } else {
+        sink.add(subMainService);
       }
     }
   );

@@ -61,16 +61,8 @@ class FirebaseManager{
     return _db.getPendingOrders();
   }
 
-  Stream<QuerySnapshot> getRequestChangeOrders(){
-    return _db.getRequestChangeOrders();
-  }
-
   Stream<QuerySnapshot> getInProcessOrders(){
     return _db.getInProcessOrders();
-  }
-
-  Stream<QuerySnapshot> getRequestChangeReplyOrders(){
-    return _db.getRequestChangeReplyOrders();
   }
 
   Stream<QuerySnapshot> getDoneOrders(){
@@ -85,9 +77,9 @@ class FirebaseManager{
     return _db.getOrders();
   }
 
-  Future<void> updateOrderStatus(String id, String orderStatus, String workflowStatus, AdminUserInfo admin, {String cancelReason,
+  Future<void> updateOrderStatus(OrderInfo order, AdminUserInfo admin, {String cancelReason,
     String changeRequestDetails}){
-    return _db.updateOrderStatus(id, orderStatus, workflowStatus, admin, cancelReason: cancelReason, changeRequestDetails: changeRequestDetails);
+    return _db.updateOrderStatus(order, admin, cancelReason: cancelReason, changeRequestDetails: changeRequestDetails);
   }
 
   Future<void> updateServices(OrderInfo order, String docId){

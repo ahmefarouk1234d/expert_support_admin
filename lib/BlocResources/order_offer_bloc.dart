@@ -5,9 +5,10 @@ import 'package:expert_support_admin/Models/service_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 class OrderOfferBloc extends Validator{
-  final _service = BehaviorSubject<Service>();
-  final _subService = BehaviorSubject<SubService>();
-  final _subSubService = BehaviorSubject<SubSubService>();
+  final _serviceCategoty = BehaviorSubject<ServiceCategory>();
+  final _serviceType = BehaviorSubject<ServiceType>();
+  final _mainService = BehaviorSubject<MainService>();
+  final _subMainService = BehaviorSubject<SubMainService>();
   final _titleAr = BehaviorSubject<String>();
   final _titleEn = BehaviorSubject<String>();
   final _descAr = BehaviorSubject<String>();
@@ -16,12 +17,14 @@ class OrderOfferBloc extends Validator{
   final _quantity = BehaviorSubject<String>();
   FirebaseManager _firebaseManager = FirebaseManager();
 
-  Stream<Service> get service => _service.stream.transform(validateService);
-  Function(Service) get serviceChange => _service.sink.add;
-  Stream<SubService> get subService => _subService.stream.transform(validateSubService);
-  Function(SubService) get subServiceChange => _subService.sink.add;
-  Stream<SubSubService> get subSubService => _subSubService.stream.transform(validateSubSubService);
-  Function(SubSubService) get subSubServiceChange => _subSubService.sink.add;
+  Stream<ServiceCategory> get serviceCategory => _serviceCategoty.stream.transform(validateServiceCategory);
+  Function(ServiceCategory) get serviceCategoryChange => _serviceCategoty.sink.add;
+  Stream<ServiceType> get serviceType => _serviceType.stream.transform(validateServiceType);
+  Function(ServiceType) get serviceTypeChange => _serviceType.sink.add;
+  Stream<MainService> get mainService => _mainService.stream.transform(validateMainService);
+  Function(MainService) get mainServiceChange => _mainService.sink.add;
+  Stream<SubMainService> get subMainService => _subMainService.stream.transform(validateSubMainService);
+  Function(SubMainService) get subMainServiceChange => _subMainService.sink.add;
   Stream<String> get offerTitleAr => _titleAr.stream.transform(validateTextField);
   Function(String) get offerTitleArChange => _titleAr.sink.add;
   Stream<String> get offerTitleEn => _titleEn.stream.transform(validateTextField);
@@ -35,17 +38,29 @@ class OrderOfferBloc extends Validator{
   Stream<String> get quantity => _quantity.stream.transform(validateNumberTextField);
   Function(String) get quantityChange => _quantity.sink.add;
 
-  Observable<bool> get isValidAddFields => Observable.combineLatest9(
-    service,
-    subService,
-    subSubService,
+  Stream<bool> get isValidAddFields => Rx.combineLatest7(
+    mainService,
     offerTitleAr, 
     offerTitleEn, 
     offerDescAr,
     offerDescEn,
     price,
     quantity,
-    (s, ss, sss, tr, te, da, de, p, q) {
+    (s, tr, te, da, de, p, q) {
+      return true;
+    }
+  );
+
+  Stream<bool> get isValidAddFieldsWithSub => Rx.combineLatest8(
+    mainService,
+    subMainService,
+    offerTitleAr, 
+    offerTitleEn, 
+    offerDescAr,
+    offerDescEn,
+    price,
+    quantity,
+    (s, ss, tr, te, da, de, p, q) {
       return true;
     }
   );
@@ -55,9 +70,10 @@ class OrderOfferBloc extends Validator{
     var qauntity = int.parse(_quantity.value);
 
     OrderOfferInfo offerInfo = OrderOfferInfo(
-      servID: _service.value.docID,
-      subServID: _subService.value.id,
-      orderServID: _subSubService.value.id,
+      serviceCategoryID: _serviceCategoty.value.id,
+      serviceTypeID: _serviceType.value.id,
+      mainServiceID: _mainService.value.id,
+      subMainServiceID: _subMainService.value == null ? "" : _subMainService.value.id,
       titleAr: _titleAr.value,
       titleEn: _titleEn.value,
       descAr: _descAr.value,
@@ -70,9 +86,10 @@ class OrderOfferBloc extends Validator{
   }
 
   void dispose(){
-    _service.close();
-    _subService.close();
-    _subSubService.close();
+    _serviceCategoty.close();
+    _serviceType.close();
+    _mainService.close();
+    _subMainService.close();
     _titleAr.close();
     _titleEn.close();
     _descAr.close();

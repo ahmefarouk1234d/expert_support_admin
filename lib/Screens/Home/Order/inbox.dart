@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expert_support_admin/BlocResources/app_bloc.dart';
 import 'package:expert_support_admin/BlocResources/base_provider.dart';
+import 'package:expert_support_admin/HelperClass/enums.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/Models/status.dart';
 import 'package:expert_support_admin/Screens/Home/Order/details.dart';
@@ -11,18 +12,20 @@ import 'package:flutter/material.dart';
 
 class OrderInbox extends StatelessWidget {
   static const route = "/OrderInbox";
-  final String workflowStatus;
-  OrderInbox({this.workflowStatus});
+  final OrderToDisplay orderToDisplay;
+  OrderInbox({this.orderToDisplay});
 
   @override
   Widget build(BuildContext context) {
-    return OrdersList(workflowStatus: workflowStatus,);
+    return OrdersList(
+      orderToDisplay: orderToDisplay,
+    );
   }
 }
 
 class OrdersList extends StatefulWidget {
-  final String workflowStatus;
-  OrdersList({this.workflowStatus});
+  final OrderToDisplay orderToDisplay;
+  OrdersList({this.orderToDisplay});
 
   @override
   _OrdersListState createState() => _OrdersListState();
@@ -31,7 +34,6 @@ class OrdersList extends StatefulWidget {
 class _OrdersListState extends State<OrdersList> {
   List<OrderInfo> orderList;
   AppBloc _appBloc;
-  String workflowStatus;
 
   @override
   void initState() {
@@ -39,33 +41,32 @@ class _OrdersListState extends State<OrdersList> {
     super.initState();
   }
 
-  _navigateToOrderDetails(OrderInfo order, int index){
+  _navigateToOrderDetails(OrderInfo order, int index) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => OrderDetails(order: order, index: index, workflowStatus: widget.workflowStatus,)));
+        builder: (context) => OrderDetails(
+              order: order,
+              index: index,
+              orderToDisplay: widget.orderToDisplay,
+            )));
   }
 
-  Stream<QuerySnapshot> getOrderDoc(){
+  Stream<QuerySnapshot> getOrderDocStream() {
     Stream<QuerySnapshot> orderStream;
-    switch(widget.workflowStatus){
-      case WorkflowStatus.pending: 
+    switch (widget.orderToDisplay) {
+      //Getting all pending and change request orders
+      case OrderToDisplay.pending:
         orderStream = _appBloc.pendingOrderDocument;
         break;
-      case WorkflowStatus.requestChange: 
-        orderStream = _appBloc.requestChangeOrderDocument;
-        break;
-      case WorkflowStatus.inProcess: 
+      case OrderToDisplay.inProcess:
         orderStream = _appBloc.inProcessOrderDocument;
         break;
-      case WorkflowStatus.requestChangeReply: 
-        orderStream = _appBloc.requestChangeReplyOrderDocument;
-        break;
-      case WorkflowStatus.done: 
+      case OrderToDisplay.done:
         orderStream = _appBloc.doneOrderDocument;
         break;
-      case WorkflowStatus.canceled: 
+      case OrderToDisplay.canceled:
         orderStream = _appBloc.canceledOrderDocument;
         break;
-      case WorkflowStatus.unknown:
+      case OrderToDisplay.all:
         orderStream = _appBloc.orderDocument;
     }
     return orderStream;
@@ -75,19 +76,24 @@ class _OrdersListState extends State<OrdersList> {
   Widget build(BuildContext context) {
     _appBloc = Provider.of<AppBloc>(context);
     return StreamBuilder<QuerySnapshot>(
-      stream: getOrderDoc(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Loading();
-        } 
-        orderList = OrderInfo.fromMapList(orderDocDataList: snapshot.data.documents);
-        return orderList.isEmpty 
-          ? NoData() 
-          : OrderList(
-              orders: orderList.reversed.toList(), 
-              onTap: _navigateToOrderDetails,
-            );
-      }
-    );
+        stream: getOrderDocStream(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return NoData();
+            default:
+              if (!snapshot.hasData) {
+                Loading();
+              }
+              orderList = OrderInfo.fromMapList(
+                  orderDocDataList: snapshot.data.documents);
+              return orderList.isEmpty
+                  ? NoData()
+                  : OrderList(
+                      orders: orderList.reversed.toList(),
+                      onTap: _navigateToOrderDetails,
+                    );
+          }
+        });
   }
 }

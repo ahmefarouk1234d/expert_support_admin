@@ -9,7 +9,7 @@ class ChangePasswordBloc extends Validator{
   Stream<String> get newPassword => _newPassword.stream.transform(validatePassword);
   Function(String) get newPasswordChange => _newPassword.sink.add;
 
-  Observable<bool> get isValidField => newPassword.map((newPassword) => true);
+  Stream<bool> get isValidField => newPassword.map((newPassword) => true);
 
   Future<void> changePassword(Function() onSuccess, Function(String) onError){
     return _firebaseManager.changePassword(_newPassword.value, onSuccess, onError);

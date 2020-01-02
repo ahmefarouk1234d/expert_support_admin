@@ -78,6 +78,7 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
                       child: Text(
                         serviceName, 
                         style: TextStyle(fontSize: Screen.fontSize(size: 18))),),
+                    Container(width: 8,),
                     Container(
                       height: Screen.screenWidth * 0.10,
                       width: Screen.screenWidth * 0.16,

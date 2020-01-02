@@ -1,9 +1,9 @@
 import 'package:expert_support_admin/HelperClass/app_localizations.dart';
+import 'package:expert_support_admin/HelperClass/enums.dart';
 import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/string.dart';
 import 'package:expert_support_admin/Models/admin_role.dart';
 import 'package:expert_support_admin/Models/status.dart';
-import 'package:expert_support_admin/Screens/Home/Offers/offers.dart';
 import 'package:expert_support_admin/Screens/Home/Offers/order_offers.dart';
 import 'package:expert_support_admin/Screens/Home/Order/inbox.dart';
 import 'package:expert_support_admin/Screens/Home/Password/change_password.dart';
@@ -68,17 +68,11 @@ class MenuList {
       NavWidget(
           title: pendingTitle,
           widget: OrderInbox(
-            workflowStatus: WorkflowStatus.pending,
-          )),
-      NavWidget(
-          title: changeRequestTitle,
-          widget: OrderInbox(
-            workflowStatus: WorkflowStatus.requestChange,
+            orderToDisplay: OrderToDisplay.pending,
           )),
       NavWidget(title: changePasswordTitle, widget: ChangePassword()),
     ], menuList: [
       pendingTitle,
-      changeRequestTitle,
       changePasswordTitle,
       signOutTitle
     ]);
@@ -90,18 +84,12 @@ class MenuList {
       NavWidget(
           title: ordersTitle,
           widget: OrderInbox(
-            workflowStatus: WorkflowStatus.inProcess,
-          )),
-      NavWidget(
-          title: changeRequestReplyTitle,
-          widget: OrderInbox(
-            workflowStatus: WorkflowStatus.requestChangeReply,
+            orderToDisplay: OrderToDisplay.inProcess,
           )),
       NavWidget(
           title: changePasswordTitle, widget: ChangePassword()),
     ], menuList: [
-      ordersTitle,
-      changeRequestReplyTitle,
+      inProcessTitle,
       changePasswordTitle,
       signOutTitle
     ]);
@@ -113,7 +101,7 @@ class MenuList {
       NavWidget(
           title: ordersTitle,
           widget: OrderInbox(
-            workflowStatus: WorkflowStatus.done,
+            orderToDisplay: OrderToDisplay.done,
           )),
       NavWidget(
           title: changePasswordTitle, widget: ChangePassword()),
@@ -130,41 +118,29 @@ class MenuList {
       NavWidget(
           title: pendingTitle,
           widget: OrderInbox(
-            workflowStatus: WorkflowStatus.pending,
-          )),
-      NavWidget(
-          title: changeRequestTitle,
-          widget: OrderInbox(
-            workflowStatus: WorkflowStatus.requestChange,
+            orderToDisplay: OrderToDisplay.pending,
           )),
       NavWidget(
           title: inProcessTitle,
           widget: OrderInbox(
-            workflowStatus: WorkflowStatus.inProcess,
-          )),
-      NavWidget(
-          title: changeRequestReplyTitle,
-          widget: OrderInbox(
-            workflowStatus: WorkflowStatus.requestChangeReply,
+            orderToDisplay: OrderToDisplay.inProcess,
           )),
       NavWidget(
           title: doneTitle,
           widget: OrderInbox(
-            workflowStatus: WorkflowStatus.done,
+            orderToDisplay: OrderToDisplay.done,
           )),
       NavWidget(
           title: cancelTitle,
           widget: OrderInbox(
-            workflowStatus: WorkflowStatus.canceled,
+            orderToDisplay: OrderToDisplay.canceled,
           )),
       NavWidget(title: offersTitle, widget: OrderOffer()),
       NavWidget(
           title: changePasswordTitle, widget: ChangePassword()),
     ], menuList: [
       pendingTitle,
-      changeRequestTitle,
       inProcessTitle,
-      changeRequestReplyTitle,
       doneTitle,
       cancelTitle,
       offersTitle,
@@ -179,7 +155,7 @@ class MenuList {
       NavWidget(
           title: ordersTitle,
           widget: OrderInbox(
-            workflowStatus: WorkflowStatus.unknown,
+            orderToDisplay: OrderToDisplay.all,
           )),
       NavWidget(title: offersTitle, widget: OrderOffer()),
       NavWidget(title: usersTitle, widget: Users()),

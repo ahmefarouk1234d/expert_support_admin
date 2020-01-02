@@ -10,7 +10,7 @@ class LoginServicesBloc extends Validator{
   Stream<String> get email => _email.stream.transform(validateEmail);
   Function(String) get emailChange => _email.sink.add;
 
-  Observable<bool> get isValidField => email.map((newPassword) => true);
+  Stream<bool> get isValidField => email.map((newPassword) => true);
 
   Future<void> resetPassword(Function() onSuccess, Function(String) onError){
     return _firebaseManager.resetPassword(_email.value, onSuccess, onError);

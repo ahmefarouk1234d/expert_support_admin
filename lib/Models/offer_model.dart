@@ -3,7 +3,10 @@ import 'package:expert_support_admin/HelperClass/date_common.dart';
 
 class OfferInfo{
   String offerID;
-  String servID;
+  String serviceCategoryID;
+  String serviceTypeID;
+  String mainServiceID;
+  String subMainServiceID;
   String servNameAr;
   String servNameEn;
   String offerTitleAr;
@@ -20,7 +23,7 @@ class OfferInfo{
   num startDate;
   num endDate;
 
-  OfferInfo({this.servID, this.offerID, this.servNameAr, this.servNameEn, this.offerTitleAr, this.offerTitleEn, this.offerDescAr, this.offerDescEn, this.price, this.qauntity, this.dateCreate, this.dateUpdate, this.startDate, this.endDate, this.isActive});
+  OfferInfo({this.serviceCategoryID, this.serviceTypeID, this.mainServiceID, this.subMainServiceID, this.offerID, this.servNameAr, this.servNameEn, this.offerTitleAr, this.offerTitleEn, this.offerDescAr, this.offerDescEn, this.price, this.qauntity, this.dateCreate, this.dateUpdate, this.startDate, this.endDate, this.isActive});
 
   //DateConvert().toStringFromTimestamp(timestamp: dateCreated)
 
@@ -30,7 +33,10 @@ class OfferInfo{
     num dateUpdate = offerData["dateUpdate"];
 
     this.offerID = offerDocData.documentID;
-    this.servID = offerData["serviceID"];
+    this.serviceCategoryID = offerData["serviceCategoryID"];
+    this.serviceTypeID = offerData["serviceTypeID"];
+    this.mainServiceID = offerData["mainServiceID"];
+    this.subMainServiceID = offerData["subMainServiceID"];
     this.servNameAr = offerData["serviceNameAr"];
     this.servNameEn = offerData["serviceNameEn"];
     this.offerTitleAr = offerData["offerTitleAr"];
@@ -62,7 +68,10 @@ class OfferInfo{
 
   Map<String, dynamic> toMapOnCreate(OfferInfo offer){
     return {
-      "serviceID" : offer.servID,
+      "serviceCategoryID" : offer.serviceCategoryID,
+      "serviceTypeID" : offer.serviceTypeID,
+      "mainServiceID" : offer.mainServiceID,
+      "subMainServiceID" : offer.subMainServiceID,
       "serviceNameAr" : offer.servNameAr,
       "serviceNameEn" : offer.servNameEn,
       "offerTitleAr" : offer.offerTitleAr,
@@ -106,9 +115,10 @@ class OfferInfo{
 
 class OrderOfferInfo{
   String id;
-  String servID;
-  String subServID;
-  String orderServID;
+  String serviceCategoryID;
+  String serviceTypeID;
+  String mainServiceID;
+  String subMainServiceID;
   String titleAr;
   String titleEn;
   String descAr;
@@ -124,7 +134,7 @@ class OrderOfferInfo{
   num endDate;
 
   OrderOfferInfo({
-    this.dateUpdateTimestamp, this.titleAr, this.dateCreate, this.dateCreateTimestamp, this.dateUpdate, this.endDate, this.isActive, this.descAr, this.descEn, this.id, this.titleEn, this.orderServID, this.priceForOne, this.qauntity, this.servID, this.startDate, this.subServID
+    this.dateUpdateTimestamp, this.titleAr, this.dateCreate, this.dateCreateTimestamp, this.dateUpdate, this.endDate, this.isActive, this.descAr, this.descEn, this.id, this.titleEn, this.priceForOne, this.qauntity, this.startDate, this.serviceCategoryID, this.serviceTypeID, this.mainServiceID, this.subMainServiceID
   });
 
   _fromMapToObject(DocumentSnapshot offerDocData){
@@ -133,9 +143,10 @@ class OrderOfferInfo{
     num dateUpdate = offerData["dateUpdate"];
 
     this.id = offerDocData.documentID;
-    this.servID = offerData["serviceID"];
-    this.subServID = offerData["subServiceID"];
-    this.orderServID = offerData["orderServiceID"];
+    this.serviceCategoryID = offerData["serviceCategoryID"];
+    this.serviceTypeID = offerData["serviceTypeID"];
+    this.mainServiceID = offerData["mainServiceID"];
+    this.subMainServiceID = offerData["subMainServiceID"];
     this.titleAr = offerData["offerTitleAr"];
     this.titleEn = offerData["offerTitleEn"];
     this.descAr = offerData["offerDescAr"];
@@ -165,9 +176,10 @@ class OrderOfferInfo{
 
   Map<String, dynamic> toMapOnCreate(OrderOfferInfo offer){
     return {
-      "serviceID" : offer.servID,
-      "subServiceID": offer.subServID,
-      "orderServiceID" : offer.orderServID,
+      "serviceCategoryID" : offer.serviceCategoryID,
+      "serviceTypeID": offer.serviceTypeID,
+      "mainServiceID" : offer.mainServiceID,
+      "subMainServiceID" : offer.subMainServiceID,
       "offerTitleAr" : offer.titleAr,
       "offerTitleEn" : offer.titleEn,
       "offerDescAr" : offer.descAr,
