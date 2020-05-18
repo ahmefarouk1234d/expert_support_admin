@@ -7,6 +7,7 @@ import 'package:expert_support_admin/HelperClass/enums.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Models/code.dart';
+import 'package:expert_support_admin/Screens/Home/Discount/add_discount.dart';
 import 'package:expert_support_admin/Screens/Home/Offers/add_order_offer.dart';
 import 'package:expert_support_admin/Screens/Home/Users/add_new_user.dart';
 import 'package:expert_support_admin/Screens/Home/Users/users.dart';
@@ -90,6 +91,7 @@ class MyApp extends StatelessWidget {
             ForgotPassword.route: (BuildContext context) => ForgotPassword(),
             SendVerificationEmail.route: (BuildContext context) =>
                 SendVerificationEmail(),
+            AddDiscount.route: (BuildContext context) => AddDiscount(),
           },
         ));
   }

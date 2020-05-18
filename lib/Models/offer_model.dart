@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expert_support_admin/HelperClass/date_common.dart';
+import 'package:expert_support_admin/Models/offer_status.dart';
 
 class OfferInfo{
   String offerID;
@@ -129,37 +130,39 @@ class OrderOfferInfo{
   num dateCreateTimestamp;
   String dateUpdate;
   num dateUpdateTimestamp;
-  bool isActive;
+  String status;
   num startDate;
   num endDate;
+  num originalPrice;
 
   OrderOfferInfo({
-    this.dateUpdateTimestamp, this.titleAr, this.dateCreate, this.dateCreateTimestamp, this.dateUpdate, this.endDate, this.isActive, this.descAr, this.descEn, this.id, this.titleEn, this.priceForOne, this.qauntity, this.startDate, this.serviceCategoryID, this.serviceTypeID, this.mainServiceID, this.subMainServiceID
+    this.dateUpdateTimestamp, this.titleAr, this.dateCreate, this.dateCreateTimestamp, this.dateUpdate, this.endDate, this.status, this.descAr, this.descEn, this.id, this.titleEn, this.priceForOne, this.qauntity, this.startDate, this.serviceCategoryID, this.serviceTypeID, this.mainServiceID, this.subMainServiceID, this.originalPrice
   });
 
   _fromMapToObject(DocumentSnapshot offerDocData){
     Map<String, dynamic> offerData = offerDocData.data;
-    num dateCreate = offerData["dateCreate"];
-    num dateUpdate = offerData["dateUpdate"];
+    num dateCreate = offerData["date_create"];
+    num dateUpdate = offerData["date_update"];
 
     this.id = offerDocData.documentID;
-    this.serviceCategoryID = offerData["serviceCategoryID"];
-    this.serviceTypeID = offerData["serviceTypeID"];
-    this.mainServiceID = offerData["mainServiceID"];
-    this.subMainServiceID = offerData["subMainServiceID"];
-    this.titleAr = offerData["offerTitleAr"];
-    this.titleEn = offerData["offerTitleEn"];
-    this.descAr = offerData["offerDescAr"];
-    this.descEn = offerData["offerDescEn"];
+    this.serviceCategoryID = offerData["service_category_id"];
+    this.serviceTypeID = offerData["service_type_id"];
+    this.mainServiceID = offerData["main_service_id"];
+    this.subMainServiceID = offerData["sub_main_service_id"];
+    this.titleAr = offerData["offer_title_ar"];
+    this.titleEn = offerData["offer_title_en"];
+    this.descAr = offerData["offer_desc_ar"];
+    this.descEn = offerData["offer_desc_en"];
     this.priceForOne = offerData["price"];
     this.qauntity = offerData["qauntity"];
     this.dateCreate = DateConvert().toStringFromTimestamp(timestamp: dateCreate);
     this.dateCreateTimestamp = dateCreate;
     this.dateUpdate = DateConvert().toStringFromTimestamp(timestamp: dateUpdate);
     this.dateUpdateTimestamp = dateUpdate;
-    this.isActive = offerData["isActive"];
-    this.startDate = offerData["startDate"];
-    this.endDate = offerData["endDate"];
+    this.status = offerData["status"];
+    this.startDate = offerData["start_date"];
+    this.endDate = offerData["end_date"];
+    this.originalPrice = offerData["original_price"];
   }
 
   OrderOfferInfo.fromMap(DocumentSnapshot offerDocData){
@@ -176,45 +179,46 @@ class OrderOfferInfo{
 
   Map<String, dynamic> toMapOnCreate(OrderOfferInfo offer){
     return {
-      "serviceCategoryID" : offer.serviceCategoryID,
-      "serviceTypeID": offer.serviceTypeID,
-      "mainServiceID" : offer.mainServiceID,
-      "subMainServiceID" : offer.subMainServiceID,
-      "offerTitleAr" : offer.titleAr,
-      "offerTitleEn" : offer.titleEn,
-      "offerDescAr" : offer.descAr,
-      "offerDescEn" : offer.descEn,
+      "service_category_id" : offer.serviceCategoryID,
+      "service_type_id": offer.serviceTypeID,
+      "main_service_id" : offer.mainServiceID,
+      "sub_main_service_id" : offer.subMainServiceID,
+      "offer_title_ar" : offer.titleAr,
+      "offer_title_en" : offer.titleEn,
+      "offer_desc_ar" : offer.descAr,
+      "offer_desc_en" : offer.descEn,
       "price" : offer.priceForOne,
       "qauntity" : offer.qauntity,
-      "dateCreate" : DateTime.now().toUtc().millisecondsSinceEpoch,
-      "dateUpdate" : DateTime.now().toUtc().millisecondsSinceEpoch,
-      "isActive" : true,
-      "startDate" : offer.startDate ?? 0,
-      "endDate" : offer.endDate ?? 0,
+      "date_create" : DateTime.now().toUtc().millisecondsSinceEpoch,
+      "date_update" : DateTime.now().toUtc().millisecondsSinceEpoch,
+      "status" : OfferStatus.active,
+      "start_date" : offer.startDate ?? 0,
+      "end_date" : offer.endDate ?? 0,
+      "original_price": offer.originalPrice
     };
   }
 
   Map<String, dynamic> toMapOnUpdateAll(OrderOfferInfo offer){
     return {
-      "offerTitleAr" : offer.titleAr,
-      "offerTitleEn" : offer.titleEn,
-      "offerDescAr" : offer.descAr,
-      "offerDescEn" : offer.descEn,
+      "offer_title_ar" : offer.titleAr,
+      "offer_title_en" : offer.titleEn,
+      "offer_desc_ar" : offer.descAr,
+      "offer_desc_en" : offer.descEn,
       "price" : offer.priceForOne,
       "qauntity" : offer.qauntity,
-      "dateUpdate" : DateTime.now().toUtc().millisecondsSinceEpoch,
-      "isActive" : offer.isActive,
-      "startDate" : offer.startDate ?? 0,
-      "endDate" : offer.endDate ?? 0,
+      "date_update" : DateTime.now().toUtc().millisecondsSinceEpoch,
+      "status" : offer.status,
+      "start_date" : offer.startDate ?? 0,
+      "end_date" : offer.endDate ?? 0,
     };
   }
 
   Map<String, dynamic> toMapOnUpdateStatus(OrderOfferInfo offer){
     return {
-      "dateUpdate" : DateTime.now().toUtc().millisecondsSinceEpoch,
-      "isActive" : offer.isActive,
-      "startDate" : offer.startDate ?? 0,
-      "endDate" : offer.endDate ?? 0,
+      "date_update" : DateTime.now().toUtc().millisecondsSinceEpoch,
+      "status" : offer.status,
+      "start_date" : offer.startDate ?? 0,
+      "end_date" : offer.endDate ?? 0,
     };
   }
 }

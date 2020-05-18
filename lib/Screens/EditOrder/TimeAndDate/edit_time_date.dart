@@ -66,12 +66,12 @@ class _EditTimeDateState extends State<EditTimeDate> {
       context: context,
       initialDate: _actualDate,
       firstDate: DateTime(2010),
-      lastDate: DateTime(2020)
+      lastDate: DateTime(2050)
     );
     if (dateSelected != null){
       setState(() {
         _actualDate = dateSelected;
-        _completeDateAndTime = DateTime(_actualDate.year, _actualDate.month, _actualDate.day, _timeOfDay.hour, _timeOfDay.minute);
+        _completeDateAndTime = DateTime(_actualDate.year, _actualDate.month, _actualDate.day, _timeOfDayDB.hour, _timeOfDayDB.minute);
       });
     }
   }

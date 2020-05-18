@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 class OfferStatus{
   static const String active = "active";
   static const String deactive = "deactive";
+  static const String deleted = "deleted";
   static const String unknown = "unknow";
 
   static const String activeAr = "نشط";
   static const String activeEn = "Active";
   static const String deactiveAr = "غير نشط";
   static const String deactiveEn = "Deactive";
+  static const String deletedAr = "محذوف";
+  static const String deletedEn = "Deleted";
   static const String unknownAr = "حالة غير معروفة";
   static const String unknownEn = "Unknow Status";
 
@@ -19,7 +22,9 @@ class OfferStatus{
       case active:
         return isArabic ? activeAr : activeEn;
       case deactive:
-        return isArabic ? deactiveAr : deactiveEn;
+        return isArabic ? deletedAr : deactiveEn;
+      case deleted:
+        return isArabic ? deactiveAr : deletedEn;
       default:
         return isArabic ? unknownAr : unknownEn;
     }

@@ -35,7 +35,7 @@ class LocalizedKey{
   static const String estimatedTotalTitle = "estimated_total_title";
   static const String vatTitle = "vat_title";
   static const String totalPriceTitle = "total_price_title";
-  static const String hasPartsTitle = "has_parts_title";
+  static const String neededPartsTitle = "needed_parts_title";
   static const String viewImageButtonTitle = "view_image_buttom_title";
   static const String editServButtonTitle = "edit_service_button_title";
   static const String editTimeAndDateButtonTitle = "edit_time_and_date_button_title";
@@ -63,7 +63,9 @@ class LocalizedKey{
   static const String forgotPasswordPlaceholderText = "forgot_password_placeholder_text";
   static const String forgotPasswordSendButtonTitle = "forgot_password_send_button_title";
   static const String offerStatusChangeAlertMessage = "offer_status_change_alert_message";
+  static const String offerStatusDeleteAlertMessage = "offer_status_delete_alert_message";
   static const String offerStatusChangeSuccessAlertMessage = "offer_status_change_success_alert_message";
+  static const String offerStatusDeleteSuccessAlertMessage = "offer_status_delete_success_alert_message";
   static const String offerAppBarTitle = "offer_app_bar_title";
   static const String offerTitle = "offer_title_title";
   static const String offerDescTitle = "offer_desc_title";
@@ -74,12 +76,10 @@ class LocalizedKey{
   static const String offerDeactiveButtonTitle = "offer_deactive_button_title";
   static const String addOfferAppBarTitle = "add_offer_app_bar_title";
   static const String addOfferDropDownPlaceholderTitle = "add_offer_dropdown_placehoder_title";
-
   static const String addOfferServiceCategoryDropDownPlaceholderTitle = "add_offer_service_category_dropdown_placehoder_title";
   static const String addOfferServiceTypeDropDownPlaceholderTitle = "add_offer_sevice_type_dropdown_placehoder_title";
   static const String addOfferMainServiceDropDownPlaceholderTitle = "add_offer_main_service_dropdown_placehoder_title";
   static const String addOfferSubMainServiceDropDownPlaceholderTitle = "add_offer_sub_main_service_dropdown_placehoder_title";
-
   static const String addOdderTitleArTitle = "add_offer_title_arabic_title";
   static const String addOfferTitleEnTitle = "add_offer_title_english_title";
   static const String addOfferDescArTitle = "add_offer_desc_arabic_title";
@@ -132,4 +132,38 @@ class LocalizedKey{
   static const String newServiceDropDownSubMainServicePlaceholderText = "new_service_dropdown_subMainService_placeholder_text";
   static const String newServicePriceForOne = "new_servive_price_for_one_title";
   static const String newSerivceAddServiceButtonTitle = "new_service_add_service_button_title";
+  static const String reminderTitle = "reminder_label_title";
+  static const String reminderOneDayTitle = "reminder_one_day_label_title";
+  static const String reminderOneHourTitle = "reminder_one_hour_label_title";
+  static const String adminFeesTitle = "admin_fees_label_title";
+  static const String partsTotalPriceTitle = "parts_total_price_label_title";
+  static const String totalPaidTitle = "total_paid_amount_label_title";
+  static const String moneyReceivedTitle = "total_money_received_label_title";
+  static const String discountMenuTitle = "discount_menu_title";
+  static const String addDiscountBarTitle = "add_discount_app_bar_title";
+  static const String discountCodeTitle = "discount_code_label_title";
+  static const String discountPercentageTitle = "discount_percent_label_title";
+  static const String addDiscountAlertMessage = "add_discount_code_alert_message";
+  static const String addDiscountSuccessAlertMessage = "add_discount_code_success_alert_message";
+  static const String discountCodeDetailsAppBarTitle = "discount_code_details_appbar_title";
+  static const String discountCodeDetailsCodeTitle = "discount_code_details_code_title";
+  static const String discountCodeDetailsPercentTitle = "discount_code_details_percent_title";
+  static const String discountCodeDetailsValidTitle = "discount_code_details_valid_title";
+  static const String discountCodeDetailsValidValueYes = "discount_code_details_valid_value_yes";
+  static const String discountCodeDetailsValidValueNo = "discount_code_details_valid_value_no";
+  static const String discountCodeDetailsDateCreateTitle = "discount_code_details_date_created_title";
+  static const String discountCodeDetailsDateUpdateTitle = "discount_code_details_date_updated_title";
+  static const String discountCodeDetailsButtonTitleEnd = "discount_code_details_button_title_end";
+  static const String discountCodeDetailsButtonTitleRestart = "discount_code_details_button_title_restart";
+  static const String discountCodeDetailsAlertMessage = "discount_code_details_alert_message";
+  static const String discountCodeDetailsSuccessMessage = "discount_code_details_success_message";
+  static const String yesFirstCapital = "yes_first_capital";
+  static const String noFirstCapital = "no_first_capital";
+  static const String yes = "yes";
+  static const String no = "no";
+  static const String totalRemainingTitle = "total_Remaining_amount_label_title";
+  static const String offerOriginalServicePrice = "offer_original_service_price";
+  static const String offerDeleteButtonTitle = "offer_detele_button_title";
+  static const String customerShouldPay = "customer_should_pay";
+  static const String paymentMethodTitle = "payment_method_title";
 }

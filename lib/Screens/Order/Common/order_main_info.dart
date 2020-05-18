@@ -3,6 +3,7 @@ import 'package:expert_support_admin/HelperClass/date_common.dart';
 import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/Models/day_time_model.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
+import 'package:expert_support_admin/Models/payment.dart';
 import 'package:expert_support_admin/Models/status.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,6 +25,8 @@ class OrderMainInfo extends StatelessWidget {
         hour: order.visitDateAndTime.hour, 
         minute: order.visitDateAndTime.minute).format(context)
       : DayTime().getDisplayStatus(dayTime: order.visitTime, context: context);
+    String payment = Payment().getDisplayStatus(status: order.paymentMethod, context: context);
+    
     bool hasReminder = order.reminderOnDay || order.reminderOneHour;
     return Container(
           child: Column(
@@ -52,11 +55,14 @@ class OrderMainInfo extends StatelessWidget {
                 value: "${order.comment}",),
               hasReminder ?
                 OrderReminderRow(
-                  title: "تذكير",
+                  title: localizations.translate(LocalizedKey.reminderTitle), 
                   isOneDayReminder: order.reminderOnDay,
                   isOneHourReminder: order.reminderOneHour,
                 )
-                : Container()
+                : Container(),
+              OrderInfoRow(
+                title: localizations.translate(LocalizedKey.paymentMethodTitle), 
+                value: "$payment",),
             ],
           ),
         );
@@ -183,8 +189,9 @@ class OrderReminderRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String oneDayReminderTitle = "تذكير قبل الموعد بيوم";
-    final String oneHourReminderTitle = "تذكير قبل الموعد بساعه";
+    AppLocalizations localizations = AppLocalizations.of(context);
+    final String oneDayReminderTitle = localizations.translate(LocalizedKey.reminderOneDayTitle);
+    final String oneHourReminderTitle = localizations.translate(LocalizedKey.reminderOneDayTitle);
     return Container(
       child: Row(
         children: <Widget>[

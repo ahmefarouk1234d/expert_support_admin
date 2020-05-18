@@ -6,6 +6,7 @@ import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/menu_list.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
+import 'package:expert_support_admin/Screens/Home/Discount/add_discount.dart';
 import 'package:expert_support_admin/Screens/Home/Offers/add_order_offer.dart';
 import 'package:expert_support_admin/Screens/Home/Users/add_new_user.dart';
 import 'package:expert_support_admin/Screens/Home/main_drawer.dart';
@@ -103,15 +104,23 @@ class ActionsAppBar extends StatelessWidget {
     Navigator.of(context).pushNamed(AddOrderOffer.route);
   }
 
+  _handleAddingNewdiscount(BuildContext context){
+    Navigator.of(context).pushNamed(AddDiscount.route);
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (title == AppLocalizations.of(context).translate(LocalizedKey.usersMenuTitle)){
+    if (title == AppLocalizations.of(context).translate(LocalizedKey.usersMenuTitle)) {
       return AddButtonBar(
         onPressed: () => _handleAddingNewUser(context),
       );
-    } else if (title == AppLocalizations.of(context).translate(LocalizedKey.offerMenuTitle)){
+    } else if (title == AppLocalizations.of(context).translate(LocalizedKey.offerMenuTitle)) {
       return AddButtonBar(
         onPressed: () => _handleAddingNewOrderOffer(context),
+      );
+    } else if (title == AppLocalizations.of(context).translate(LocalizedKey.discountMenuTitle)) {
+      return AddButtonBar(
+        onPressed: () => _handleAddingNewdiscount(context),
       );
     }
     return Container();

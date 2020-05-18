@@ -52,7 +52,6 @@ class AddNewServiceContent extends StatefulWidget {
 }
 
 class _AddNewServiceContentState extends State<AddNewServiceContent> {
-  //TODO: Handle the change in Service Data
   List<ServiceCategory> serviceCategoryList;
   ServiceCategory serviceCategory;
 
@@ -236,7 +235,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
       priceForOnePiece: priceForOne,
       total: totalPrice,
       quantity: qty,
-      hasParts: valueSelected
+      neededParts: valueSelected
     );
     
     List<OrderService> orderServices = widget.services;
@@ -343,7 +342,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
                     }),
                 Expanded(
                   child: Text(
-                    AppLocalizations.of(context).translate(LocalizedKey.hasPartsTitle))),
+                    AppLocalizations.of(context).translate(LocalizedKey.neededPartsTitle))),
                 DropdownButton(
                     value: qty,
                     hint: Text("0"),

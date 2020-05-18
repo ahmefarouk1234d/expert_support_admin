@@ -3,23 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1021683594031-srhv440c0f8dvilb5101up11ugja30er.apps.googleusercontent.com</string>
+	<string>194297421764-o4kvr44j6a0mu51l8qjdf1uj20gglooi.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1021683594031-srhv440c0f8dvilb5101up11ugja30er</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>1021683594031-5r0g6kdmitg3qpsjqvdqt70u5qgt7vcj.apps.googleusercontent.com</string>
+	<string>com.googleusercontent.apps.194297421764-o4kvr44j6a0mu51l8qjdf1uj20gglooi</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBrhiAcBbaueR-i5oqNPR7OGAWUetyKTy4</string>
+	<string>AIzaSyC3q5dYkiDEaVuQTcicF1WSFaVxele-suo</string>
 	<key>GCM_SENDER_ID</key>
-	<string>1021683594031</string>
+	<string>194297421764</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.f3deve.flutter.expertSupportAdmin</string>
+	<string>com.expertsSupport.flutter.adminApp.iOS</string>
 	<key>PROJECT_ID</key>
-	<string>expertsupport-48940</string>
+	<string>expert-support</string>
 	<key>STORAGE_BUCKET</key>
-	<string>expertsupport-48940.appspot.com</string>
+	<string>expert-support.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1021683594031:ios:af98f9ad3a6def1e</string>
+	<string>1:194297421764:ios:a611f44898b291a4534e91</string>
 	<key>DATABASE_URL</key>
-	<string>https://expertsupport-48940.firebaseio.com</string>
+	<string>https://expert-support.firebaseio.com</string>
 </dict>
 </plist>

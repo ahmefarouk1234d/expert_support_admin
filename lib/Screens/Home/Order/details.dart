@@ -4,7 +4,6 @@ import 'package:expert_support_admin/HelperClass/enums.dart';
 import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/Models/admin_role.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
-import 'package:expert_support_admin/Models/status.dart';
 import 'package:expert_support_admin/Screens/Order/Common/order_main_info.dart';
 import 'package:expert_support_admin/Screens/Order/Common/order_prices.dart';
 import 'package:expert_support_admin/Screens/Order/Common/service_list.dart';
@@ -54,6 +53,9 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
    OrderBloc _orderBloc;
    TextEditingController cancelReasonController = TextEditingController();
    TextEditingController changeDetailsControl = TextEditingController();
+   TextEditingController totalMoneyReceivedController = TextEditingController();
+   TextEditingController totalPartsPriceController = TextEditingController();
+   TextEditingController partsFeesController = TextEditingController();
 
    @override
   void initState() {
@@ -84,9 +86,10 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
         if (order.adminName != null && order.adminRole != null){
           widgets.add(OrderUpdatedByView(name: order.adminName, role: order.adminRole,),);
         }
-        widgets.add(InProcessActionButtons(order, changeDetailsControl));
+        widgets.add(InProcessActionButtons(order, changeDetailsControl, totalMoneyReceivedController, totalPartsPriceController, partsFeesController));
         break;
       case OrderToDisplay.done: 
+        //widgets.add(ExtraPriceInfo(order: order,));
         if (order.adminName != null && order.adminRole != null){
           widgets.add(OrderUpdatedByView(name: order.adminName, role: order.adminRole,),);
         }
@@ -103,6 +106,7 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
         }
         break;
       case OrderToDisplay.all:
+        //widgets.add(ExtraPriceInfo(order: order,));
         if (order.cancelReason != null){
           widgets.add(
             ReasonLabel(

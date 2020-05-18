@@ -65,7 +65,7 @@ class OrderOfferBloc extends Validator{
     }
   );
 
-  Future<void> saveOrderOfferInfo(){
+  Future<void> saveOrderOfferInfo() async{
     var priceForOne = double.parse(_price.value);
     var qauntity = int.parse(_quantity.value);
 
@@ -80,6 +80,7 @@ class OrderOfferBloc extends Validator{
       descEn: _descEn.value,
       priceForOne: priceForOne,
       qauntity: qauntity,
+      originalPrice: _subMainService.value == null ? _mainService.value.price : _subMainService.value.price
     );
 
     return _firebaseManager.saveOrderOffer(offerInfo);

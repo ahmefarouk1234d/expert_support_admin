@@ -30,56 +30,66 @@ class OrderInfo{
   String changeRequestDetails;
   bool reminderOnDay;
   bool reminderOneHour;
+  num totalMoneyReceived;
+  num partsFees;
+  num adminFees;
+  num vatPercentage;
+  String paymentMethod;
 
   OrderInfo({this.documentID ,this.id, this.username, this.userPhone, this.orderStatus, this.workflowStatus, this.dateCreated, this.orderService, this.imagesUrl, this.comment, this.visitDate , this.visitTime, this.coordinate, this.discountPercent, this.totalDiscountAmount, this.totalPriceAfterDiscount, this.totalPriceBeforeDiscount, this.totalPriceWithVAT, this.vatTotal, this.visiteDateTimestamp,
-  this.adminID, this.adminName, this.adminRole, this.cancelReason, this.changeRequestDetails, this.visitDateAndTime, this.dateUpdate, this.reminderOnDay, this.reminderOneHour});
+  this.adminID, this.adminName, this.adminRole, this.cancelReason, this.changeRequestDetails, this.visitDateAndTime, this.dateUpdate, this.reminderOnDay, this.reminderOneHour, this.partsFees, this.adminFees, this.totalMoneyReceived, this.vatPercentage, this.paymentMethod});
 
   _orderMapToList(DocumentSnapshot orderDocData){
     Map<String, dynamic> orderData = orderDocData.data;
-      int dateCreated = orderData["OrderDateCreated"];
-      int dateUpdate = orderData["OrderDateUpdated"];
-      int visitedDate = orderData["VisitDate"];
-      int visitDateAndTimeTimestamp = orderData["VisitDateAndTime"];
+      int dateCreated = orderData["order_date_created"];
+      int dateUpdate = orderData["order_date_updated"];
+      int visitedDate = orderData["visit_date"];
+      int visitDateAndTimeTimestamp = orderData["visit_date_and_time"];
       DateTime visitDateAndTime = 
         visitDateAndTimeTimestamp != null 
         ? DateTime.fromMillisecondsSinceEpoch(visitDateAndTimeTimestamp)
         : null;
 
       this.documentID = orderDocData.documentID;
-      this.id = orderData["orderID"];
+      this.id = orderData["order_id"];
       this.username = orderData["username"];
-      this.userPhone = orderData["userPhone"];
-      this.orderStatus = orderData["OrderStatus"];
-      this.workflowStatus = orderData["WorkflowStatus"];
+      this.userPhone = orderData["user_phone"];
+      this.orderStatus = orderData["order_status"];
+      this.workflowStatus = orderData["workflow_status"];
       this.dateCreated = DateTime.fromMillisecondsSinceEpoch(dateCreated);
       this.dateUpdate = DateTime.fromMillisecondsSinceEpoch(dateUpdate);
       this.visitDate = DateTime.fromMillisecondsSinceEpoch(visitedDate);
       this.visiteDateTimestamp = visitedDate;
-      this.visitTime = orderData["VisitTime"];
+      this.visitTime = orderData["visit_time"];
       this.visitDateAndTime = visitDateAndTime;
-      this.comment = orderData["Comment"];
-      this.discountPercent = orderData["DiscountPercent"];
-      this.totalDiscountAmount = orderData["TotalDiscountAmount"];
-      this.totalPriceBeforeDiscount = orderData["TotalOrderPrice"];
-      this.totalPriceAfterDiscount = orderData["TotalOrderPriceAfterDiscount"];
-      this.vatTotal = orderData["VATTotal"];
-      this.totalPriceWithVAT = orderData["TotalPriceWithVAT"];
-      this.coordinate = Coordinate.fromMap(orderData["VisitLocation"]);
-      this.adminID = orderData["adminID"];
-      this.adminName = orderData["adminName"];
-      this.adminRole = orderData["adminRole"];
-      this.cancelReason = orderData["cancelReason"];
-      this.changeRequestDetails = orderData["changeRequestDetails"];
-      this.reminderOnDay = orderData["OneDayReminder"];
-      this.reminderOneHour = orderData["OneHourReminder"];
+      this.comment = orderData["comment"];
+      this.discountPercent = orderData["discount_percent"];
+      this.totalDiscountAmount = orderData["total_discount_amount"];
+      this.totalPriceBeforeDiscount = orderData["total_order_price"];
+      this.totalPriceAfterDiscount = orderData["total_order_price_after_discount"];
+      this.vatTotal = orderData["VAT_total"];
+      this.totalPriceWithVAT = orderData["total_price_with_VAT"];
+      this.coordinate = Coordinate.fromMap(orderData["visit_location"]);
+      this.adminID = orderData["admin_id"];
+      this.adminName = orderData["admin_name"];
+      this.adminRole = orderData["admin_role"];
+      this.cancelReason = orderData["cancel_reason"];
+      this.changeRequestDetails = orderData["change_request_details"];
+      this.reminderOnDay = orderData["one_day_reminder"];
+      this.reminderOneHour = orderData["one_hour_reminder"];
+      this.totalMoneyReceived = orderData["money_received"];
+      this.adminFees = orderData["parts_total"];
+      this.partsFees = orderData["administrative_fees"];
+      this.vatPercentage = orderData["vat_percentage"];
+      this.paymentMethod = orderData["payment_method"];
 
-      List<dynamic> serviceList = orderData["OrderServices"];
+      List<dynamic> serviceList = orderData["order_services"];
       this.orderService = List<OrderService>();
       serviceList.forEach((serv) {
         this.orderService.add(OrderService.fromMap(serv));
       });
 
-      Map<dynamic, dynamic> imagesUrlMap = orderData["ImagesUrl"];
+      Map<dynamic, dynamic> imagesUrlMap = orderData["images_url"];
       this.imagesUrl = List();
       imagesUrlMap.forEach((key, value){
         this.imagesUrl.add(value);
@@ -99,7 +109,7 @@ class OrderInfo{
   }
 
   OrderInfo.toMap(){
-    //TODO: From order list to map.
+    // TODO: From order list to map.
   }
 
   update(OrderInfo order){
@@ -132,6 +142,10 @@ class OrderInfo{
     this.changeRequestDetails = order.changeRequestDetails;
     this.reminderOnDay = order.reminderOnDay;
     this.reminderOneHour = order.reminderOneHour;
+    this.totalMoneyReceived = order.totalMoneyReceived;
+    this.adminFees = order.adminFees;
+    this.partsFees = order.partsFees;
+    this.vatPercentage = order.vatPercentage;
   }
 }
 
@@ -140,8 +154,8 @@ class Coordinate{
   num logntitude;
 
   Coordinate.fromMap(Map<dynamic, dynamic> location){
-    this.latitude = location["Latitude"];
-    this.logntitude = location["Longitude"];
+    this.latitude = location["latitude"];
+    this.logntitude = location["longitude"];
   }
 }
 
@@ -155,21 +169,21 @@ class OrderService{
   num priceForOnePiece;
   num total;
   num quantity;
-  bool hasParts;
+  bool neededParts;
 
-  OrderService({this.serviceCategoryId, this.mainServiceId, this.subMainServiceId, this.isSubService, this.nameAr, this.nameEn, this.priceForOnePiece, this.total, this.quantity, this.hasParts});
+  OrderService({this.serviceCategoryId, this.mainServiceId, this.subMainServiceId, this.isSubService, this.nameAr, this.nameEn, this.priceForOnePiece, this.total, this.quantity, this.neededParts});
 
   OrderService.fromMap(Map<dynamic, dynamic> service){
-    this.serviceCategoryId = service["serviceCategoryID"];
-    this.mainServiceId = service["mainServiceID"];
-    this.subMainServiceId = service["subMainServiceID"];
-    this.isSubService = service["isSubMainService"];
-    this.nameAr = service["serviceNameAr"];
-    this.nameEn = service["serviceNameEn"];
-    this.priceForOnePiece = service["priceForOnePiece"];
-    this.total = service["totalPrice"];
-    this.quantity = service["Quantity"];
-    this.hasParts = service["HasParts"];
+    this.serviceCategoryId = service["service_category_id"];
+    this.mainServiceId = service["main_service_id"];
+    this.subMainServiceId = service["sub_main_service_id"];
+    this.isSubService = service["is_sub_main_service"];
+    this.nameAr = service["service_name_ar"];
+    this.nameEn = service["service_name_en"];
+    this.priceForOnePiece = service["price_for_one_piece"];
+    this.total = service["total_price"];
+    this.quantity = service["quantity"];
+    this.neededParts = service["needed_parts"];
   }
 
   update(OrderService serv){
@@ -179,6 +193,6 @@ class OrderService{
     this.priceForOnePiece = serv.priceForOnePiece;
     this.total = serv.total;
     this.quantity = serv.quantity;
-    this.hasParts = serv.hasParts;
+    this.neededParts = serv.neededParts;
   }
 }

@@ -83,7 +83,7 @@ class OrderOfferList extends StatelessWidget {
         separatorBuilder: (context, index) => Divider(color: Colors.black12,),
         itemBuilder: (context, index){
           final OrderOfferInfo offer = offerList[index];
-          bool isActive = offer.isActive;
+          bool isActive = offer.status == OfferStatus.active;
           String offerTitle = 
             AppLocalizations.of(context).isArabic()
             ? offer.titleAr ?? ""
@@ -133,20 +133,28 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
   String _buttonTitle;
   FirebaseManager _firebaseManager = FirebaseManager();
   bool isInitial;
+  bool isActive;
+  bool isButtonsEnable;
 
   @override
   void initState() {
     _info = widget.offerInfo;
-    _offerStatus = _info.isActive ? OfferStatus.active : OfferStatus.deactive;
+    _offerStatus = _info.status;
     isInitial = true;
+    isActive = _info.status == OfferStatus.active;
+    isButtonsEnable = _info.status != OfferStatus.deleted;
     super.initState();
   }
 
-  _showConformatiomAlert() {
-    String message = AppLocalizations.of(context).translate(LocalizedKey.offerStatusChangeAlertMessage);
+  _showConformatiomAlert(String status) {
+    String message = 
+      status != OfferStatus.deleted
+      ? AppLocalizations.of(context).translate(LocalizedKey.offerStatusChangeAlertMessage)
+      : AppLocalizations.of(context).translate(LocalizedKey.offerStatusDeleteAlertMessage);
+      
     Alert().conformation(
         context, AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, 
-        () => _handleChangeStatus());
+        () => _handleChangeStatus(status));
   }
 
   _showCompletedAlert({String message}){
@@ -155,23 +163,30 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
     });
   }
 
-  _handleChangeStatus() async{
-    bool isActive = _buttonTitle == AppLocalizations.of(context).translate(LocalizedKey.offerActiveButtonTitle);
+  _handleChangeStatus(String status) async{
     try{
       Common().loading(context);
       OrderOfferInfo offerInfo = OrderOfferInfo(
         id: _info.id,
-        isActive: isActive
+        status: status
       );
       await _firebaseManager.updateOrderOfferStatus(offerInfo);
       setState(() {
-        _offerStatus = isActive ? OfferStatus.active : OfferStatus.deactive;
-        _buttonTitle = isActive 
-          ? AppLocalizations.of(context).translate(LocalizedKey.offerDeactiveButtonTitle) 
-          : AppLocalizations.of(context).translate(LocalizedKey.offerActiveButtonTitle);
+        _offerStatus = status;
+        if (status != OfferStatus.deleted) {
+          isActive = !isActive;
+        } else {
+          isButtonsEnable = false;
+          isActive = false;
+        }
       });
       Common().dismiss(context);
-      _showCompletedAlert(message: AppLocalizations.of(context).translate(LocalizedKey.offerStatusChangeSuccessAlertMessage));
+      _showCompletedAlert(
+        message: 
+          status != OfferStatus.deleted
+          ? AppLocalizations.of(context).translate(LocalizedKey.offerStatusChangeSuccessAlertMessage)
+          : AppLocalizations.of(context).translate(LocalizedKey.offerStatusDeleteSuccessAlertMessage)
+      );
     } on PlatformException catch(e){
       Common().dismiss(context);
       Alert().error(context, e.message, () => Common().dismiss(context));
@@ -180,12 +195,9 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
 
   @override
   Widget build(BuildContext context) {
-    if (isInitial){
-      _buttonTitle = _info.isActive 
-        ? AppLocalizations.of(context).translate(LocalizedKey.offerDeactiveButtonTitle) 
-        : AppLocalizations.of(context).translate(LocalizedKey.offerActiveButtonTitle);
-      isInitial = false;
-    }
+    _buttonTitle = isActive
+      ? AppLocalizations.of(context).translate(LocalizedKey.offerDeactiveButtonTitle) 
+      : AppLocalizations.of(context).translate(LocalizedKey.offerActiveButtonTitle);
     
     return Scaffold(
       appBar: AppBar(
@@ -203,6 +215,9 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
               title: AppLocalizations.of(context).translate(LocalizedKey.offerDescTitle), 
               value: AppLocalizations.of(context).isArabic() ? _info.descAr : _info.descEn,),
             OrderOfferDetailsRow(
+              title: AppLocalizations.of(context).translate(LocalizedKey.offerOriginalServicePrice), 
+              value: OfferStatus().getDisplayStaus(status: _info.originalPrice.toString(), context: context),),
+            OrderOfferDetailsRow(
               title: AppLocalizations.of(context).translate(LocalizedKey.offerPriceTitle), 
               value: _info.priceForOne.toString(),),
             OrderOfferDetailsRow(
@@ -214,7 +229,17 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
             Container(height: 16,),
             CommonButton(
               title: _buttonTitle,
-              onPressed: _showConformatiomAlert,
+              onPressed: isButtonsEnable ? () { 
+                String status = isActive ? OfferStatus.deactive : OfferStatus.active;
+                _showConformatiomAlert(status);
+              } : null,
+            ),
+            Container(height: 16,),
+            CommonButton(
+              title: AppLocalizations.of(context).translate(LocalizedKey.offerDeleteButtonTitle),
+              onPressed: isButtonsEnable ? () {
+                _showConformatiomAlert(OfferStatus.deleted);
+              } : null,
             ),
           ],
         ),

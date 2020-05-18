@@ -20,6 +20,9 @@ class ServicesList extends StatelessWidget {
         bool isArabic = AppLocalizations.of(context).isArabic();
         String serviceNameEn = service.nameEn ?? "";
         String serviceNameAr = service.nameAr ?? "";
+        String neededParts = service.neededParts 
+          ? AppLocalizations.of(context).translate(LocalizedKey.yesFirstCapital) 
+          : AppLocalizations.of(context).translate(LocalizedKey.noFirstCapital);
 
         return Container(
           padding: EdgeInsets.only(top: 8, bottom: 8),
@@ -36,8 +39,8 @@ class ServicesList extends StatelessWidget {
                       style: TextStyle(fontSize: Screen.fontSize(size: 18)),), 
                     Container(height: 8,),
                     Text(
-                       AppLocalizations.of(context).translate(LocalizedKey.hasPartsTitle) 
-                        + ": ${service.hasParts}", 
+                       AppLocalizations.of(context).translate(LocalizedKey.neededPartsTitle) 
+                        + ": $neededParts", 
                        style: TextStyle(color: Colors.grey),)
                   ],
                 ),
@@ -47,13 +50,6 @@ class ServicesList extends StatelessWidget {
             ],
           ),
         );
-        
-        // ListTile(
-        //   leading: Text("x${service.quantity}"),
-        //   title: Text(service.nameEn ?? ""),
-        //   subtitle: Text("has parts: ${service.hasParts}"),
-        //   trailing: Text(service.total.toString() ?? ""),
-        // );
       },
     );
   }

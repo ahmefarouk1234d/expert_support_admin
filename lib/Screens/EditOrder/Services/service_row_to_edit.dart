@@ -42,7 +42,7 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
 
   _handlePartsChange(bool value){
     setState(() {
-      service.hasParts = value;
+      service.neededParts = value;
     });
   }
 
@@ -80,9 +80,9 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
                         style: TextStyle(fontSize: Screen.fontSize(size: 18))),),
                     Container(width: 8,),
                     Container(
-                      height: Screen.screenWidth * 0.10,
-                      width: Screen.screenWidth * 0.16,
-                      padding: EdgeInsets.all(8),
+                      height: Screen.screenWidth * 0.11,
+                      width: Screen.screenWidth * 0.17,
+                      //padding: EdgeInsets.all(4),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -103,11 +103,11 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
                 Row(
                   children: <Widget>[
                     Checkbox(
-                      value: service.hasParts,
+                      value: service.neededParts,
                       onChanged: _handlePartsChange
                     ),
                     Expanded(
-                      child: Text(AppLocalizations.of(context).translate(LocalizedKey.hasPartsTitle))),
+                      child: Text(AppLocalizations.of(context).translate(LocalizedKey.neededPartsTitle))),
                     DropdownButton(
                         value: service.quantity,
                         onChanged: _updateQuantityAndPrice,

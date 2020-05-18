@@ -3,7 +3,7 @@ import 'package:expert_support_admin/HelperClass/enums.dart';
 import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/string.dart';
 import 'package:expert_support_admin/Models/admin_role.dart';
-import 'package:expert_support_admin/Models/status.dart';
+import 'package:expert_support_admin/Screens/Home/Discount/discount.dart';
 import 'package:expert_support_admin/Screens/Home/Offers/order_offers.dart';
 import 'package:expert_support_admin/Screens/Home/Order/inbox.dart';
 import 'package:expert_support_admin/Screens/Home/Password/change_password.dart';
@@ -37,6 +37,7 @@ class MenuList {
   String usersTitle = "";
   String ordersTitle = "";
   String signOutTitle = "";
+  String discount = "";
 
   MenuList(this.context) {
     this.pendingTitle = AppLocalizations.of(context)
@@ -61,6 +62,8 @@ class MenuList {
         AppLocalizations.of(context).translate(LocalizedKey.ordersMenuTitle);
     this.signOutTitle =
         AppLocalizations.of(context).translate(LocalizedKey.signOutMenuTitle);
+    this.discount =
+        AppLocalizations.of(context).translate(LocalizedKey.discountMenuTitle);
   }
 
   NavScreen getCustomerServiceList() {
@@ -103,10 +106,14 @@ class MenuList {
           widget: OrderInbox(
             orderToDisplay: OrderToDisplay.done,
           )),
+      NavWidget(title: offersTitle, widget: OrderOffer()),
+      NavWidget(title: discount, widget: DiscountPage()),
       NavWidget(
           title: changePasswordTitle, widget: ChangePassword()),
     ], menuList: [
       ordersTitle,
+      offersTitle,
+      discount,
       changePasswordTitle,
       signOutTitle
     ]);
@@ -136,6 +143,7 @@ class MenuList {
             orderToDisplay: OrderToDisplay.canceled,
           )),
       NavWidget(title: offersTitle, widget: OrderOffer()),
+      NavWidget(title: discount, widget: DiscountPage()),
       NavWidget(
           title: changePasswordTitle, widget: ChangePassword()),
     ], menuList: [
@@ -144,6 +152,7 @@ class MenuList {
       doneTitle,
       cancelTitle,
       offersTitle,
+      discount,
       changePasswordTitle,
       signOutTitle
     ]);
@@ -158,12 +167,14 @@ class MenuList {
             orderToDisplay: OrderToDisplay.all,
           )),
       NavWidget(title: offersTitle, widget: OrderOffer()),
+      NavWidget(title: discount, widget: DiscountPage()),
       NavWidget(title: usersTitle, widget: Users()),
       NavWidget(
           title: changePasswordTitle, widget: ChangePassword()),
     ], menuList: [
       ordersTitle,
       offersTitle,
+      discount,
       usersTitle,
       changePasswordTitle,
       signOutTitle

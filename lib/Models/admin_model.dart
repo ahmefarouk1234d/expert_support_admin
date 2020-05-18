@@ -52,12 +52,12 @@ class AdminUserInfo{
     this.id = adminDocData.documentID;
     this.email = adminData["email"];
     this.role = adminData["role"];
-    this.fcmToken = adminData["fcmToken"];
+    this.fcmToken = adminData["fcm_token"];
     this.name = adminData["name"];
     this.phone = adminData["phone"];
     this.status = adminData["status"];
-    this.dateCreated = adminData["dateCreated"];
-    this.dateUpdated = adminData["dateUpdated"];
+    this.dateCreated = adminData["date_created"];
+    this.dateUpdated = adminData["date_updated"];
   }
 
   AdminUserInfo.fromMap(DocumentSnapshot adminDocData){
@@ -78,10 +78,10 @@ class AdminUserInfo{
       "phone": admin.phone,
       "email": admin.email,
       "role": admin.role,
-      "fcmToken": admin.fcmToken,
+      "fcm_token": admin.fcmToken,
       "status": admin.status,
-      "dateCreated": admin.dateCreated,
-      "dateUpdated": admin.dateUpdated,
+      "date_created": admin.dateCreated,
+      "date_updated": admin.dateUpdated,
     };
   }
 
@@ -91,14 +91,14 @@ class AdminUserInfo{
       "phone": admin.phone,
       "email": admin.email,
       "role": admin.role,
-      "dateUpdated": admin.dateUpdated,
+      "date_updated": admin.dateUpdated,
     };
   }
 
   Map<String, dynamic> toDeletedInfoMap(AdminUserInfo admin){
     return {
       "status": admin.status,
-      "dateUpdated": admin.dateUpdated,
+      "date_updated": admin.dateUpdated,
     };
   }
 

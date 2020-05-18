@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
+import 'package:expert_support_admin/Models/discount_model.dart';
 import 'package:expert_support_admin/Models/offer_model.dart';
+import 'package:expert_support_admin/Models/offer_status.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/Models/status.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 class DataBase{
   final adminUserCollection = Firestore.instance.collection("AdminUser");
   final ordersCollection = Firestore.instance.collection("OrdersList");
@@ -11,6 +13,7 @@ class DataBase{
   final offerCollection = Firestore.instance.collection("Offers");
   final orderOfferCollection = Firestore.instance.collection("OrderOffers");
   final dateAvailabilityCollection = Firestore.instance.collection("DateAvailabilityLog");
+  final discountCollection = Firestore.instance.collection("Discount");
 
   Future<void> saveAdminUser(AdminUserInfo admin) {
     Map<String, dynamic> adminUserMap = AdminUserInfo().toMap(admin);
@@ -29,39 +32,39 @@ class DataBase{
 
   Stream<QuerySnapshot> getPendingOrders(){
     final orders = ordersCollection
-      .where("WorkflowStatus", whereIn: [WorkflowStatus.pending, WorkflowStatus.requestChange])
-      .orderBy("OrderDateUpdated")
+      .where("workflow_status", whereIn: [WorkflowStatus.pending, WorkflowStatus.requestChange])
+      .orderBy("order_date_updated")
       .snapshots(includeMetadataChanges: true);
     return orders;
   }
 
   Stream<QuerySnapshot> getInProcessOrders(){
     final orders = ordersCollection
-      .where("WorkflowStatus", whereIn: [WorkflowStatus.inProcess, WorkflowStatus.requestChangeReply])
-      .orderBy("OrderDateUpdated")
+      .where("workflow_status", whereIn: [WorkflowStatus.inProcess, WorkflowStatus.requestChangeReply])
+      .orderBy("order_date_updated")
       .snapshots();
     return orders;
   }
 
   Stream<QuerySnapshot> getDoneOrders(){
     final orders = ordersCollection
-      .where("WorkflowStatus", isEqualTo: WorkflowStatus.done)
-      .orderBy("OrderDateUpdated")
+      .where("workflow_status", isEqualTo: WorkflowStatus.done)
+      .orderBy("order_date_updated")
       .snapshots();
     return orders;
   }
 
   Stream<QuerySnapshot> getCanceledOrders(){
     final orders = ordersCollection
-      .where("WorkflowStatus", isEqualTo: WorkflowStatus.canceled)
-      .orderBy("OrderDateUpdated")
+      .where("workflow_status", isEqualTo: WorkflowStatus.canceled)
+      .orderBy("order_date_updated")
       .snapshots();
     return orders;
   }
 
   Stream<QuerySnapshot> getOrders(){
-    final orders = ordersCollection.orderBy("OrderDateCreated", descending: true)
-      .orderBy("OrderDateUpdated")
+    final orders = ordersCollection
+      .orderBy("order_date_updated", descending: true)
       .snapshots();
     return orders;
   }
@@ -76,28 +79,30 @@ class DataBase{
 
       DocumentReference ordersDocRef = ordersCollection.document(order.documentID);
       batch.updateData(ordersDocRef, {
-        "OrderStatus": order.orderStatus,
-        "WorkflowStatus": order.workflowStatus,
-        "adminName": admin.name,
-        "adminID": admin.id,
-        "adminRole": admin.role,
-        "cancelReason": cancelReason,
-        "changeRequestDetails" : changeRequestDetails,
-        "OrderDateUpdated": DateTime.now().toUtc().millisecondsSinceEpoch,
+        "order_status": order.orderStatus,
+        "workflow_status": order.workflowStatus,
+        "admin_name": admin.name,
+        "admin_id": admin.id,
+        "admin_role": admin.role,
+        "cancel_reason": cancelReason,
+        "change_request_details" : changeRequestDetails,
+        "money_received" : order.totalMoneyReceived,
+        "parts_total" : order.adminFees,
+        "administrative_fees" : order.partsFees,
+        "order_date_updated": DateTime.now().toUtc().millisecondsSinceEpoch,
       });
 
       DocumentReference ordersDocWorkflowRef = ordersDocRef.collection("workflow").document();
       batch.setData(ordersDocWorkflowRef, {
-        "WorkflowStatus": order.workflowStatus,
-        "adminName": admin.name,
-        "adminID": admin.id,
-        "adminRole": admin.role,
-        "cancelReason": cancelReason,
-        "changeRequestDetails" : changeRequestDetails,
-        "dateCreated": DateTime.now().toUtc().millisecondsSinceEpoch,
+        "workflow_status": order.workflowStatus,
+        "admin_name": admin.name,
+        "admin_id": admin.id,
+        "admin_role": admin.role,
+        "cancel_reason": cancelReason,
+        "change_request_details" : changeRequestDetails,
+        "date_created": DateTime.now().toUtc().millisecondsSinceEpoch,
       });
 
-      // TODO: Handle when canceling order.
       if (order.workflowStatus == WorkflowStatus.canceled){
         final DocumentReference dateAvailabilityDoc = dateAvailabilityCollection.document("${order.visiteDateTimestamp}");
         order.orderService.forEach((s){
@@ -117,28 +122,28 @@ class DataBase{
     order.orderService.forEach((s) {
       Map<String, dynamic> serv = Map();
       serv = {
-        "HasParts": s.hasParts,
-        "Quantity": s.quantity,
-        "isSubMainService": s.isSubService,
-        "mainServiceID": s.mainServiceId,
-        "priceForOnePiece": s.priceForOnePiece,
-        "serviceCategoryID": s.serviceCategoryId,
-        "serviceNameAr": s.nameAr,
-        "serviceNameEn": s.nameEn,
-        "subMainServiceID": s.subMainServiceId,
-        "totalPrice": s.total
+        "needed_parts": s.neededParts,
+        "quantity": s.quantity,
+        "is_sub_main_service": s.isSubService,
+        "main_service_id": s.mainServiceId,
+        "price_for_one_piece": s.priceForOnePiece,
+        "service_category_id": s.serviceCategoryId,
+        "service_name_ar": s.nameAr,
+        "service_name_en": s.nameEn,
+        "sub_main_service_id": s.subMainServiceId,
+        "total_price": s.total
       };
       servicesMap.add(serv);
     });
     
     updatedOrderMap = {
-      "OrderServices": servicesMap, 
-      "OrderDateUpdated": DateTime.now().toUtc().millisecondsSinceEpoch,
-      "TotalDiscountAmount": order.totalDiscountAmount,
-      "TotalOrderPrice": order.totalPriceBeforeDiscount,
-      "TotalOrderPriceAfterDiscount": order.totalPriceAfterDiscount,
-      "VATTotal": order.vatTotal,
-      "TotalPriceWithVAT": order.totalPriceWithVAT,
+      "order_services": servicesMap, 
+      "order_date_updated": DateTime.now().toUtc().millisecondsSinceEpoch,
+      "total_discount_amount": order.totalDiscountAmount,
+      "total_order_price": order.totalPriceBeforeDiscount,
+      "total_order_price_after_discount": order.totalPriceAfterDiscount,
+      "VAT_total": order.vatTotal,
+      "total_price_with_VAT": order.totalPriceWithVAT,
     };
 
     return ordersCollection.document(docId).updateData(updatedOrderMap);
@@ -147,9 +152,9 @@ class DataBase{
   Future<void> updateTimeDate(OrderInfo order, String docId){
     Map<String, dynamic> updatedOrderMap = Map();
     updatedOrderMap = {
-      "VisitDate": order.visitDate.millisecondsSinceEpoch,
-      "VisitTime": order.visitTime,
-      "VisitDateAndTime": order.visitDateAndTime.millisecondsSinceEpoch
+      "visit_date": order.visitDate.millisecondsSinceEpoch,
+      "visit_time": order.visitTime,
+      "visit_date_and_time": order.visitDateAndTime.millisecondsSinceEpoch
     };
     return ordersCollection.document(docId).updateData(updatedOrderMap);
   }
@@ -163,7 +168,7 @@ class DataBase{
   }
 
   Future<void> updateFcmToken(String adminID, String token){
-    return adminUserCollection.document(adminID).updateData({"fcmToken": token});
+    return adminUserCollection.document(adminID).updateData({"fcm_token": token});
   }
 
   Stream<QuerySnapshot> getAllUsers(){
@@ -205,7 +210,20 @@ class DataBase{
   }
 
   Stream<QuerySnapshot> getAllOrderOffers(){
-    return orderOfferCollection.snapshots();
+    return orderOfferCollection.where("status", whereIn: [OfferStatus.active, OfferStatus.deactive]).snapshots();
   }
 
+  Future<void> saveDiscountCode(DiscountInfo discountInfo){
+    Map<String, dynamic> discountInfoMap = DiscountInfo().toMapOnCreate(discountInfo);
+    return discountCollection.document().setData(discountInfoMap);
+  }
+
+  Stream<QuerySnapshot> getAllDiscountCode(){
+    return discountCollection.snapshots();
+  }
+
+  Future<void> updateDiscountCode(DiscountInfo discount){
+    Map<String, dynamic> discountMap = DiscountInfo().toMapOnUpdateStatus(discount);
+    return discountCollection.document(discount.id).updateData(discountMap);
+  }  
 }

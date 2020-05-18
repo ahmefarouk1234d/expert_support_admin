@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
+import 'package:expert_support_admin/Models/discount_model.dart';
 import 'package:expert_support_admin/Models/offer_model.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -136,6 +137,18 @@ class FirebaseManager{
 
   Stream<QuerySnapshot> getAllOrderOffers(){
     return _db.getAllOrderOffers();
+  }
+
+  Future<void> saveDiscountCode(DiscountInfo discountInfo){
+    return _db.saveDiscountCode(discountInfo);
+  }
+
+  Stream<QuerySnapshot> getAllDiscountCode() {
+    return _db.getAllDiscountCode();
+  }
+
+  Future<void> updateDiscountCode(DiscountInfo discount) {
+    return _db.updateDiscountCode(discount);
   }
 
   // -------------------- End Database Services -------------------

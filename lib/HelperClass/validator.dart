@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:expert_support_admin/Models/service_model.dart';
 import 'package:expert_support_admin/Models/status.dart';
-import 'package:expert_support_admin/Screens/NewServices/add_new_service.dart';
 
 class Validator{
   final validateUsername = StreamTransformer<String, String>.fromHandlers(
@@ -153,6 +152,37 @@ class Validator{
         sink.addError("Sub main service should not be empty");
       } else {
         sink.add(subMainService);
+      }
+    }
+  );
+
+  final validateDiscountCode = StreamTransformer<String, String>.fromHandlers(
+    handleData: (code, sink){
+      if (code == null || code.isEmpty) {
+        sink.addError("Code should not be empty");
+      } 
+
+      RegExp regSpace = RegExp(r"\s+\b|\b\s");
+      Iterable<RegExpMatch> regSpaceMatches = regSpace.allMatches(code);
+      if (code.contains(" ")) {
+        sink.addError("Code should not include space");
+      } else if (regSpaceMatches.length > 0) {
+        sink.addError("Code should not include space");
+      } else {
+        sink.add(code);
+      } 
+    }
+  );
+
+  final validateDiscountPercent = StreamTransformer<String, String>.fromHandlers(
+    handleData: (percent, sink){
+      RegExp regExpForNum = RegExp("^\\d+(\\.\\d{1,2})?\$");
+      if (percent == null || percent.isEmpty) {
+        sink.addError("Percent should not be empty");
+      } else if (!regExpForNum.hasMatch(percent)){
+        sink.addError("Field should be positive number only");
+      } else {
+        sink.add(percent);
       }
     }
   );

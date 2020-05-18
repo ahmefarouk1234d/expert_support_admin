@@ -3,7 +3,6 @@ import 'package:expert_support_admin/BlocResources/app_bloc.dart';
 import 'package:expert_support_admin/BlocResources/base_provider.dart';
 import 'package:expert_support_admin/HelperClass/enums.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
-import 'package:expert_support_admin/Models/status.dart';
 import 'package:expert_support_admin/Screens/Home/Order/details.dart';
 import 'package:expert_support_admin/Screens/Home/order_list.dart';
 import 'package:expert_support_admin/SharedWidget/loading.dart';
@@ -80,10 +79,10 @@ class _OrdersListState extends State<OrdersList> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return NoData();
+              return Loading();
             default:
               if (!snapshot.hasData) {
-                Loading();
+                return NoData();
               }
               orderList = OrderInfo.fromMapList(
                   orderDocDataList: snapshot.data.documents);

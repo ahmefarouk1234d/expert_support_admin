@@ -52,11 +52,13 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
   bool isLoading;
   OrderOfferBloc _orderOfferBloc;
   bool hasSubService;
+  num originalPrice;
 
   @override
   void initState() {
     serviceCategoryList = List();
     hasSubService = false;
+    originalPrice = 0.0;
     _getServices();
     super.initState();
   }
@@ -97,6 +99,8 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
 
       _orderOfferBloc.subMainServiceChange(null);
       subMainServiceList = null;
+
+      originalPrice = 0.0;
     });
   }
 
@@ -105,6 +109,7 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
       serviceTypeList.forEach((servType) {
         if (value.id == servType.id) {
           mainServiceList = servType.mainServiceList;
+          originalPrice = 0.0;
         }
       });
       _orderOfferBloc.mainServiceChange(null);
@@ -118,10 +123,19 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
       mainServiceList.forEach((servType) {
         if (value.id == servType.id) {
           subMainServiceList = servType.subMainServiceList;
+          if (!value.hasSub) {
+            originalPrice = value.price;
+          }
         }
       });
       hasSubService = value.hasSub;
       _orderOfferBloc.subMainServiceChange(null);
+    });
+  }
+
+  _handleSubMainServiceChange(SubMainService value) {
+    setState(() {
+      originalPrice = value.price;
     });
   }
 
@@ -233,7 +247,10 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
                   child: SubMainServiceDropDownButton(
                     subMainServiceList: subMainServiceList,
                     subMainService: snapshot.data,
-                    onChanged: _orderOfferBloc.subMainServiceChange,
+                    onChanged: (value) { 
+                      _handleSubMainServiceChange(value);
+                      _orderOfferBloc.subMainServiceChange(value); 
+                    },
                   ),
                 );
               }
@@ -241,6 +258,7 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
             Container(
               height: 16.0,
             ),
+            ServiceOrigianlPrice(price: originalPrice,),
             StreamBuilder<String>(
                 stream: _orderOfferBloc.offerTitleAr,
                 builder: (context, snapshot) {
@@ -558,6 +576,30 @@ class SubMainServiceDropDownButton extends StatelessWidget {
                     value: serv,
                   ))
               .toList(),
+    );
+  }
+}
+
+class ServiceOrigianlPrice extends StatelessWidget {
+  ServiceOrigianlPrice({Key key, @required this.price}): super(key: key);
+
+  final num price;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 8, bottom: 8),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              AppLocalizations.of(context).translate(LocalizedKey.offerOriginalServicePrice)
+            )
+          ),
+          Container(width: 8,),
+          Text("$price")
+        ],
+      ),
     );
   }
 }

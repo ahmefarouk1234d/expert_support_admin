@@ -1,9 +1,0 @@
-{
-    "app_name" : "خبراء المساندة",
-    "Login": {
-        "forgot_password": "نسيت كلمة السر",
-        "email_placeholder": "ادخل الايميل",
-        "password_placeholder": "ادخل كلمة السر",
-        "login_button": "تسجيل دخول"
-    }
-}
