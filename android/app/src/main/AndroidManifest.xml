@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.f3deve.flutter.android">
+    package="com.expertsSupport.flutter.adminApp.android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -12,6 +12,9 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="ES Admin"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="true"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

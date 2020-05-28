@@ -9,8 +9,9 @@ import 'package:flutter/material.dart';
 
 class EditServicesButtons extends StatelessWidget {
   final VoidCallback onSave;
+  final VoidCallback onAddNewService;
   final List<OrderService> services;
-  EditServicesButtons({this.onSave, this.services});
+  EditServicesButtons({this.onSave, this.onAddNewService, this.services});
 
   _handleAddService(BuildContext context, OrderBloc bloc){
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddNewService(orderBloc: bloc, services: services,)));
@@ -25,7 +26,7 @@ class EditServicesButtons extends StatelessWidget {
         children: <Widget>[
           CommonButton(
             title: AppLocalizations.of(context).translate(LocalizedKey.editOrderAddNewServiceButtonTitle),
-            onPressed: () => _handleAddService(context, _orderBloc),
+            onPressed: onAddNewService //() => _handleAddService(context, _orderBloc),
           ),
           Container(height: 8,),
           CommonButton(

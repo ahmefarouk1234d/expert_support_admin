@@ -55,8 +55,11 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
   }
 
   _handleDeleteService(){
-    widget.services.removeAt(widget.index);
-    _orderBloc.servicesChange.add(widget.services);
+    // widget.services.removeAt(widget.index);
+    // _orderBloc.servicesChange.add(widget.services);
+    setState(() {
+      service.isDeleted = true;
+    });
   }
 
   @override
@@ -67,77 +70,90 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
     
     return Container(
       padding: EdgeInsets.all(8),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Expanded(
-            child: Column(
-              children: <Widget>[
-                Row(
+          service.isDeleted ? Container(color: Colors.red, child: Text("DELETED"),) : Container(),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Column(
                   children: <Widget>[
-                    Expanded(
-                      child: Text(
-                        serviceName, 
-                        style: TextStyle(fontSize: Screen.fontSize(size: 18))),),
-                    Container(width: 8,),
-                    Container(
-                      height: Screen.screenWidth * 0.11,
-                      width: Screen.screenWidth * 0.17,
-                      //padding: EdgeInsets.all(4),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black, width: 2),
-                      ),
-                      child: TextField(
-                        controller: priceController, 
-                        keyboardType: TextInputType.numberWithOptions(decimal: true),
-                        onChanged: _handlePriceChange,
-                        decoration: InputDecoration.collapsed(
-                          hintText: "0.0"
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            serviceName, 
+                            style: TextStyle(fontSize: Screen.fontSize(size: 18))),),
+                        Container(width: 8,),
+                        Container(
+                          height: Screen.screenWidth * 0.11,
+                          width: Screen.screenWidth * 0.17,
+                          //padding: EdgeInsets.all(4),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.black, width: 2),
+                          ),
+                          child: TextField(
+                            controller: priceController, 
+                            keyboardType: TextInputType.numberWithOptions(decimal: true),
+                            onChanged: _handlePriceChange,
+                            enabled: !service.isDeleted,
+                            decoration: InputDecoration.collapsed(
+                              hintText: "0.0"
+                            ),
+                          ),
                         ),
+                        //Text(service.total.toString())
+                      ],
+                    ),
+                    service.isDeleted ? Container() 
+                      : Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Checkbox(
+                                value: service.neededParts,
+                                onChanged: _handlePartsChange
+                              ),
+                              Expanded(
+                                child: Text(AppLocalizations.of(context).translate(LocalizedKey.neededPartsTitle))),
+                              DropdownButton(
+                                  value: service.quantity,
+                                  onChanged: _updateQuantityAndPrice,
+                                  items: _qaunityList
+                                      .map((q) => DropdownMenuItem(
+                                            child: Text("$q"),
+                                            value: q,
+                                          ))
+                                      .toList())
+                            ],
+                          ),
+                          Container(height: 8,),
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(AppLocalizations.of(context).translate(LocalizedKey.totalPriceTitle)),),
+                              Text(service.total.toString())
+                            ],
+                          )
+                        ],
                       ),
-                    ),
-                    //Text(service.total.toString())
                   ],
                 ),
-                Row(
-                  children: <Widget>[
-                    Checkbox(
-                      value: service.neededParts,
-                      onChanged: _handlePartsChange
-                    ),
-                    Expanded(
-                      child: Text(AppLocalizations.of(context).translate(LocalizedKey.neededPartsTitle))),
-                    DropdownButton(
-                        value: service.quantity,
-                        onChanged: _updateQuantityAndPrice,
-                        items: _qaunityList
-                            .map((q) => DropdownMenuItem(
-                                  child: Text("$q"),
-                                  value: q,
-                                ))
-                            .toList())
-                  ],
-                ),
-                Container(height: 8,),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Text(AppLocalizations.of(context).translate(LocalizedKey.totalPriceTitle)),),
-                    Text(service.total.toString())
-                  ],
+              ),
+              Container(width: 8,),
+              service.isDeleted ? Container()
+                : SizedBox(
+                  width: Screen.screenWidth * 0.1,
+                  child: FlatButton(
+                    child: Text("x"),
+                    onPressed: _handleDeleteService,
+                  ),
                 )
-              ],
-            ),
+            ],
           ),
-          Container(width: 8,),
-          SizedBox(
-            width: Screen.screenWidth * 0.1,
-            child: FlatButton(
-              child: Text("x"),
-              onPressed: _handleDeleteService,
-            ),
-          )
         ],
       ),
     );

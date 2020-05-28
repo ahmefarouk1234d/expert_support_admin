@@ -14,7 +14,7 @@ class OrderMainInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String phone = order.userPhone.replaceAll("+966", '0');
+    String phone = order.userPhone == null ? '' : order.userPhone.replaceAll("+966", '0');
     String localCode = AppLocalizations.of(context).locale.languageCode;
     String visitDate = DateConvert().toStringFromDate(date: order.visitDate, locale: localCode);
     AppLocalizations localizations = AppLocalizations.of(context);

@@ -166,5 +166,9 @@
     "offer_original_service_price": "السعر الاصلي",
     "offer_detele_button_title": "حذف",
     "customer_should_pay": "يجب على العميل أن يدفع",
-    "payment_method_title": "طريقة الدفع"
+    "payment_method_title": "طريقة الدفع",
+    "general_details_menu_title": "معلومات عامة",
+    "order_history_menu_title": "الطلبات التاريخيه",
+    "all_service_deleted_alert_message": "لم يمكن حذف جميع الخدمات. الطلب يجب ان يحتوي على خدمة وحدة على الاقل",
+    "no_service_found_alert_message": "لا يمكن للطلب ان لا يحتوي على خدمات"
 }

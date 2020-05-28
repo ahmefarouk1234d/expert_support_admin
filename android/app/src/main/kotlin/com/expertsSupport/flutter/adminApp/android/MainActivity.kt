@@ -1,4 +1,4 @@
-package com.f3deve.flutter.android
+package com.expertsSupport.flutter.adminApp.android
 
 import android.os.Bundle
 

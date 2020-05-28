@@ -166,4 +166,8 @@ class LocalizedKey{
   static const String offerDeleteButtonTitle = "offer_detele_button_title";
   static const String customerShouldPay = "customer_should_pay";
   static const String paymentMethodTitle = "payment_method_title";
+  static const String generalDetailsMenuTitle = "general_details_menu_title";
+  static const String orderHistoryMenuTitle = "order_history_menu_title";
+  static const String allServicesDeletedAlertMessage = "all_service_deleted_alert_message";
+  static const String noServiceFoundAlertMessage = "no_service_found_alert_message";
 }

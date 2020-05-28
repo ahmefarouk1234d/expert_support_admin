@@ -1,19 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Models/discount_model.dart';
+import 'package:expert_support_admin/Models/general_details_model.dart';
 import 'package:expert_support_admin/Models/offer_model.dart';
 import 'package:expert_support_admin/Models/offer_status.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/Models/status.dart';
 
 class DataBase{
+  static const bool isTestMode = false;
+
   final adminUserCollection = Firestore.instance.collection("AdminUser");
-  final ordersCollection = Firestore.instance.collection("OrdersList");
-  final servicesCollection = Firestore.instance.collection("ServiceList");
   final offerCollection = Firestore.instance.collection("Offers");
+
+  final servicesCollection = Firestore.instance.collection("ServiceList");
+  final servicesTestCollectoion = Firestore.instance.collection("ServiceListTest");
+
+  final ordersCollection = Firestore.instance.collection("OrdersList");
+  final ordersTestCollectoion = Firestore.instance.collection("OrdersListTest");
+
   final orderOfferCollection = Firestore.instance.collection("OrderOffers");
+  final offersListTestCollectoion = Firestore.instance.collection("OrderOffersTest");
+  
+  final generalDetailsCollection = Firestore.instance.collection("GeneralDetails");
+  final generalDetailsTestCollection = Firestore.instance.collection("GeneralDetailsTest");
+
   final dateAvailabilityCollection = Firestore.instance.collection("DateAvailabilityLog");
+  final dateAvailabilityTestCollection = Firestore.instance.collection("DateAvailabilityLogTest");
+
   final discountCollection = Firestore.instance.collection("Discount");
+  final discountTestCollection = Firestore.instance.collection("DiscountTest");
 
   Future<void> saveAdminUser(AdminUserInfo admin) {
     Map<String, dynamic> adminUserMap = AdminUserInfo().toMap(admin);
@@ -31,7 +47,9 @@ class DataBase{
   }
 
   Stream<QuerySnapshot> getPendingOrders(){
-    final orders = ordersCollection
+    CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
+
+    final orders = collectionReference
       .where("workflow_status", whereIn: [WorkflowStatus.pending, WorkflowStatus.requestChange])
       .orderBy("order_date_updated")
       .snapshots(includeMetadataChanges: true);
@@ -39,7 +57,8 @@ class DataBase{
   }
 
   Stream<QuerySnapshot> getInProcessOrders(){
-    final orders = ordersCollection
+    CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
+    final orders = collectionReference
       .where("workflow_status", whereIn: [WorkflowStatus.inProcess, WorkflowStatus.requestChangeReply])
       .orderBy("order_date_updated")
       .snapshots();
@@ -47,7 +66,8 @@ class DataBase{
   }
 
   Stream<QuerySnapshot> getDoneOrders(){
-    final orders = ordersCollection
+    CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
+    final orders = collectionReference
       .where("workflow_status", isEqualTo: WorkflowStatus.done)
       .orderBy("order_date_updated")
       .snapshots();
@@ -55,7 +75,8 @@ class DataBase{
   }
 
   Stream<QuerySnapshot> getCanceledOrders(){
-    final orders = ordersCollection
+    CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
+    final orders = collectionReference
       .where("workflow_status", isEqualTo: WorkflowStatus.canceled)
       .orderBy("order_date_updated")
       .snapshots();
@@ -63,7 +84,8 @@ class DataBase{
   }
 
   Stream<QuerySnapshot> getOrders(){
-    final orders = ordersCollection
+    CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
+    final orders = collectionReference
       .orderBy("order_date_updated", descending: true)
       .snapshots();
     return orders;
@@ -77,7 +99,8 @@ class DataBase{
 
       WriteBatch batch = Firestore.instance.batch();
 
-      DocumentReference ordersDocRef = ordersCollection.document(order.documentID);
+      CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
+      DocumentReference ordersDocRef = collectionReference.document(order.documentID);
       batch.updateData(ordersDocRef, {
         "order_status": order.orderStatus,
         "workflow_status": order.workflowStatus,
@@ -146,7 +169,8 @@ class DataBase{
       "total_price_with_VAT": order.totalPriceWithVAT,
     };
 
-    return ordersCollection.document(docId).updateData(updatedOrderMap);
+    CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
+    return collectionReference.document(docId).updateData(updatedOrderMap);
   }
 
   Future<void> updateTimeDate(OrderInfo order, String docId){
@@ -156,11 +180,14 @@ class DataBase{
       "visit_time": order.visitTime,
       "visit_date_and_time": order.visitDateAndTime.millisecondsSinceEpoch
     };
-    return ordersCollection.document(docId).updateData(updatedOrderMap);
+
+    CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
+    return collectionReference.document(docId).updateData(updatedOrderMap);
   }
 
   Future<QuerySnapshot> getServices(){
-    return servicesCollection.orderBy("Order").getDocuments();
+    CollectionReference collectionReference = isTestMode ? servicesTestCollectoion : servicesCollection;
+    return collectionReference.orderBy("Order").getDocuments();
   }
 
   Future<DocumentSnapshot> getAdminInfo(String adminID){
@@ -196,34 +223,51 @@ class DataBase{
 
   Future<void> saveOrderOffer(OrderOfferInfo offer){
     Map<String, dynamic> offerMap = OrderOfferInfo().toMapOnCreate(offer);
-    return orderOfferCollection.document().setData(offerMap);
+
+    CollectionReference collectionReference = isTestMode ? offersListTestCollectoion : orderOfferCollection;
+    return collectionReference.document().setData(offerMap);
   }
 
   Future<void> updateAllOrderOffer(OrderOfferInfo offer) {
     Map<String, dynamic> offerMap = OrderOfferInfo().toMapOnUpdateAll(offer);
-    return orderOfferCollection.document(offer.id).updateData(offerMap);
+    CollectionReference collectionReference = isTestMode ? offersListTestCollectoion : orderOfferCollection;
+    return collectionReference.document(offer.id).updateData(offerMap);
   }
 
   Future<void> updateOrderOfferStatus(OrderOfferInfo offer) {
     Map<String, dynamic> offerMap = OrderOfferInfo().toMapOnUpdateStatus(offer);
-    return orderOfferCollection.document(offer.id).updateData(offerMap);
+
+    CollectionReference collectionReference = isTestMode ? offersListTestCollectoion : orderOfferCollection;
+    return collectionReference.document(offer.id).updateData(offerMap);
   }
 
   Stream<QuerySnapshot> getAllOrderOffers(){
-    return orderOfferCollection.where("status", whereIn: [OfferStatus.active, OfferStatus.deactive]).snapshots();
+    CollectionReference collectionReference = isTestMode ? offersListTestCollectoion : orderOfferCollection;
+    return collectionReference.where("status", whereIn: [OfferStatus.active, OfferStatus.deactive]).snapshots();
   }
 
   Future<void> saveDiscountCode(DiscountInfo discountInfo){
     Map<String, dynamic> discountInfoMap = DiscountInfo().toMapOnCreate(discountInfo);
-    return discountCollection.document().setData(discountInfoMap);
+
+    CollectionReference collectionReference = isTestMode ? discountTestCollection : discountCollection;
+    return collectionReference.document().setData(discountInfoMap);
   }
 
   Stream<QuerySnapshot> getAllDiscountCode(){
-    return discountCollection.snapshots();
+    CollectionReference collectionReference = isTestMode ? discountTestCollection : discountCollection;
+    return collectionReference.snapshots();
   }
 
   Future<void> updateDiscountCode(DiscountInfo discount){
     Map<String, dynamic> discountMap = DiscountInfo().toMapOnUpdateStatus(discount);
-    return discountCollection.document(discount.id).updateData(discountMap);
+
+    CollectionReference collectionReference = isTestMode ? discountTestCollection : discountCollection;
+    return collectionReference.document(discount.id).updateData(discountMap);
   }  
+
+  Future<SubmitOrder> getSubmittedOrderGeneralDetails() async {
+    CollectionReference collectionReference = isTestMode ? generalDetailsTestCollection : generalDetailsCollection;
+    DocumentSnapshot doc = await collectionReference.document("SubmitOrder").get();
+    return SubmitOrder.fromDocumentSnapshot(doc);
+  }
 }

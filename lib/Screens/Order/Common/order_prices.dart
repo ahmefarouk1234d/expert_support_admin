@@ -21,7 +21,9 @@ class OrderPrices extends StatelessWidget {
       double.parse(totalPriceWithPartsPrice.toStringAsFixed(2));
     final double totalRemainingAbs = totalRemaining.abs();
     final bool isDone = order.workflowStatus == WorkflowStatus.done;
-    final double finalTotalPrice = isDone ? totalPriceWithPartsPrice : order.totalPriceWithVAT;
+    final double finalTotalPrice = isDone 
+      ? double.parse(totalPriceWithPartsPrice.toStringAsFixed(2))
+      : double.parse(order.totalPriceWithVAT.toStringAsFixed(2));
     final String sign = totalRemaining == 0 ? "" : totalRemaining < 0 ? "-" : "+";
     
 

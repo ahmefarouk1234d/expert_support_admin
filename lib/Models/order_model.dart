@@ -170,6 +170,7 @@ class OrderService{
   num total;
   num quantity;
   bool neededParts;
+  bool isDeleted = false;
 
   OrderService({this.serviceCategoryId, this.mainServiceId, this.subMainServiceId, this.isSubService, this.nameAr, this.nameEn, this.priceForOnePiece, this.total, this.quantity, this.neededParts});
 

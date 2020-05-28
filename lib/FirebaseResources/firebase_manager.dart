@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Models/discount_model.dart';
+import 'package:expert_support_admin/Models/general_details_model.dart';
 import 'package:expert_support_admin/Models/offer_model.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -149,6 +150,10 @@ class FirebaseManager{
 
   Future<void> updateDiscountCode(DiscountInfo discount) {
     return _db.updateDiscountCode(discount);
+  }
+
+  Future<SubmitOrder> getSubmittedOrderGeneralDetails() {
+    return _db.getSubmittedOrderGeneralDetails();
   }
 
   // -------------------- End Database Services -------------------
