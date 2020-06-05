@@ -76,7 +76,7 @@ class _EditServicesContentState extends State<EditServicesContent> {
   _handleSaveChanges() async{
     try{
       Common().loading(context);
-      _handleServicePriceChanges();
+      await _handleServicePriceChanges();
       await _firebaseManager.updateServices(_orderInfo, widget.orderDocID);
       _orderBloc.ordersChange.add(_orderInfo);
       Common().dismiss(context);
@@ -100,8 +100,8 @@ class _EditServicesContentState extends State<EditServicesContent> {
     double vatPercentage = submitOrder.vatPercentage / 100;
 
     _services.forEach((serv){
-      _total += serv.total;
       if (!serv.isDeleted) {
+        _total += serv.total;
         _updatedServices.add(serv);
       }
     });

@@ -170,4 +170,6 @@ class LocalizedKey{
   static const String orderHistoryMenuTitle = "order_history_menu_title";
   static const String allServicesDeletedAlertMessage = "all_service_deleted_alert_message";
   static const String noServiceFoundAlertMessage = "no_service_found_alert_message";
+  static const String lastUpdateDateTitle = "last_update_date_title";
+  static const String orderVisitDateTitle = "order_visit_date_title";
 }

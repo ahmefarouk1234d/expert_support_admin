@@ -170,5 +170,7 @@
     "general_details_menu_title": "معلومات عامة",
     "order_history_menu_title": "الطلبات التاريخيه",
     "all_service_deleted_alert_message": "لم يمكن حذف جميع الخدمات. الطلب يجب ان يحتوي على خدمة وحدة على الاقل",
-    "no_service_found_alert_message": "لا يمكن للطلب ان لا يحتوي على خدمات"
+    "no_service_found_alert_message": "لا يمكن للطلب ان لا يحتوي على خدمات",
+    "last_update_date_title": "تاريخ اخر تحديث",
+    "order_visit_date_title": "تاريخ الزيارة"
 }

@@ -168,5 +168,7 @@
     "general_details_menu_title": "General Details",
     "order_history_menu_title": "History of Orders",
     "all_service_deleted_alert_message": "Cannot delete all service. Order should have at least one service",
-    "no_service_found_alert_message": "Order cannot have no services"
+    "no_service_found_alert_message": "Order cannot have no services",
+    "last_update_date_title": "Last update date",
+    "order_visit_date_title": "Visit date"
 }
