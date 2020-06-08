@@ -1,20 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
+import 'package:expert_support_admin/HelperClass/enums.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:flutter/material.dart';
 
-enum GeneralDetailsType {
-  contactUs,
-  shared,
-  submitOrder,
-  orderLimit
-}
-
-class GeneralDetails {
+class GeneralDetailsModel {
+  GeneralDetailsType type;
   AboutUs aboutUs;
   Shared shared;
   SubmitOrder submitOrder;
   OrderLimit orderLimit;
 
-  GeneralDetails();
+  GeneralDetailsModel();
 
   _fromDocumentSnapshotToObject(DocumentSnapshot doc){
     Map<String, dynamic> data = doc.data;
@@ -22,18 +19,22 @@ class GeneralDetails {
     switch (doc.documentID) {
       case "ContactUs":
         this.aboutUs = AboutUs.fromMap(data);
+        this.type = GeneralDetailsType.contactUs;
         break;
 
       case "Shared":
         this.shared = Shared.fromMap(data);
+        this.type = GeneralDetailsType.shared;
         break;
 
       case "SubmitOrder":
         this.submitOrder = SubmitOrder.fromMap(data);
+        this.type = GeneralDetailsType.submitOrder;
         break;
 
       case "orderLimit":
         this.orderLimit = OrderLimit.fromMap(data);
+        this.type = GeneralDetailsType.orderLimit;
         break;
 
       default:
@@ -41,16 +42,42 @@ class GeneralDetails {
     }
   }
 
-  GeneralDetails.fromDocumentSnapshot(DocumentSnapshot doc){
+  GeneralDetailsModel.fromDocumentSnapshot(DocumentSnapshot doc){
     this._fromDocumentSnapshotToObject(doc);
   }
 
-  static GeneralDetails fromDocumentSnapshotList({@required List<DocumentSnapshot> docList}){
-    GeneralDetails details = GeneralDetails();
+  static List<GeneralDetailsModel> fromDocumentSnapshotList({@required List<DocumentSnapshot> docList}){
+    List<GeneralDetailsModel> detailList = List();
     docList.forEach((doc) {
-      details._fromDocumentSnapshotToObject(doc);
+      detailList.add(GeneralDetailsModel().._fromDocumentSnapshotToObject(doc));
     });
-    return details;
+    return detailList;
+  }
+
+  static String getDisplayType(GeneralDetailsType type, BuildContext context) {
+    AppLocalizations localizations = AppLocalizations.of(context);
+    bool isArabic = localizations.isArabic();
+    String diplayType = "";
+    
+    switch (type){
+      case GeneralDetailsType.contactUs:
+        diplayType = localizations.translate(LocalizedKey.aboutUsItemTitle);
+        break;
+      case GeneralDetailsType.shared:
+        diplayType = localizations.translate(LocalizedKey.sharedItemTitle);;
+        break;
+      case GeneralDetailsType.submitOrder:
+        diplayType = localizations.translate(LocalizedKey.submitOrderItemTitle);
+        break;
+      case GeneralDetailsType.orderLimit:
+        diplayType = localizations.translate(LocalizedKey.orderLimitItemTitle);
+        break;
+      default: 
+        diplayType = "unknow type";
+        break;
+    }
+
+    return diplayType;
   }
 }
 
@@ -86,6 +113,19 @@ class AboutUs {
     dataList.forEach((data) => list.add(AboutUs().._fromMapToObject(data)));
     return list;
   }
+
+  Map<String, dynamic> toMapOnUpdate(AboutUs aboutUs) {
+    return {
+      "header_ar": aboutUs.headerAr,
+      "header_en": aboutUs.headerEn,
+      "about_us_ar": aboutUs.aboutUsAr,
+      "about_us_en": aboutUs.aboutUsEn,
+      "phone": aboutUs.phone,
+      "twitter": aboutUs.twitter,
+      "instagram": aboutUs.instagram,
+      "facebook": aboutUs.facebook,
+    };
+  }
 }
 
 class Shared {
@@ -107,6 +147,13 @@ class Shared {
     List<Shared> list = List();
     dataList.forEach((data) => list.add(Shared().._fromMapToObject(data)));
     return list;
+  }
+
+  Map<String, dynamic> toMapOnUpdate(Shared shared) {
+    return {
+      "link": shared.link,
+      "link_android": shared.linkAndroid
+    };
   }
 }
 
@@ -148,6 +195,15 @@ class SubmitOrder {
     List<SubmitOrder> list = List();
     dataList.forEach((data) => list.add(SubmitOrder().._fromMapToObject(data)));
     return list;
+  }
+
+  Map<String, dynamic> toMapOnUpdate(SubmitOrder submitOrder) {
+    return {
+      "limit_rate": submitOrder.limitRate,
+      "is_cash_enabled": submitOrder.isCashEnabled,
+      "is_pos_enabled": submitOrder.isPOSEnabled,
+      "VAT_percentage": submitOrder.vatPercentage
+    };
   }
 }
 
@@ -194,5 +250,13 @@ class OrderLimit {
     List<OrderLimit> list = List();
     dataList.forEach((data) => list.add(OrderLimit().._fromMapToObject(data)));
     return list;
+  }
+
+  Map<String, dynamic> toMapOnUpdate(OrderLimit orderLimit) {
+    return {
+      "per_day": orderLimit.perDay,
+      "unavailable_start_date": orderLimit.unavaliableStartDateTimestamp,
+      "unavailable_end_date": orderLimit.unavaliableEndDateTimestamp
+    };
   }
 }

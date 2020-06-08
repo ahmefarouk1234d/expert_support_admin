@@ -21,6 +21,7 @@ class AppBloc{
   Stream<QuerySnapshot> get offerListDocument => _firebaseManager.getAllOffers();
   Stream<QuerySnapshot> get orderOfferListDocument => _firebaseManager.getAllOrderOffers();
   Stream<QuerySnapshot> get discountListDocument => _firebaseManager.getAllDiscountCode();
+  Stream<QuerySnapshot> get generalDetailsListDocument => _firebaseManager.getGeneralDetails();
 
   Stream<QuerySnapshot> pendingOrderDoc() async* {
     subscription?.cancel();

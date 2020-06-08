@@ -109,7 +109,7 @@ class Validator{
       if (text.isEmpty) {
         sink.addError("Field should not be empty");
       } else if (!regExpForNum.hasMatch(text)){
-        sink.addError("Field should not be number only");
+        sink.addError("Field should be number only");
       } else {
         sink.add(text);
       }
@@ -183,6 +183,16 @@ class Validator{
         sink.addError("Field should be positive number only");
       } else {
         sink.add(percent);
+      }
+    }
+  );
+
+  final validateDate = StreamTransformer<DateTime, DateTime>.fromHandlers(
+    handleData: (date, sink){
+      if(date == null){
+        sink.addError("Date should not be empty");
+      } else {
+        sink.add(date);
       }
     }
   );

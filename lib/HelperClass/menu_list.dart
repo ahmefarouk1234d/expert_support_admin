@@ -176,8 +176,8 @@ class MenuList {
       NavWidget(title: offersTitle, widget: OrderOffer()),
       NavWidget(title: discount, widget: DiscountPage()),
       NavWidget(title: usersTitle, widget: Users()),
-      // NavWidget(title: generalDetailsTitle, widget: GeneralDetails()),
-      // NavWidget(title: ordersHistory, widget: Users()),
+      NavWidget(title: generalDetailsTitle, widget: GeneralDetails()),
+      //NavWidget(title: ordersHistory, widget: Users()),
       NavWidget(
           title: changePasswordTitle, widget: ChangePassword()),
     ], menuList: [
@@ -185,8 +185,8 @@ class MenuList {
       offersTitle,
       discount,
       usersTitle,
-      // generalDetailsTitle,
-      // ordersHistory,
+      generalDetailsTitle,
+      //ordersHistory,
       changePasswordTitle,
       signOutTitle
     ]);

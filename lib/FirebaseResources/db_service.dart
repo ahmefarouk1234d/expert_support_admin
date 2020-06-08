@@ -265,9 +265,42 @@ class DataBase{
     return collectionReference.document(discount.id).updateData(discountMap);
   }  
 
+  Stream<QuerySnapshot> getGeneralDetails() {
+    CollectionReference collectionReference = isTestMode ? generalDetailsTestCollection : generalDetailsCollection;
+    return collectionReference.snapshots();
+  }
+
   Future<SubmitOrder> getSubmittedOrderGeneralDetails() async {
     CollectionReference collectionReference = isTestMode ? generalDetailsTestCollection : generalDetailsCollection;
     DocumentSnapshot doc = await collectionReference.document("SubmitOrder").get();
     return SubmitOrder.fromDocumentSnapshot(doc);
+  }
+
+  Future<void> updateAboutUsGeneralDetails(AboutUs aboutUs) {
+    Map<String, dynamic> dataMap = AboutUs().toMapOnUpdate(aboutUs);
+    CollectionReference collectionReference = isTestMode ? generalDetailsTestCollection : generalDetailsCollection;
+
+    return collectionReference.document("ContactUs").updateData(dataMap);    
+  }
+
+  Future<void> updateSharedGeneralDetails(Shared shared) {
+    Map<String, dynamic> dataMap = Shared().toMapOnUpdate(shared);
+    CollectionReference collectionReference = isTestMode ? generalDetailsTestCollection : generalDetailsCollection;
+
+    return collectionReference.document("Shared").updateData(dataMap);
+  }
+
+  Future<void> updateSubmitOrderGeneralDetails(SubmitOrder submitOrder) {
+    Map<String, dynamic> dataMap = SubmitOrder().toMapOnUpdate(submitOrder);
+    CollectionReference collectionReference = isTestMode ? generalDetailsTestCollection : generalDetailsCollection;
+
+    return collectionReference.document("SubmitOrder").updateData(dataMap);
+  }
+
+  Future<void> updateOrderLimitGeneralDetails(OrderLimit orderLimit) {
+    Map<String, dynamic> dataMap = OrderLimit().toMapOnUpdate(orderLimit);
+    CollectionReference collectionReference = isTestMode ? generalDetailsTestCollection : generalDetailsCollection;
+
+    return collectionReference.document("orderLimit").updateData(dataMap);
   }
 }

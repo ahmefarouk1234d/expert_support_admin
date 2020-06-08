@@ -152,8 +152,30 @@ class FirebaseManager{
     return _db.updateDiscountCode(discount);
   }
 
+  Stream<QuerySnapshot> getGeneralDetails() {
+    return _db.getGeneralDetails();
+  }
+
   Future<SubmitOrder> getSubmittedOrderGeneralDetails() {
     return _db.getSubmittedOrderGeneralDetails();
+  }
+
+  Future<void> updateAboutUsGeneralDetails(AboutUs aboutUs) {
+    return _db.updateAboutUsGeneralDetails(aboutUs);
+  }
+
+
+  Future<void> updateSharedGeneralDetails(Shared shared) {
+    return _db.updateSharedGeneralDetails(shared);
+  }
+
+
+  Future<void> updateSubmitOrderGeneralDetails(SubmitOrder submitOrder) {
+    return _db.updateSubmitOrderGeneralDetails(submitOrder);
+  }
+
+  Future<void> updateOrderLimitGeneralDetails(OrderLimit orderLimit) {
+    return _db.updateOrderLimitGeneralDetails(orderLimit);
   }
 
   // -------------------- End Database Services -------------------

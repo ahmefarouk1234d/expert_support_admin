@@ -18,3 +18,10 @@ enum OrderToDisplay{
   canceled,
   all
 }
+
+enum GeneralDetailsType {
+  contactUs,
+  shared,
+  submitOrder,
+  orderLimit
+}

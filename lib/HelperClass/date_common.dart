@@ -32,4 +32,16 @@ class DateConvert{
     }
     return isArabic ? "مساءاً" : "PM";
   }
+  
+  int getTimestamp({@required DateTime date}) {
+    return _normalizeDate(date).millisecondsSinceEpoch;
+  }
+
+  DateTime getDate({@required int timestamp}) {
+    return DateTime.fromMillisecondsSinceEpoch(timestamp);
+  }
+
+  DateTime _normalizeDate(DateTime value) {
+    return DateTime.utc(value.year, value.month, value.day, 12);
+  }
 }
