@@ -1,5 +1,3 @@
-import 'package:expert_support_admin/BlocResources/base_provider.dart';
-import 'package:expert_support_admin/BlocResources/order_bloc.dart';
 import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
@@ -18,7 +16,6 @@ class ServiceRowToEdit extends StatefulWidget {
 class _ServiceRowToEditState extends State<ServiceRowToEdit> {
   OrderService service;
   List<int> _qaunityList;
-  OrderBloc _orderBloc;
   TextEditingController priceController;
 
   @override
@@ -64,7 +61,6 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
 
   @override
   Widget build(BuildContext context) {
-    _orderBloc = Provider.of<OrderBloc>(context);
     bool isArabic = AppLocalizations.of(context).isArabic();
     String serviceName = isArabic ? service.nameAr ?? "" : service.nameEn ?? "";
     

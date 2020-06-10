@@ -16,7 +16,7 @@ class OrderMainInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     String phone = order.userPhone == null ? '' : order.userPhone.replaceAll("+966", '0');
     String localCode = AppLocalizations.of(context).locale.languageCode;
-    String visitDate = DateConvert().toStringFromDate(date: order.visitDate, locale: localCode);
+    String visitDate = DateConvert().toStringFromDate(date: order.visitDate, locale: localCode, isFull: true);
     AppLocalizations localizations = AppLocalizations.of(context);
     String workflowStatus = WorkflowStatus().getDisplayStatus(status: order.workflowStatus, context: context);
     String visitTime = 

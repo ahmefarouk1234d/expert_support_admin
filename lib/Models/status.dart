@@ -13,6 +13,8 @@ class OrderStatus {
   static const String pendingAr = "معلق";
   static const String requestChangeEn = "Request Change";
   static const String requestChangeAr = "طلب تعديل";
+  static const String deleteAr = "محذوف";
+  static const String deleteEn = "Deleted";
   static const String unknownAr = "حالة غير معروفة";
   static const String unknownEn = "Unknow Status";
 
@@ -21,6 +23,7 @@ class OrderStatus {
   static const String done = "Done";
   static const String pending = "Pending";
   static const String canceled = "Canceled";
+  static const String delete = "Delete";
   static const String unknown = "unknow";
 
   String getDisplayStatus({@required String status, @required BuildContext context}) {
@@ -34,6 +37,8 @@ class OrderStatus {
         return isArabic ? doneAr : doneEn;
       case canceled:
         return isArabic ? canceledAr : canceledEn;
+      case delete:
+        return isArabic ? deleteAr : deleteEn;
       default:
         return isArabic ? unknownAr : unknownEn;
     }
@@ -56,6 +61,8 @@ class WorkflowStatus {
   static const String requestChangeReplyAr = "الرد على طلب تعديل";
   static const String addNewServiceEn = "Added New Service";
   static const String addNewServiceAr = "اضافة خدمة جديدة";
+  static const String deleteAr = "محذوف";
+  static const String deleteEn = "Deleted";
   static const String unknownAr = "حالة غير معروفة";
   static const String unknownEn = "Unknow Status";
 
@@ -67,6 +74,7 @@ class WorkflowStatus {
   static const String requestChange = "RequestChange";
   static const String requestChangeReply = "RequestChangeReply";
   static const String addNewService = "AddNewService";
+  static const String delete = "Delete";
   static const String unknown = "unknow";
 
   String getDisplayStatus({@required String status, @required BuildContext context}) {
@@ -86,6 +94,8 @@ class WorkflowStatus {
         return isArabic ? requestChangeReplyAr : requestChangeReplyEn;
       case addNewService:
         return isArabic ? addNewServiceAr : addNewServiceEn;
+      case delete:
+        return isArabic ? deleteAr : deleteEn;
       default:
         return isArabic ? unknownAr : unknownEn;
     }

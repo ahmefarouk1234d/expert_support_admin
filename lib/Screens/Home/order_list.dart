@@ -9,7 +9,7 @@ class OrderList extends StatelessWidget {
   final List<OrderInfo> orders;
   final Function(OrderInfo order, int index) onTap;
   OrderList({this.orders, this.onTap});
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,62 +19,64 @@ class OrderList extends StatelessWidget {
             separatorBuilder: (context, index) => Divider(color: Colors.black12,),
             itemBuilder: (context, index) {
               final OrderInfo order = orders[index];
-              final String workflowStatus = 
-                order.workflowStatus != null 
-                ? WorkflowStatus().getDisplayStatus(status: order.workflowStatus, context: context)
-                : "";
-              bool hasDateUpdate = order.dateUpdate != null;
-              return ListTile(
-                onTap: () => onTap(order, index),
-                title: Container(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: Text(order.id ?? "")
-                ),
-                subtitle: Column(
-                  children: <Widget>[
-                    OrderDateText(
-                      localizedKeyTitle: LocalizedKey.orderVisitDateTitle,
-                      date: order.visitDate,
-                    ),
-                    Container(height: 4),
-                    OrderDateText(
-                      localizedKeyTitle: LocalizedKey.lastUpdateDateTitle,
-                      date: hasDateUpdate ? order.dateUpdate : order.dateCreated,
-                    )
-                  ],
-                ),
-                trailing: Text(workflowStatus)
-              );
+              
+              return OrderListTile(order: order, onTap: () => onTap(order, index),);
             }
           )
         );
   }
 }
 
-class OrderDateText extends StatelessWidget {
-  OrderDateText({Key key, this.localizedKeyTitle, this.date});
+class OrderListTile extends StatelessWidget {
+  OrderListTile({Key key, this.order, this.onTap}): super(key: key);
 
-  final DateTime date;
-  final String localizedKeyTitle;
+  final OrderInfo order;
+  final Function() onTap;
+
+  String _getVisitDateDisplay(BuildContext context) {
+    String title = AppLocalizations.of(context).translate(LocalizedKey.orderVisitDateTitle);
+    String dateString = DateConvert().toStringFromDate(
+      date: order.visitDate, 
+      locale: AppLocalizations.of(context).locale.languageCode, 
+      isFull: true
+    );
+
+    return "$title : $dateString";
+  }
+
+  String _getLastUpdateDateDisplay(BuildContext context) {
+    String title = AppLocalizations.of(context).translate(LocalizedKey.lastUpdateDateTitle);
+    String dateString = DateConvert().toStringFromDate(
+      date: order.dateUpdate ?? order.dateCreated, 
+      locale: AppLocalizations.of(context).locale.languageCode, 
+      isFull: true
+    );
+
+    return "$title : $dateString";
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
+    final String workflowStatus = 
+      order.workflowStatus != null 
+      ? WorkflowStatus().getDisplayStatus(status: order.workflowStatus, context: context)
+      : "";
+
+    return ListTile(
+      onTap: onTap,
+      title: Container(
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: Text(order.id ?? "")
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            AppLocalizations.of(context).translate(localizedKeyTitle)
-            + ":"
-          ),
-          Container(width: 8,),
-          Text(
-            DateConvert().toStringFromDate(
-              date: date, 
-              locale: AppLocalizations.of(context).locale.languageCode
-            )
-          ),
+          Text(_getVisitDateDisplay(context)),
+          Container(height: 4),
+          Text(_getLastUpdateDateDisplay(context))
         ],
       ),
+      trailing: Text(workflowStatus)
     );
   }
 }

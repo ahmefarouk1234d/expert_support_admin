@@ -4,17 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DateConvert{
-  String dateFormula = 'EEEE dd MMM, yyyy';
+  String _fullDateFormula = 'EEEE dd MMM, yyyy';
+  String _dateFormula = 'dd/MM/yyyy';
 
-  String toStringFromTimestamp({@required int timestamp, String locale}){
+  String toStringFromTimestamp({@required int timestamp, String locale, bool isFull = false}){
+    String formula = isFull ? _fullDateFormula : _dateFormula;
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    final dateFormat = DateFormat(dateFormula, locale).format(date);
+    final dateFormat = DateFormat(formula, locale).format(date);
 
     return dateFormat;
   }
 
-  String toStringFromDate({@required DateTime date, String locale}){
-    return DateFormat(dateFormula, locale).format(date);
+  String toStringFromDate({@required DateTime date, String locale, bool isFull = false}){
+    String formula = isFull ? _fullDateFormula : _dateFormula;
+    return DateFormat(formula, locale).format(date);
   }
 
   String timeToString(TimeOfDay timeOfDay, BuildContext context){

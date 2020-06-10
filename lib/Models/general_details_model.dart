@@ -56,7 +56,6 @@ class GeneralDetailsModel {
 
   static String getDisplayType(GeneralDetailsType type, BuildContext context) {
     AppLocalizations localizations = AppLocalizations.of(context);
-    bool isArabic = localizations.isArabic();
     String diplayType = "";
     
     switch (type){
@@ -64,7 +63,7 @@ class GeneralDetailsModel {
         diplayType = localizations.translate(LocalizedKey.aboutUsItemTitle);
         break;
       case GeneralDetailsType.shared:
-        diplayType = localizations.translate(LocalizedKey.sharedItemTitle);;
+        diplayType = localizations.translate(LocalizedKey.sharedItemTitle);
         break;
       case GeneralDetailsType.submitOrder:
         diplayType = localizations.translate(LocalizedKey.submitOrderItemTitle);

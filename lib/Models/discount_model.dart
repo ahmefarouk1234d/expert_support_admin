@@ -22,9 +22,9 @@ class DiscountInfo {
     this.code = offerData["code"];
     this.isValid = offerData["is_valid"];
     this.percent = offerData["percent"];
-    this.dateCreate = DateConvert().toStringFromTimestamp(timestamp: dateCreate);
+    this.dateCreate = DateConvert().toStringFromTimestamp(timestamp: dateCreate, isFull: true);
     this.dateCreateTimestamp = dateCreate;
-    this.dateUpdate = DateConvert().toStringFromTimestamp(timestamp: dateUpdate);
+    this.dateUpdate = DateConvert().toStringFromTimestamp(timestamp: dateUpdate, isFull: true);
     this.dateUpdateTimestamp = dateUpdate;
   }
 

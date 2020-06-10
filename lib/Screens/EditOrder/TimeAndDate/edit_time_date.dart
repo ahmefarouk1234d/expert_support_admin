@@ -122,7 +122,8 @@ class _EditTimeDateState extends State<EditTimeDate> {
               title: AppLocalizations.of(context).translate(LocalizedKey.editDateDateTitle), 
               value: DateConvert().toStringFromDate(
                 date: _actualDate, 
-                locale: AppLocalizations.of(context).locale.languageCode),),
+                locale: AppLocalizations.of(context).locale.languageCode, 
+                isFull: true)),
             Container(height: 16,),
             CommonButton(
               title: AppLocalizations.of(context).translate(LocalizedKey.editDateChangeTimeButtonTitle),

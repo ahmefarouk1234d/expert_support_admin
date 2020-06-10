@@ -169,8 +169,8 @@
     "order_history_menu_title": "History of Orders",
     "all_service_deleted_alert_message": "Cannot delete all service. Order should have at least one service",
     "no_service_found_alert_message": "Order cannot have no services",
-    "last_update_date_title": "Last update date",
-    "order_visit_date_title": "Visit date",
+    "last_update_date_title": "Last update",
+    "order_visit_date_title": "Visit",
     "about_us_item_title": "About Us",
     "shared_item_title": "Shared App Links",
     "submit_order_item_title": "Submit Order Related Info",
@@ -199,5 +199,11 @@
     "submit_order_comformation_alert_message": "Are you should you want to update Submit Order Related Info?",
     "error_updating_general_details_alert_message": "Could not complete update. Please make sure all fields are filled and try again",
     "error_per_day_value_alert_message": "Please enter valid number in Max Number of Order Per Day",
-    "error_vat_and_limit_rate_values_alert_message": "Please enter valid number in both VAT Percentage and Minimum total price for Order"
+    "error_vat_and_limit_rate_values_alert_message": "Please enter valid number in both VAT Percentage and Minimum total price for Order",
+    "from_title": "From",
+    "to_title": "To",
+    "add_dicount_button_title": "ADD DISCOUNT",
+    "dicount_amount_text": "Enter dicount amount",
+    "save_button_title": "SAVE",
+    "admin_discount_title": "Admin Discount"
 }

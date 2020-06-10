@@ -191,7 +191,8 @@ class UserDetailsContent extends StatelessWidget {
                 title: AppLocalizations.of(context).translate(LocalizedKey.userLastActionTitle), 
                 text: DateConvert().toStringFromTimestamp(
                   timestamp: admin.dateUpdated, 
-                  locale: AppLocalizations.of(context).locale.languageCode),),
+                  locale: AppLocalizations.of(context).locale.languageCode, 
+                  isFull: true),),
               Container(height: 16,),
               CommonButton(
                 title: AppLocalizations.of(context).translate(LocalizedKey.userEditButtonTitle),

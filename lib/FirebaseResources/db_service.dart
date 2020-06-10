@@ -46,48 +46,154 @@ class DataBase{
     return adminUserCollection.document(admin.id).updateData(adminUserMap);
   }
 
-  Stream<QuerySnapshot> getPendingOrders(){
-    CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
+  Stream<QuerySnapshot> getPendingOrders(int fromDate, int toDate){
+    CollectionReference collectionReference = isTestMode 
+      ? ordersTestCollectoion 
+      : ordersCollection;
+    Query orderQuery = collectionReference.where(
+      "workflow_status", whereIn: [
+        WorkflowStatus.pending, 
+        WorkflowStatus.requestChange
+      ]);
+    Stream<QuerySnapshot> orders;
+    
+    if (fromDate != null && toDate != null){
+      orderQuery = orderQuery
+      .where("visit_date", isGreaterThanOrEqualTo: fromDate)
+      .where("visit_date", isLessThanOrEqualTo: toDate)
+      .orderBy("visit_date", descending: true);
+    } else if (fromDate != null) {
+      orderQuery = orderQuery
+      .where("visit_date", isGreaterThanOrEqualTo: fromDate)
+      .orderBy("visit_date", descending: true);
+    } else if (toDate != null) {
+      orderQuery = orderQuery
+      .where("visit_date", isLessThanOrEqualTo: toDate)
+      .orderBy("visit_date", descending: true);
+    }
 
-    final orders = collectionReference
-      .where("workflow_status", whereIn: [WorkflowStatus.pending, WorkflowStatus.requestChange])
-      .orderBy("order_date_updated")
-      .snapshots(includeMetadataChanges: true);
+    orders = orderQuery.orderBy("order_date_updated", descending: true).snapshots();
     return orders;
   }
 
-  Stream<QuerySnapshot> getInProcessOrders(){
-    CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
-    final orders = collectionReference
-      .where("workflow_status", whereIn: [WorkflowStatus.inProcess, WorkflowStatus.requestChangeReply])
-      .orderBy("order_date_updated")
-      .snapshots();
+  Stream<QuerySnapshot> getInProcessOrders(int fromDate, int toDate){
+    CollectionReference collectionReference = isTestMode 
+      ? ordersTestCollectoion 
+      : ordersCollection;
+    Query orderQuery = collectionReference.where(
+      "workflow_status", whereIn: [
+        WorkflowStatus.inProcess, 
+        WorkflowStatus.requestChangeReply
+      ]);
+    Stream<QuerySnapshot> orders;
+
+    if (fromDate != null && toDate != null){
+      orderQuery = orderQuery
+      .where("visit_date", isGreaterThanOrEqualTo: fromDate)
+      .where("visit_date", isLessThanOrEqualTo: toDate)
+      .orderBy("visit_date", descending: true);
+    } else if (fromDate != null) {
+      orderQuery = orderQuery
+      .where("visit_date", isGreaterThanOrEqualTo: fromDate)
+      .orderBy("visit_date", descending: true);
+    } else if (toDate != null) {
+      orderQuery = orderQuery
+      .where("visit_date", isLessThanOrEqualTo: toDate)
+      .orderBy("visit_date", descending: true);
+    }
+
+    orders = orderQuery.orderBy("order_date_updated", descending: true).snapshots();
     return orders;
   }
 
-  Stream<QuerySnapshot> getDoneOrders(){
-    CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
-    final orders = collectionReference
-      .where("workflow_status", isEqualTo: WorkflowStatus.done)
-      .orderBy("order_date_updated")
-      .snapshots();
+  Stream<QuerySnapshot> getDoneOrders(int fromDate, int toDate){
+    CollectionReference collectionReference = isTestMode 
+      ? ordersTestCollectoion 
+      : ordersCollection;
+    Query orderQuery = collectionReference.where(
+      "workflow_status", 
+      isEqualTo: WorkflowStatus.done);
+    Stream<QuerySnapshot> orders;
+
+    if (fromDate != null && toDate != null){
+      orderQuery = orderQuery
+      .where("visit_date", isGreaterThanOrEqualTo: fromDate)
+      .where("visit_date", isLessThanOrEqualTo: toDate)
+      .orderBy("visit_date", descending: true);
+    } else if (fromDate != null) {
+      orderQuery = orderQuery
+      .where("visit_date", isGreaterThanOrEqualTo: fromDate)
+      .orderBy("visit_date", descending: true);
+    } else if (toDate != null) {
+      orderQuery = orderQuery
+      .where("visit_date", isLessThanOrEqualTo: toDate)
+      .orderBy("visit_date", descending: true);
+    }
+
+    orders = orderQuery.orderBy("order_date_updated", descending: true).snapshots();
     return orders;
   }
 
-  Stream<QuerySnapshot> getCanceledOrders(){
-    CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
-    final orders = collectionReference
-      .where("workflow_status", isEqualTo: WorkflowStatus.canceled)
-      .orderBy("order_date_updated")
-      .snapshots();
+  Stream<QuerySnapshot> getCanceledOrders(int fromDate, int toDate){
+    CollectionReference collectionReference = isTestMode 
+      ? ordersTestCollectoion 
+      : ordersCollection;
+    Query orderQuery = collectionReference.where(
+      "workflow_status", 
+      isEqualTo: WorkflowStatus.canceled);
+    Stream<QuerySnapshot> orders;
+
+    if (fromDate != null && toDate != null){
+      orderQuery = orderQuery
+      .where("visit_date", isGreaterThanOrEqualTo: fromDate)
+      .where("visit_date", isLessThanOrEqualTo: toDate)
+      .orderBy("visit_date", descending: true);
+    } else if (fromDate != null) {
+      orderQuery = orderQuery
+      .where("visit_date", isGreaterThanOrEqualTo: fromDate)
+      .orderBy("visit_date", descending: true);
+    } else if (toDate != null) {
+      orderQuery = orderQuery
+      .where("visit_date", isLessThanOrEqualTo: toDate)
+      .orderBy("visit_date", descending: true);
+    }
+
+    orders = orderQuery.orderBy("order_date_updated", descending: true).snapshots();
     return orders;
   }
 
-  Stream<QuerySnapshot> getOrders(){
-    CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
-    final orders = collectionReference
-      .orderBy("order_date_updated", descending: true)
-      .snapshots();
+  Stream<QuerySnapshot> getOrders(int fromDate, int toDate){
+    CollectionReference collectionReference = isTestMode 
+      ? ordersTestCollectoion 
+      : ordersCollection;
+    Query orderQuery = collectionReference.where(
+      "workflow_status", 
+      whereIn: [
+        WorkflowStatus.pending, 
+        WorkflowStatus.requestChange,
+        WorkflowStatus.inProcess, 
+        WorkflowStatus.requestChangeReply,
+        WorkflowStatus.done,
+        WorkflowStatus.canceled
+      ]);
+    Stream<QuerySnapshot> orders;
+    
+    if (fromDate != null && toDate != null){
+      orderQuery = orderQuery
+      .where("visit_date", isGreaterThanOrEqualTo: fromDate)
+      .where("visit_date", isLessThanOrEqualTo: toDate)
+      .orderBy("visit_date", descending: true);
+    } else if (fromDate != null) {
+      orderQuery = orderQuery
+      .where("visit_date", isGreaterThanOrEqualTo: fromDate)
+      .orderBy("visit_date", descending: true);
+    } else if (toDate != null) {
+      orderQuery = orderQuery
+      .where("visit_date", isLessThanOrEqualTo: toDate)
+      .orderBy("visit_date", descending: true);
+    }
+
+    orders = orderQuery.orderBy("order_date_updated", descending: true).snapshots();
     return orders;
   }
 
@@ -100,6 +206,8 @@ class DataBase{
       WriteBatch batch = Firestore.instance.batch();
 
       CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
+      CollectionReference dateLogCollectionReference = isTestMode ? dateAvailabilityTestCollection : dateAvailabilityCollection;
+      
       DocumentReference ordersDocRef = collectionReference.document(order.documentID);
       batch.updateData(ordersDocRef, {
         "order_status": order.orderStatus,
@@ -127,7 +235,7 @@ class DataBase{
       });
 
       if (order.workflowStatus == WorkflowStatus.canceled){
-        final DocumentReference dateAvailabilityDoc = dateAvailabilityCollection.document("${order.visiteDateTimestamp}");
+        final DocumentReference dateAvailabilityDoc = dateLogCollectionReference.document("${order.visiteDateTimestamp}");
         order.orderService.forEach((s){
           batch.updateData(
             dateAvailabilityDoc, 
@@ -171,6 +279,22 @@ class DataBase{
 
     CollectionReference collectionReference = isTestMode ? ordersTestCollectoion : ordersCollection;
     return collectionReference.document(docId).updateData(updatedOrderMap);
+  }
+
+  Future<void> updateOrderAdminDiscount(OrderInfo order, AdminUserInfo admin) {
+    CollectionReference collectionReference = isTestMode 
+      ? ordersTestCollectoion 
+      : ordersCollection;
+    DocumentReference ordersDocRef = collectionReference.document(order.documentID);
+    return ordersDocRef.updateData({
+      "admin_discount": order.adminDiscount,
+      "discount_made_by_name": admin.name,
+      "discount_made_by_role": admin.role,
+      "discount_made_by_id": admin.id,
+      "total_order_price_after_discount": order.totalPriceAfterDiscount,
+      "VAT_total": order.vatTotal,
+      "total_price_with_VAT": order.totalPriceWithVAT
+    });
   }
 
   Future<void> updateTimeDate(OrderInfo order, String docId){

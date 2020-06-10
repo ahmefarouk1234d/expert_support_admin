@@ -92,7 +92,8 @@ class OrderOfferList extends StatelessWidget {
             offer.dateUpdateTimestamp == null ? "" :
             DateConvert().toStringFromTimestamp(
               timestamp: offer.dateUpdateTimestamp, 
-              locale: AppLocalizations.of(context).locale.languageCode);
+              locale: AppLocalizations.of(context).locale.languageCode, 
+              isFull: true);
           IconData icon = 
             AppLocalizations.of(context).isArabic()
             ? Icons.keyboard_arrow_left

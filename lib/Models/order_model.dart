@@ -35,9 +35,13 @@ class OrderInfo{
   num adminFees;
   num vatPercentage;
   String paymentMethod;
+  num adminDiscount;
+  String discountMadeByName;
+  String discountMadeByRole;
+  String discountMadeByID;
 
   OrderInfo({this.documentID ,this.id, this.username, this.userPhone, this.orderStatus, this.workflowStatus, this.dateCreated, this.orderService, this.imagesUrl, this.comment, this.visitDate , this.visitTime, this.coordinate, this.discountPercent, this.totalDiscountAmount, this.totalPriceAfterDiscount, this.totalPriceBeforeDiscount, this.totalPriceWithVAT, this.vatTotal, this.visiteDateTimestamp,
-  this.adminID, this.adminName, this.adminRole, this.cancelReason, this.changeRequestDetails, this.visitDateAndTime, this.dateUpdate, this.reminderOnDay, this.reminderOneHour, this.partsFees, this.adminFees, this.totalMoneyReceived, this.vatPercentage, this.paymentMethod});
+  this.adminID, this.adminName, this.adminRole, this.cancelReason, this.changeRequestDetails, this.visitDateAndTime, this.dateUpdate, this.reminderOnDay, this.reminderOneHour, this.partsFees, this.adminFees, this.totalMoneyReceived, this.vatPercentage, this.paymentMethod, this.adminDiscount, this.discountMadeByName, this.discountMadeByRole});
 
   _orderMapToList(DocumentSnapshot orderDocData){
     Map<String, dynamic> orderData = orderDocData.data;
@@ -82,6 +86,10 @@ class OrderInfo{
       this.partsFees = orderData["administrative_fees"];
       this.vatPercentage = orderData["vat_percentage"];
       this.paymentMethod = orderData["payment_method"];
+      this.adminDiscount = orderData["admin_discount"];
+      this.discountMadeByName = orderData["discount_made_by_name"];
+      this.discountMadeByRole = orderData["discount_made_by_role"];
+      this.discountMadeByID = orderData["discount_made_by_id"];
 
       List<dynamic> serviceList = orderData["order_services"];
       this.orderService = List<OrderService>();
@@ -107,11 +115,7 @@ class OrderInfo{
     });
     return orderList;
   }
-
-  OrderInfo.toMap(){
-    // TODO: From order list to map.
-  }
-
+  
   update(OrderInfo order){
     this.documentID = order.documentID;
     this.id = order.id;
@@ -146,6 +150,10 @@ class OrderInfo{
     this.adminFees = order.adminFees;
     this.partsFees = order.partsFees;
     this.vatPercentage = order.vatPercentage;
+    this.paymentMethod = order.paymentMethod;
+    this.adminDiscount = order.adminDiscount;
+    this.discountMadeByName = order.discountMadeByName;
+    this.discountMadeByRole = order.discountMadeByRole;
   }
 }
 

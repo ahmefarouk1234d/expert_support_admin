@@ -171,8 +171,8 @@
     "order_history_menu_title": "الطلبات التاريخيه",
     "all_service_deleted_alert_message": "لم يمكن حذف جميع الخدمات. الطلب يجب ان يحتوي على خدمة وحدة على الاقل",
     "no_service_found_alert_message": "لا يمكن للطلب ان لا يحتوي على خدمات",
-    "last_update_date_title": "تاريخ اخر تحديث",
-    "order_visit_date_title": "تاريخ الزيارة",
+    "last_update_date_title": "اخر تحديث",
+    "order_visit_date_title": "الزيارة",
     "about_us_item_title": "من نحن",
     "shared_item_title": "روابط مشاركة التطبيق",
     "submit_order_item_title": "معلومات ذات صله برسال الطلب",
@@ -201,5 +201,11 @@
     "submit_order_comformation_alert_message": "هل انت متاكد من تحديث معلومات ذات صله برسال الطلب؟",
     "error_updating_general_details_alert_message": "لم نتمكن من التحديث. تاكد من تعبئة جميع الحقول و حاول مره اخرى",
     "error_per_day_value_alert_message": "الرجاء ادخل رقم صحيح في الحد الاعلى من الطلبات لكل يوم",
-    "error_vat_and_limit_rate_values_alert_message": "الرجاء ادخل رقم صحيح في كلن من نسبة الضريبة للقيمة المضافة و الحد الادنى لقيمة الطلب"
+    "error_vat_and_limit_rate_values_alert_message": "الرجاء ادخل رقم صحيح في كلن من نسبة الضريبة للقيمة المضافة و الحد الادنى لقيمة الطلب",
+    "from_title": "من",
+    "to_title": "الى",
+    "add_dicount_button_title": "اضافة خصم",
+    "dicount_amount_text": "ادخل قيمة الخصم",
+    "save_button_title": "حفظ",
+    "admin_discount_title": "خصم الاداره"
 }

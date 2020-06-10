@@ -41,6 +41,10 @@ class _NavigatorScreensState extends State<NavigatorScreens> {
     if (_navScreenList.menuList[index] == signOutMenuTitle){
       _signOutConformation(signOutMenuTitle);
     } else {
+      
+      _appBloc.fromDateChange.add(null);
+      _appBloc.toDateChange.add(null);
+
       setState(() {
         _selectedScreen = index;
       });
@@ -122,7 +126,7 @@ class ActionsAppBar extends StatelessWidget {
       return AddButtonBar(
         onPressed: () => _handleAddingNewdiscount(context),
       );
-    }
+    } 
     return Container();
   }
 }

@@ -201,4 +201,10 @@ class LocalizedKey{
   static const String errorUpdatingGeneralDetailsAlertMessage = "error_updating_general_details_alert_message";
   static const String errorPerDayValueAlertMessage = "error_per_day_value_alert_message";
   static const String errorVATandLimitRateValuesAlertMessage = "error_vat_and_limit_rate_values_alert_message";
+  static const String fromTitle = "from_title";
+  static const String toTitle = "to_title";
+  static const String addDiscountButtonTitle = "add_dicount_button_title";
+  static const String discountAmountText = "dicount_amount_text";
+  static const String saveButtonTitle = "save_button_title";
+  static const String adminDiscountTitle = "admin_discount_title";
 }

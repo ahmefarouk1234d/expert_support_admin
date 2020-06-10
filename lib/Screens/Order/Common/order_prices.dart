@@ -36,11 +36,16 @@ class OrderPrices extends StatelessWidget {
           PriceRow(
             title: localizations.translate(LocalizedKey.totalDiscountTitle), 
             price: order.totalDiscountAmount,),
+          order.adminDiscount != null 
+            ? PriceRow(
+              title: localizations.translate(LocalizedKey.adminDiscountTitle), 
+              price: order.adminDiscount,)
+            : Container(),
           PriceRow(
             title: localizations.translate(LocalizedKey.estimatedTotalTitle), 
             price: totalPrice,),
           PriceRow(
-            title: localizations.translate(LocalizedKey.vatTitle) + ' (%${order.vatPercentage})', 
+            title: localizations.translate(LocalizedKey.vatTitle) + ' (%${order.vatPercentage ?? 5})', 
             price: order.vatTotal,),
           isDone 
             ? Column(

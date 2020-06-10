@@ -59,29 +59,36 @@ class FirebaseManager{
     return _db.deleteAdminUser(admin);
   }
 
-  Stream<QuerySnapshot> getPendingOrders(){
-    return _db.getPendingOrders();
+  Stream<QuerySnapshot> getPendingOrders(int fromDate, int toDate){
+    return _db.getPendingOrders(fromDate, toDate);
   }
 
-  Stream<QuerySnapshot> getInProcessOrders(){
-    return _db.getInProcessOrders();
+  Stream<QuerySnapshot> getInProcessOrders(int fromDate, int toDate){
+    return _db.getInProcessOrders(fromDate, toDate);
   }
 
-  Stream<QuerySnapshot> getDoneOrders(){
-    return _db.getDoneOrders();
+  Stream<QuerySnapshot> getDoneOrders(int fromDate, int toDate){
+    return _db.getDoneOrders(fromDate, toDate);
   }
 
-  Stream<QuerySnapshot> getCanceledOrders(){
-    return _db.getCanceledOrders();
+  Stream<QuerySnapshot> getCanceledOrders(int fromDate, int toDate){
+    return _db.getCanceledOrders(fromDate, toDate);
   }
 
-  Stream<QuerySnapshot> getOrders(){
-    return _db.getOrders();
+  Stream<QuerySnapshot> getOrders(int fromDate, int toDate){
+    return _db.getOrders(fromDate, toDate);
   }
 
-  Future<void> updateOrderStatus(OrderInfo order, AdminUserInfo admin, {String cancelReason,
+  Future<void> updateOrderStatus(
+    OrderInfo order, 
+    AdminUserInfo admin, 
+    {String cancelReason,
     String changeRequestDetails}){
     return _db.updateOrderStatus(order, admin, cancelReason: cancelReason, changeRequestDetails: changeRequestDetails);
+  }
+
+  Future<void> updateOrderAdminDiscount(OrderInfo order, AdminUserInfo admin) {
+    return _db.updateOrderAdminDiscount(order, admin);
   }
 
   Future<void> updateServices(OrderInfo order, String docId){

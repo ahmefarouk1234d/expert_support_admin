@@ -69,8 +69,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
     _orderBloc.ordersChange.add(_order);
 
     String cancelReason = widget.controller.text.isNotEmpty ? widget.controller.text : null;
-    await _firebaseManager.updateOrderStatus(_order, admin, 
-      cancelReason: cancelReason);
+    await _firebaseManager.updateOrderStatus(_order, admin, cancelReason: cancelReason);
 
     Common().dismiss(context);
     setState(() {

@@ -96,9 +96,12 @@ class _EditServicesContentState extends State<EditServicesContent> {
     double _totalPriceAfterDiscount = 0.0;
     List<OrderService> _updatedServices = List();
 
-    SubmitOrder submitOrder = await _firebaseManager.getSubmittedOrderGeneralDetails();
-    double vatPercentage = submitOrder.vatPercentage / 100;
-
+    //SubmitOrder submitOrder = await _firebaseManager.getSubmittedOrderGeneralDetails();
+    //submitOrder.vatPercentage / 100;
+    double vatPercentage = _orderInfo.vatPercentage != null 
+      ? (_orderInfo.vatPercentage / 100) 
+      : 0.05;
+    
     _services.forEach((serv){
       if (!serv.isDeleted) {
         _total += serv.total;
@@ -118,6 +121,7 @@ class _EditServicesContentState extends State<EditServicesContent> {
     _orderInfo.totalDiscountAmount = _totalDiscount;
     _orderInfo.totalPriceBeforeDiscount = _total;
     _orderInfo.totalPriceAfterDiscount = _totalPriceAfterDiscount;
+    _orderInfo.vatTotal = _vatTotal;
     _orderInfo.totalPriceWithVAT = _totalPriceAfterVAT;
   }
 

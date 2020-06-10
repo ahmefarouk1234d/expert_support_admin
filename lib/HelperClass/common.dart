@@ -44,4 +44,8 @@ class Common {
     }
     return num.tryParse(value) != null;
   }
+
+  removeFocus(BuildContext context) {
+    FocusScope.of(context).unfocus();
+  }
 }

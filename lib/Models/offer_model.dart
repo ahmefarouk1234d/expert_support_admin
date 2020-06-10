@@ -46,9 +46,9 @@ class OfferInfo{
     this.offerDescEn = offerData["offerDescEn"];
     this.price = offerData["price"];
     this.qauntity = offerData["qauntity"];
-    this.dateCreate = DateConvert().toStringFromTimestamp(timestamp: dateCreate);
+    this.dateCreate = DateConvert().toStringFromTimestamp(timestamp: dateCreate, isFull: true);
     this.dateCreateTimestamp = dateCreate;
-    this.dateUpdate = DateConvert().toStringFromTimestamp(timestamp: dateUpdate);
+    this.dateUpdate = DateConvert().toStringFromTimestamp(timestamp: dateUpdate, isFull: true);
     this.dateUpdateTimestamp = dateUpdate;
     this.isActive = offerData["isActive"];
     this.startDate = offerData["startDate"];
@@ -155,9 +155,9 @@ class OrderOfferInfo{
     this.descEn = offerData["offer_desc_en"];
     this.priceForOne = offerData["price"];
     this.qauntity = offerData["qauntity"];
-    this.dateCreate = DateConvert().toStringFromTimestamp(timestamp: dateCreate);
+    this.dateCreate = DateConvert().toStringFromTimestamp(timestamp: dateCreate, isFull: true);
     this.dateCreateTimestamp = dateCreate;
-    this.dateUpdate = DateConvert().toStringFromTimestamp(timestamp: dateUpdate);
+    this.dateUpdate = DateConvert().toStringFromTimestamp(timestamp: dateUpdate, isFull: true);
     this.dateUpdateTimestamp = dateUpdate;
     this.status = offerData["status"];
     this.startDate = offerData["start_date"];

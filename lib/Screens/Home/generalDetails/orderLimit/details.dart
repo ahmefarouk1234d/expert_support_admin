@@ -187,7 +187,8 @@ class DateDisplayWithBroderContainer extends StatelessWidget {
   String _getStringDate(DateTime date, BuildContext context) {
     return DateConvert().toStringFromDate(
       date: date,
-      locale: AppLocalizations.of(context).locale.languageCode
+      locale: AppLocalizations.of(context).locale.languageCode, 
+      isFull: true
     );
   }
 
