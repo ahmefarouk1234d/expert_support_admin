@@ -72,6 +72,7 @@ class LocalizedKey{
   static const String offerPriceTitle = "offer_price_title";
   static const String offerQtyTitle = "offer_qty_title";
   static const String offerStatusTitle = "offer_status_title";
+  static const String offerServiceDetailsTitle = "offer_service_details_title";
   static const String offerActiveButtonTitle = "offer_active_button_title";
   static const String offerDeactiveButtonTitle = "offer_deactive_button_title";
   static const String addOfferAppBarTitle = "add_offer_app_bar_title";
@@ -207,4 +208,25 @@ class LocalizedKey{
   static const String discountAmountText = "dicount_amount_text";
   static const String saveButtonTitle = "save_button_title";
   static const String adminDiscountTitle = "admin_discount_title";
+  static const String removeDiscountButtonTitle = "remove_discount_button_title";
+  static const String addAdminDiscountAlertMessage = "add_admin_discount_alert_message";
+  static const String removeAdminDiscountAlertMessage = "remove_admin_discount_alert_message";
+  static const String selectOfferTypeAppBarTitle = "select_offer_type_app_bar_title";
+  static const String offerOnServiceTitle = "offer_on_service_title";
+  static const String offerOnPackagesTitle = "offer_on_packages_title";
+  static const String addOfferOnPackageAppBarTitle = "add_offer_on_package_app_bar_title";
+  static const String packagesNameArTitle = "packages_name_ar_title";
+  static const String packagesNameEnTitle = "packages_name_en_title";
+  static const String packagesDescArTitle = "packages_desc_ar_title";
+  static const String packagesDescEnTitle = "packages_desc_en_title";
+  static const String packagesServiceDetailsArTitle = "packages_service_details_ar_title";
+  static const String packagesServiceDetailsEnTitle = "packages_service_details_en_title";
+  static const String packagesPriceTitle = "packages_price_title";
+  static const String addOfferOnPackagesAlertMessage = "add_offer_on_packages_alert_message";
+  static const String addOfferOnPackagesSuccessAlertMessage = "add_offer_on_packages_success_alert_message";
+  static const String inTheWayButtonTite = "in_the_way_button_title";
+  static const String startWorkingButtonTitle = "start_working_button_title";
+  static const String canShowVatNoteTitle = "can_show_vat_note_title";
+  static const String vatNoteArTitle = "vat_note_ar_title";
+  static const String vatNoteEnTitle = "vat_note_en_title";
 }

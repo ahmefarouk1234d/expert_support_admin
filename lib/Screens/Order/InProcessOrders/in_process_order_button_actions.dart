@@ -52,14 +52,74 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
   _setUp(){
     _order = widget.order;
     _isEnabled = 
-      (_order.workflowStatus == WorkflowStatus.inProcess) ||
-      (_order.workflowStatus == WorkflowStatus.requestChangeReply);
+      (_order.workflowStatus == WorkflowStatus.inProcess) 
+      || (_order.workflowStatus == WorkflowStatus.requestChangeReply)
+      || (_order.workflowStatus == WorkflowStatus.onTheWay)
+      || (_order.workflowStatus == WorkflowStatus.arrived);
     _isViewImageEnabled = _order.imagesUrl.isNotEmpty;
     _reasonBorderColor = Colors.black;
     _moneyReceivedBorderColor = Colors.black;
     _partsTotalBorderColor = Colors.black;
     _partsFeesBorderColor = Colors.black;
   }
+
+  bool get _isInProcess {
+    return _order.workflowStatus == WorkflowStatus.inProcess
+      || (_order.workflowStatus == WorkflowStatus.requestChangeReply
+        && _order.lastWorkflowStatus == WorkflowStatus.inProcess);
+  }
+
+  bool get _isOnTheWay {
+    return _order.workflowStatus == WorkflowStatus.onTheWay
+      || (_order.workflowStatus == WorkflowStatus.requestChangeReply
+        && _order.lastWorkflowStatus == WorkflowStatus.onTheWay);
+  }
+
+  bool get _isArrived {
+    return _order.workflowStatus == WorkflowStatus.arrived
+      || (_order.workflowStatus == WorkflowStatus.requestChangeReply
+        && _order.lastWorkflowStatus == WorkflowStatus.arrived);
+  }
+
+  String get _mainActionButtonTitle {
+    AppLocalizations localizations = AppLocalizations.of(context);
+    
+    if (_isInProcess) {
+      return localizations.translate(LocalizedKey.inTheWayButtonTite);
+    } else if (_isOnTheWay) {
+      return localizations.translate(LocalizedKey.startWorkingButtonTitle);
+    } else if (_isArrived) {
+      return localizations.translate(LocalizedKey.doneButtonTitle);
+    } else {
+      return localizations.translate(LocalizedKey.doneButtonTitle);
+    }
+  }
+
+  String get _newWorkflowStatus {
+    if (_isInProcess) {
+      return WorkflowStatus.onTheWay;
+    } else if (_isOnTheWay) {
+      return WorkflowStatus.arrived;
+    } else if (_isArrived) {
+      return WorkflowStatus.done;
+    } else {
+      return "";
+    }
+  }
+
+  String get _newOrderStatus {
+    switch (_order.orderStatus) {
+      case OrderStatus.inProcess:
+        return OrderStatus.onTheWay;
+      case OrderStatus.onTheWay:
+        return OrderStatus.arrived;
+      case OrderStatus.arrived:
+        return OrderStatus.done;
+      default:
+        return "";
+    }
+  }
+
 
   _onPartsFeesChange(String value) {
     if (value.isEmpty) {
@@ -123,21 +183,30 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
     return !isInvalidMoneyReceived && !isInvalidPartsPrice && !isInvalidPartsFees;
   }
 
-  _onCloseButtonTapped(AsyncSnapshot<AdminUserInfo> snapshot) {
-    FocusScope.of(context).unfocus();
-    if (_isValidFinishOrderPrice()) {
+  bool isValidMainAction() {
+    if (_order.workflowStatus == WorkflowStatus.arrived) {
+      if (!_isValidFinishOrderPrice()) {
+        return false;
+      }
       setState(() {
         _moneyReceivedBorderColor = Colors.black;
         _partsTotalBorderColor = Colors.black;
         _partsFeesBorderColor = Colors.black;
       });
+    }
+    return true;
+  }
+  
+  _onMainActionButtonTapped(AsyncSnapshot<AdminUserInfo> snapshot) {
+    FocusScope.of(context).unfocus();
+    if (isValidMainAction()) {
       if (snapshot.hasData){
-        _showConformatiomAlert(
-          orderStatus: OrderStatus.done, 
-          workflowStatus: WorkflowStatus.done,
-          message: AppLocalizations.of(context).translate(LocalizedKey.doneAlertMessage), 
-          admin: snapshot.data);
-      }
+          _showConformatiomAlert(
+            orderStatus: _newOrderStatus, 
+            workflowStatus: _newWorkflowStatus,
+            message: AppLocalizations.of(context).translate(LocalizedKey.doneAlertMessage), 
+            admin: snapshot.data);
+        }
     }
   }
 
@@ -148,7 +217,7 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
       });
       if (snapshot.hasData){
         _showConformatiomAlert(
-          orderStatus: OrderStatus.inProcess,
+          orderStatus: _order.orderStatus,
           workflowStatus: WorkflowStatus.requestChange, 
           message: AppLocalizations.of(context).translate(LocalizedKey.requestChangeAlertMessage), 
           admin: snapshot.data);
@@ -184,6 +253,7 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
     Common().loading(context);
 
     _order.orderStatus = orderStatus;
+    _order.lastWorkflowStatus = _order.workflowStatus;
     _order.workflowStatus = workflowStatus;
 
     _order.adminFees = partTotals.isEmpty ? 0.0 : double.parse(partTotals);
@@ -199,10 +269,14 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
     await _firebaseManager.updateOrderStatus(_order, admin, changeRequestDetails: changeRequestDeatils);
     
     Common().dismiss(context);
-    
-    setState(() {
-      _isEnabled = false;
-    });
+
+    if (!((_order.workflowStatus == WorkflowStatus.onTheWay)
+      || (_order.workflowStatus == WorkflowStatus.arrived))
+      ) {
+        setState(() {
+          _isEnabled = false;
+        });
+      }
   }
   
   @override
@@ -217,38 +291,40 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
           padding: EdgeInsets.symmetric(vertical: 16),
           child: Column(
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  InProcessFinishOrderPriceTextField(
-                    title: AppLocalizations.of(context).translate(LocalizedKey.adminFeesTitle), 
-                    controller: widget.partsFeesController, 
-                    borderColor: _partsFeesBorderColor,
-                    onChange: _onPartsFeesChange,),
-                  InProcessFinishOrderPriceTextField(
-                    title: AppLocalizations.of(context).translate(LocalizedKey.partsTotalPriceTitle), 
-                    controller: widget.totalPartsPriceController, 
-                    borderColor: _partsTotalBorderColor,
-                    onChange: _onPartsTotalChange,),
-                  Container(height: 16),
-                  PriceRow(
-                    title: AppLocalizations.of(context).translate(LocalizedKey.customerShouldPay), 
-                    price: (widget.order.totalPriceWithVAT + _partsTotal + _partsFees),),
-                  Container(height: 8),
-                  InProcessFinishOrderPriceTextField(
-                    title: AppLocalizations.of(context).translate(LocalizedKey.moneyReceivedTitle), 
-                    controller: widget.totalMoneyReceivedController, 
-                    borderColor: _moneyReceivedBorderColor,),
-                ]
-              ),
-              Container(height: 16,),
+              (_order.workflowStatus == WorkflowStatus.arrived) 
+                ? Column(
+                    children: <Widget>[
+                      InProcessFinishOrderPriceTextField(
+                        title: AppLocalizations.of(context).translate(LocalizedKey.adminFeesTitle), 
+                        controller: widget.partsFeesController, 
+                        borderColor: _partsFeesBorderColor,
+                        onChange: _onPartsFeesChange,),
+                      InProcessFinishOrderPriceTextField(
+                        title: AppLocalizations.of(context).translate(LocalizedKey.partsTotalPriceTitle), 
+                        controller: widget.totalPartsPriceController, 
+                        borderColor: _partsTotalBorderColor,
+                        onChange: _onPartsTotalChange,),
+                      Container(height: 16),
+                      PriceRow(
+                        title: AppLocalizations.of(context).translate(LocalizedKey.customerShouldPay), 
+                        price: (widget.order.totalPriceWithVAT + _partsTotal + _partsFees),),
+                      Container(height: 8),
+                      InProcessFinishOrderPriceTextField(
+                        title: AppLocalizations.of(context).translate(LocalizedKey.moneyReceivedTitle), 
+                        controller: widget.totalMoneyReceivedController, 
+                        borderColor: _moneyReceivedBorderColor,),
+                    ]
+                  )
+                : Container(),
+              Container(height: _order.workflowStatus == WorkflowStatus.arrived ? 16 : 0,),
               CommonButton(
                 title: AppLocalizations.of(context).translate(LocalizedKey.viewImageButtonTitle),
                 onPressed: _isViewImageEnabled ? () => _handleViewImages() : null,
               ),
               Container(height: 8,),
               CommonButton(
-                title: AppLocalizations.of(context).translate(LocalizedKey.doneButtonTitle),
-                onPressed: _isEnabled ? () => _onCloseButtonTapped(snapshot) : null,
+                title: _mainActionButtonTitle,
+                onPressed: _isEnabled ? () => _onMainActionButtonTapped(snapshot) : null,
               ),
               Container(height: 16,),
               MultipleLineText(

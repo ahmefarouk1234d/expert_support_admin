@@ -162,6 +162,9 @@ class SubmitOrder {
   bool isCashEnabled;
   bool isPOSEnabled;
   num vatPercentage;
+  String vatPriceNoteAr;
+  String vatPriceNoteEn;
+  bool canShowVatNote;
 
   SubmitOrder();
 
@@ -172,6 +175,9 @@ class SubmitOrder {
     this.isCashEnabled = data["is_cash_enabled"];
     this.isPOSEnabled = data["is_pos_enabled"];
     this.vatPercentage = data["VAT_percentage"];
+    this.vatPriceNoteAr = data["vat_price_note_ar"];
+    this.vatPriceNoteEn = data["vat_price_note_en"];
+    this.canShowVatNote = data["can_show_vat_note"];
   }
 
   SubmitOrder.fromDocumentSnapshot(DocumentSnapshot doc){
@@ -184,6 +190,9 @@ class SubmitOrder {
     this.isCashEnabled = data["is_cash_enabled"];
     this.isPOSEnabled = data["is_pos_enabled"];
     this.vatPercentage = data["VAT_percentage"];
+    this.vatPriceNoteAr = data["vat_price_note_ar"];
+    this.vatPriceNoteEn = data["vat_price_note_en"];
+    this.canShowVatNote = data["can_show_vat_note"];
   }
 
   SubmitOrder.fromMap(Map<dynamic, dynamic> data){
@@ -201,7 +210,10 @@ class SubmitOrder {
       "limit_rate": submitOrder.limitRate,
       "is_cash_enabled": submitOrder.isCashEnabled,
       "is_pos_enabled": submitOrder.isPOSEnabled,
-      "VAT_percentage": submitOrder.vatPercentage
+      "VAT_percentage": submitOrder.vatPercentage,
+      "vat_price_note_ar": submitOrder.vatPriceNoteAr,
+      "vat_price_note_en": submitOrder.vatPriceNoteEn,
+      "can_show_vat_note": submitOrder.canShowVatNote
     };
   }
 }

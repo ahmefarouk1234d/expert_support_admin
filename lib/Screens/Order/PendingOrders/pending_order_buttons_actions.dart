@@ -65,6 +65,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
     Common().loading(context);
 
     _order.orderStatus = orderStatus;
+    _order.lastWorkflowStatus = _order.workflowStatus;
     _order.workflowStatus = workflowStatus;
     _orderBloc.ordersChange.add(_order);
 
@@ -154,7 +155,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
                 onPressed: _isEnabled ? () {
                   if (snapshot.hasData){
                     _showConformatiomAlert(
-                      OrderStatus.inProcess, 
+                      _order.orderStatus == OrderStatus.pending ? OrderStatus.inProcess : _order.orderStatus, 
                       actionWorkflowState,
                       AppLocalizations.of(context).translate(LocalizedKey.acceptAlertMessage), 
                       snapshot.data);

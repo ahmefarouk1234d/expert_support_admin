@@ -83,7 +83,9 @@ class DataBase{
     Query orderQuery = collectionReference.where(
       "workflow_status", whereIn: [
         WorkflowStatus.inProcess, 
-        WorkflowStatus.requestChangeReply
+        WorkflowStatus.requestChangeReply,
+        WorkflowStatus.onTheWay,
+        WorkflowStatus.arrived
       ]);
     Stream<QuerySnapshot> orders;
 
@@ -174,7 +176,9 @@ class DataBase{
         WorkflowStatus.inProcess, 
         WorkflowStatus.requestChangeReply,
         WorkflowStatus.done,
-        WorkflowStatus.canceled
+        WorkflowStatus.canceled,
+        WorkflowStatus.onTheWay,
+        WorkflowStatus.arrived
       ]);
     Stream<QuerySnapshot> orders;
     
@@ -201,7 +205,7 @@ class DataBase{
     OrderInfo order, 
     AdminUserInfo admin,
     {String cancelReason,
-    String changeRequestDetails}){
+    String changeRequestDetails}) async {
 
       WriteBatch batch = Firestore.instance.batch();
 
@@ -212,6 +216,7 @@ class DataBase{
       batch.updateData(ordersDocRef, {
         "order_status": order.orderStatus,
         "workflow_status": order.workflowStatus,
+        "last_workflow_status": order.lastWorkflowStatus,
         "admin_name": admin.name,
         "admin_id": admin.id,
         "admin_role": admin.role,
@@ -235,12 +240,27 @@ class DataBase{
       });
 
       if (order.workflowStatus == WorkflowStatus.canceled){
-        final DocumentReference dateAvailabilityDoc = dateLogCollectionReference.document("${order.visiteDateTimestamp}");
-        order.orderService.forEach((s){
-          batch.updateData(
-            dateAvailabilityDoc, 
-            <String, dynamic>{s.serviceCategoryId: FieldValue.arrayRemove([order.documentID])});
-        });
+        QuerySnapshot dateLogQuesryForSelectedTimestamp = 
+          await dateLogCollectionReference.where(
+            "timestamp", isEqualTo: order.visiteDateTimestamp
+          ).getDocuments();
+
+        if (dateLogQuesryForSelectedTimestamp.documents.isNotEmpty) {
+          final DocumentReference dateAvailabilityDoc = 
+            dateLogCollectionReference.document(
+              "${order.visiteDateTimestamp}"
+            );
+          order.orderService.forEach((s){
+            batch.updateData(
+              dateAvailabilityDoc, 
+              <String, dynamic>{
+                s.serviceCategoryId: FieldValue.arrayRemove(
+                  [order.documentID]
+                )
+              }
+            );
+          });
+        }
       }
 
       return batch.commit();
@@ -293,7 +313,8 @@ class DataBase{
       "discount_made_by_id": admin.id,
       "total_order_price_after_discount": order.totalPriceAfterDiscount,
       "VAT_total": order.vatTotal,
-      "total_price_with_VAT": order.totalPriceWithVAT
+      "total_price_with_VAT": order.totalPriceWithVAT,
+      'old_total_price_before_admin_discount': order.oldTotalPriceBeforeAdminDiscount
     });
   }
 
@@ -342,7 +363,7 @@ class DataBase{
   }
 
   Stream<QuerySnapshot> getAllOffers(){
-    return offerCollection.snapshots();
+    return offerCollection.orderBy("date_update", descending: true).snapshots();
   }
 
   Future<void> saveOrderOffer(OrderOfferInfo offer){
@@ -367,7 +388,10 @@ class DataBase{
 
   Stream<QuerySnapshot> getAllOrderOffers(){
     CollectionReference collectionReference = isTestMode ? offersListTestCollectoion : orderOfferCollection;
-    return collectionReference.where("status", whereIn: [OfferStatus.active, OfferStatus.deactive]).snapshots();
+    return collectionReference
+      .where("status", whereIn: [OfferStatus.active, OfferStatus.deactive])
+      .orderBy("date_update", descending: true)
+      .snapshots();
   }
 
   Future<void> saveDiscountCode(DiscountInfo discountInfo){

@@ -36,11 +36,6 @@ class OrderPrices extends StatelessWidget {
           PriceRow(
             title: localizations.translate(LocalizedKey.totalDiscountTitle), 
             price: order.totalDiscountAmount,),
-          order.adminDiscount != null 
-            ? PriceRow(
-              title: localizations.translate(LocalizedKey.adminDiscountTitle), 
-              price: order.adminDiscount,)
-            : Container(),
           PriceRow(
             title: localizations.translate(LocalizedKey.estimatedTotalTitle), 
             price: totalPrice,),
@@ -58,6 +53,11 @@ class OrderPrices extends StatelessWidget {
                     price: order.adminFees,),
                 ],
               )
+            : Container(),
+          order.adminDiscount != null 
+            ? PriceRow(
+              title: localizations.translate(LocalizedKey.adminDiscountTitle), 
+              price: order.adminDiscount,)
             : Container(),
           PriceRow(
             title: localizations.translate(LocalizedKey.totalPriceTitle), 

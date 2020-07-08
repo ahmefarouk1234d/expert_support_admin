@@ -1,6 +1,7 @@
 import 'package:expert_support_admin/BlocResources/app_bloc.dart';
 import 'package:expert_support_admin/BlocResources/order_bloc.dart';
 import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
+import 'package:expert_support_admin/HelperClass/alert.dart';
 import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
 import 'package:expert_support_admin/HelperClass/enums.dart';
@@ -8,7 +9,9 @@ import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Models/admin_role.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
+import 'package:expert_support_admin/Models/status.dart';
 import 'package:expert_support_admin/Screens/Home/Order/details/details_content.dart';
+import 'package:expert_support_admin/SharedWidget/app_bar_action_button.dart';
 import 'package:flutter/material.dart';
 
 import 'package:expert_support_admin/BlocResources/base_provider.dart';
@@ -28,11 +31,21 @@ class _OrderDetailsState extends State<OrderDetails> {
   AppBloc _appBloc;
   AppLocalizations _localizations;
   OrderInfo _order;
+  bool _hasAdminDiscount;
   FirebaseManager _firebaseManager = FirebaseManager();
 
   initState() {
     _order = widget.order;
+    _hasAdminDiscount = _order.adminDiscount != null;
     super.initState();
+  }
+
+  _onAppBarActionButtonTapped(AdminUserInfo admin) {
+    if (_hasAdminDiscount) {
+      _onDeleteDiscount(admin);
+    } else {
+      _onAddDiscount(admin); 
+    }
   }
 
   _onAddDiscount(AdminUserInfo admin) {
@@ -41,33 +54,60 @@ class _OrderDetailsState extends State<OrderDetails> {
       builder: (_) {
         return AddDiscountDialog(
           onSave: (discount) { 
-            _handleOnAddingDiscount(discount, admin); 
+            Alert().conformation(context,
+              _localizations.translate(LocalizedKey.conformationAlertTitle), 
+              _localizations.translate(LocalizedKey.addAdminDiscountAlertMessage),
+              () { _updateTotalPrice(admin: admin, discount: discount); }
+            );
           },
         );
       },
     );
   }
+  
+  _onDeleteDiscount(AdminUserInfo admin) {
+    Alert().conformation(
+      context, 
+      _localizations.translate(LocalizedKey.conformationAlertTitle), 
+      _localizations.translate(LocalizedKey.removeAdminDiscountAlertMessage), 
+      () { _updateTotalPrice(admin: admin); });
+  }
 
-  _handleOnAddingDiscount(num discount, AdminUserInfo admin) async {
+  _updateTotalPrice({AdminUserInfo admin, num discount}) async {
     Common().loading(context);
 
+    _changeOrderTotalPrice(discount: discount);
+    await _firebaseManager.updateOrderAdminDiscount(_order, admin);
+
+    setState(() {
+      _hasAdminDiscount = discount != null;
+    });
+
+    Common().dismiss(context);
+  }
+
+  _changeOrderTotalPrice({num discount}) {
+    bool isDelete = discount == null;
     double vatPercentage = _order.vatPercentage != null 
       ? (_order.vatPercentage / 100) 
       : 0.05;
-    num totalPrice = _order.totalPriceAfterDiscount != 0.0
+    num totalPrice = _getTotalPrice(isDelete);
+
+    _order.adminDiscount = discount;
+    //_order.totalPriceAfterDiscount = isDelete ? (totalPrice) : (totalPrice - discount);
+    _order.vatTotal = _order.totalPriceAfterDiscount * vatPercentage;
+    _order.totalPriceWithVAT = (isDelete ? (totalPrice) : (totalPrice - discount)) + _order.vatTotal;
+    _order.oldTotalPriceBeforeAdminDiscount = isDelete ? null : totalPrice;
+  }
+
+  num _getTotalPrice(bool isOnDeleting) {
+    if (isOnDeleting) {
+      return _order.oldTotalPriceBeforeAdminDiscount;
+    } else {
+      return _order.totalPriceAfterDiscount != 0.0
         ? _order.totalPriceAfterDiscount
         : _order.totalPriceBeforeDiscount;
-
-    setState(() {
-      _order.adminDiscount = discount;
-      _order.totalPriceAfterDiscount = totalPrice - discount;
-      _order.vatTotal = _order.totalPriceAfterDiscount * vatPercentage;
-      _order.totalPriceWithVAT = _order.totalPriceAfterDiscount + _order.vatTotal;
-    });
-
-    await _firebaseManager.updateOrderAdminDiscount(_order, admin);
-
-    Common().dismiss(context);
+    }
   }
 
   @override
@@ -79,19 +119,26 @@ class _OrderDetailsState extends State<OrderDetails> {
         stream: _appBloc.admin,
         builder: (context, snapshot) {
           bool isSupervior =
-              snapshot.hasData && snapshot.data.role == AdminRole.supervisor;
+            snapshot.hasData && snapshot.data.role == AdminRole.supervisor;
+          String actionButtonTitle = _hasAdminDiscount
+            ? _localizations.translate(LocalizedKey.removeDiscountButtonTitle)
+            : _localizations.translate(LocalizedKey.addDiscountButtonTitle);
+          bool canAddDiscount = 
+            _order.workflowStatus == WorkflowStatus.inProcess
+            || _order.workflowStatus == WorkflowStatus.onTheWay
+            || _order.workflowStatus == WorkflowStatus.arrived;
 
           return Scaffold(
             appBar: AppBar(
               title: Text(_order.id),
               elevation: 0.0,
               actions: <Widget>[
-                isSupervior
-                    ? AddDiscountButton(
-                        title: _localizations.translate(LocalizedKey.addDiscountButtonTitle),
-                        onPressed: () { _onAddDiscount(snapshot.data); },
-                      )
-                    : Container()
+                isSupervior && canAddDiscount
+                  ? AppBarActionButton(
+                      title: actionButtonTitle,
+                      onPressed: () { _onAppBarActionButtonTapped(snapshot.data); },
+                    )
+                  : Container()
               ],
             ),
             body: BlocProvider<OrderBloc>(
@@ -106,26 +153,6 @@ class _OrderDetailsState extends State<OrderDetails> {
             ),
           );
         });
-  }
-}
-
-class AddDiscountButton extends StatelessWidget {
-  AddDiscountButton({Key key, this.title, this.onPressed}): super(key: key);
-
-  final String title;
-  final Function() onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: FlatButton(
-        onPressed: onPressed,
-        child: Text(
-          title,
-          style: TextStyle(color: Colors.white),
-        )
-      ),
-    );
   }
 }
 

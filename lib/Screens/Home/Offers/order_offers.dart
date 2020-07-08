@@ -215,15 +215,24 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
             OrderOfferDetailsRow(
               title: AppLocalizations.of(context).translate(LocalizedKey.offerDescTitle), 
               value: AppLocalizations.of(context).isArabic() ? _info.descAr : _info.descEn,),
-            OrderOfferDetailsRow(
-              title: AppLocalizations.of(context).translate(LocalizedKey.offerOriginalServicePrice), 
-              value: OfferStatus().getDisplayStaus(status: _info.originalPrice.toString(), context: context),),
+            _info.offerType == OfferType.packages
+            ? OrderOfferDetailsRow(
+                title: AppLocalizations.of(context).translate(LocalizedKey.offerServiceDetailsTitle), 
+                value: AppLocalizations.of(context).isArabic() ? _info.serviceDetailsAr : _info.serviceDetailsEn,)
+            : Container(),
+            _info.offerType == OfferType.services
+            ? OrderOfferDetailsRow(
+                title: AppLocalizations.of(context).translate(LocalizedKey.offerOriginalServicePrice), 
+                value: _info.originalPrice.toString(),)
+            : Container(),
             OrderOfferDetailsRow(
               title: AppLocalizations.of(context).translate(LocalizedKey.offerPriceTitle), 
               value: _info.priceForOne.toString(),),
-            OrderOfferDetailsRow(
-              title: AppLocalizations.of(context).translate(LocalizedKey.offerQtyTitle), 
-              value: _info.qauntity.toString(),),
+            _info.offerType == OfferType.services
+            ? OrderOfferDetailsRow(
+                title: AppLocalizations.of(context).translate(LocalizedKey.offerQtyTitle), 
+                value: _info.qauntity.toString(),)
+            : Container(),
             OrderOfferDetailsRow(
               title: AppLocalizations.of(context).translate(LocalizedKey.offerStatusTitle), 
               value: OfferStatus().getDisplayStaus(status: _offerStatus, context: context),),

@@ -9,6 +9,8 @@ import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Models/code.dart';
 import 'package:expert_support_admin/Screens/Home/Discount/add_discount.dart';
 import 'package:expert_support_admin/Screens/Home/Offers/add_order_offer.dart';
+import 'package:expert_support_admin/Screens/Home/Offers/add_packages.dart';
+import 'package:expert_support_admin/Screens/Home/Offers/offer_type.dart';
 import 'package:expert_support_admin/Screens/Home/Users/add_new_user.dart';
 import 'package:expert_support_admin/Screens/Home/Users/users.dart';
 import 'package:expert_support_admin/Screens/Home/no_role_inbox.dart';
@@ -92,6 +94,8 @@ class MyApp extends StatelessWidget {
             SendVerificationEmail.route: (BuildContext context) =>
                 SendVerificationEmail(),
             AddDiscount.route: (BuildContext context) => AddDiscount(),
+            OfferTypeScreen.route: (BuildContext context) => OfferTypeScreen(),
+            AddPackages.route: (BuildContext context) => AddPackages(),
           },
         ));
   }

@@ -22,7 +22,10 @@ class SubmitOrderGeneralDetails extends StatelessWidget {
         vatPercentage: submitOrder.vatPercentage.toString(),
         isCashEnabled: submitOrder.isCashEnabled,
         isPOSEnabled: submitOrder.isPOSEnabled,
-        limitRate: submitOrder.limitRate.toString()
+        limitRate: submitOrder.limitRate.toString(),
+        canShowVatNote: submitOrder.canShowVatNote,
+        vatPriceNoteAr: submitOrder.vatPriceNoteAr,
+        vatPriceNoteEn: submitOrder.vatPriceNoteEn
       ),
       onDispose: (context, submitOrderBloc) => submitOrderBloc.dispose(),
       child: Scaffold(
@@ -51,8 +54,10 @@ class _SubmitOrderGeneralDetailsContentState extends State<SubmitOrderGeneralDet
 
   SubmitOrder submitOrder;
 
-  TextEditingController _vatPrecentage;
-  TextEditingController limitRate;
+  TextEditingController _vatPrecentageController;
+  TextEditingController _limitRateController;
+  TextEditingController _vatNoteArController;
+  TextEditingController _vatNoteEnController;
 
   SubmitOrderBloc _submitOrderBloc;
   AppLocalizations _localizations;
@@ -60,8 +65,10 @@ class _SubmitOrderGeneralDetailsContentState extends State<SubmitOrderGeneralDet
   @override
   void initState() {
     submitOrder = widget.submitOrder;
-    _vatPrecentage = TextEditingController(text: submitOrder.vatPercentage.toString());
-    limitRate = TextEditingController(text: submitOrder.limitRate.toString());
+    _vatPrecentageController = TextEditingController(text: submitOrder.vatPercentage.toString());
+    _limitRateController = TextEditingController(text: submitOrder.limitRate.toString());
+    _vatNoteArController = TextEditingController(text: submitOrder.vatPriceNoteAr.toString());
+    _vatNoteEnController = TextEditingController(text: submitOrder.vatPriceNoteEn.toString());
 
     super.initState();
   }
@@ -92,7 +99,7 @@ class _SubmitOrderGeneralDetailsContentState extends State<SubmitOrderGeneralDet
               builder: (context, snapshot) {
                 return BorderedTextField(
                   header: _localizations.translate(LocalizedKey.vatPercentageTitle),
-                  controller: _vatPrecentage,
+                  controller: _vatPrecentageController,
                   onChange: _submitOrderBloc.vatPercentageChange,
                   isError: snapshot.hasError,
                   textDirection: TextDirection.ltr,
@@ -144,12 +151,57 @@ class _SubmitOrderGeneralDetailsContentState extends State<SubmitOrderGeneralDet
               builder: (context, snapshot) {
                 return BorderedTextField(
                   header: _localizations.translate(LocalizedKey.limitRateTitle),
-                  controller: limitRate,
+                  controller: _limitRateController,
                   onChange: _submitOrderBloc.limitRateChange,
                   isError: snapshot.hasError,
                   textDirection: TextDirection.ltr,
                   keyboardType: TextInputType.number,
                   inputFormatters: Common().getNumberOnlyInputFormatters(),
+                );
+              }
+            ),
+            StreamBuilder<bool>(
+              stream: _submitOrderBloc.canShowVatNote,
+              initialData: submitOrder.canShowVatNote,
+              builder: (context, snapshot) {
+                return Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        _localizations.translate(LocalizedKey.canShowVatNoteTitle)
+                      )
+                    ),
+                    Switch(
+                      value: snapshot.data, 
+                      onChanged: _submitOrderBloc.canShowVatNoteChange,
+                    ),
+                  ],
+                );
+              }
+            ),
+            StreamBuilder<String>(
+              stream: _submitOrderBloc.vatPriceNoteAr,
+              builder: (context, snapshot) {
+                return BorderedTextField(
+                  header: _localizations.translate(LocalizedKey.vatNoteArTitle),
+                  controller: _vatNoteArController,
+                  onChange: _submitOrderBloc.vatPriceNoteArChange,
+                  isError: snapshot.hasError,
+                  textDirection: TextDirection.rtl,
+                  keyboardType: TextInputType.text,
+                );
+              }
+            ),
+            StreamBuilder<String>(
+              stream: _submitOrderBloc.vatPriceNoteEn,
+              builder: (context, snapshot) {
+                return BorderedTextField(
+                  header: _localizations.translate(LocalizedKey.vatNoteEnTitle),
+                  controller: _vatNoteEnController,
+                  onChange: _submitOrderBloc.vatPriceNoteEnChange,
+                  isError: snapshot.hasError,
+                  textDirection: TextDirection.ltr,
+                  keyboardType: TextInputType.text,
                 );
               }
             ),

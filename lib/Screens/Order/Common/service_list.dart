@@ -8,6 +8,23 @@ class ServicesList extends StatelessWidget {
   final OrderInfo order;
   ServicesList(this.order);
 
+  bool _isPackagesOffer(OrderService service) {
+    return service.isPackageOffer != null && 
+      service.isPackageOffer;
+  }
+
+  String _getServiceName(OrderService service, bool isArabic) {
+    return isArabic
+      ? service.nameAr ?? ""
+      : service.nameAr ?? "";
+  }
+
+  String _getServiceDetails(OrderService service, bool isArabic) {
+    return _isPackagesOffer(service)
+      ? (isArabic ? service.offerServiceDetailsAr : service.offerServiceDetailsEn)
+      : "" ;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -18,8 +35,6 @@ class ServicesList extends StatelessWidget {
       itemBuilder: (context, index) {
         OrderService service = order.orderService[index];
         bool isArabic = AppLocalizations.of(context).isArabic();
-        String serviceNameEn = service.nameEn ?? "";
-        String serviceNameAr = service.nameAr ?? "";
         String neededParts = service.neededParts 
           ? AppLocalizations.of(context).translate(LocalizedKey.yesFirstCapital) 
           : AppLocalizations.of(context).translate(LocalizedKey.noFirstCapital);
@@ -35,8 +50,14 @@ class ServicesList extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      isArabic ? serviceNameAr : serviceNameEn, 
+                      _getServiceName(service, isArabic), 
                       style: TextStyle(fontSize: Screen.fontSize(size: 18)),), 
+                    _isPackagesOffer(service) ? Container(height: 8,) : Container(),
+                    _isPackagesOffer(service) 
+                      ? Text(
+                        _getServiceDetails(service, isArabic), 
+                        style: TextStyle(color: Colors.grey),)
+                      : Container(),
                     Container(height: 8,),
                     Text(
                        AppLocalizations.of(context).translate(LocalizedKey.neededPartsTitle) 

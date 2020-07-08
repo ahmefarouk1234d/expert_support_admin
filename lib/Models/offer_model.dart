@@ -134,9 +134,12 @@ class OrderOfferInfo{
   num startDate;
   num endDate;
   num originalPrice;
+  String serviceDetailsAr;
+  String serviceDetailsEn;
+  String offerType;
 
   OrderOfferInfo({
-    this.dateUpdateTimestamp, this.titleAr, this.dateCreate, this.dateCreateTimestamp, this.dateUpdate, this.endDate, this.status, this.descAr, this.descEn, this.id, this.titleEn, this.priceForOne, this.qauntity, this.startDate, this.serviceCategoryID, this.serviceTypeID, this.mainServiceID, this.subMainServiceID, this.originalPrice
+    this.dateUpdateTimestamp, this.titleAr, this.dateCreate, this.dateCreateTimestamp, this.dateUpdate, this.endDate, this.status, this.descAr, this.descEn, this.id, this.titleEn, this.priceForOne, this.qauntity, this.startDate, this.serviceCategoryID, this.serviceTypeID, this.mainServiceID, this.subMainServiceID, this.originalPrice, this.serviceDetailsAr, this.serviceDetailsEn, this.offerType
   });
 
   _fromMapToObject(DocumentSnapshot offerDocData){
@@ -163,6 +166,9 @@ class OrderOfferInfo{
     this.startDate = offerData["start_date"];
     this.endDate = offerData["end_date"];
     this.originalPrice = offerData["original_price"];
+    this.serviceDetailsAr = offerData["service_details_ar"];
+    this.serviceDetailsEn = offerData["service_details_en"];
+    this.offerType = offerData["offer_type"];
   }
 
   OrderOfferInfo.fromMap(DocumentSnapshot offerDocData){
@@ -194,7 +200,10 @@ class OrderOfferInfo{
       "status" : OfferStatus.active,
       "start_date" : offer.startDate ?? 0,
       "end_date" : offer.endDate ?? 0,
-      "original_price": offer.originalPrice
+      "original_price": offer.originalPrice,
+      "service_details_ar": offer.serviceDetailsAr,
+      "service_details_en": offer.serviceDetailsEn,
+      "offer_type": offer.offerType,
     };
   }
 
@@ -210,6 +219,8 @@ class OrderOfferInfo{
       "status" : offer.status,
       "start_date" : offer.startDate ?? 0,
       "end_date" : offer.endDate ?? 0,
+      "service_details_ar": offer.serviceDetailsAr,
+      "service_details_en": offer.serviceDetailsEn,
     };
   }
 

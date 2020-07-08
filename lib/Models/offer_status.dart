@@ -30,3 +30,27 @@ class OfferStatus{
     }
   }
 }
+
+class OfferType {
+  static const String services = "services";
+  static const String packages = "packages";
+
+  static const String servicesAr = "عروض على الخدمات";
+  static const String servicesEn = "Offers on Services";
+  static const String packagesAr = "عروض الباقات";
+  static const String packagesEn = "Packages Offers";
+  static const String unknownAr = "حالة غير معروفة";
+  static const String unknownEn = "Unknow Status";
+
+  String getDisplayStaus({@required String status, @required BuildContext context}) {
+    bool isArabic = AppLocalizations.of(context).isArabic();
+    switch (status) {
+      case services:
+        return isArabic ? servicesAr : servicesEn;
+      case services:
+        return isArabic ? packagesAr : packagesEn;
+      default:
+        return isArabic ? unknownAr : unknownEn;
+    }
+  }
+}

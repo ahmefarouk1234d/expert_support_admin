@@ -8,6 +8,7 @@ import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:expert_support_admin/Screens/Home/Discount/add_discount.dart';
 import 'package:expert_support_admin/Screens/Home/Offers/add_order_offer.dart';
+import 'package:expert_support_admin/Screens/Home/Offers/offer_type.dart';
 import 'package:expert_support_admin/Screens/Home/Users/add_new_user.dart';
 import 'package:expert_support_admin/Screens/Home/main_drawer.dart';
 import 'package:expert_support_admin/SharedWidget/loading.dart';
@@ -105,7 +106,8 @@ class ActionsAppBar extends StatelessWidget {
   }
 
   _handleAddingNewOrderOffer(BuildContext context){
-    Navigator.of(context).pushNamed(AddOrderOffer.route);
+    Navigator.of(context).pushNamed(OfferTypeScreen.route);
+    // Navigator.of(context).pushNamed(AddOrderOffer.route);
   }
 
   _handleAddingNewdiscount(BuildContext context){

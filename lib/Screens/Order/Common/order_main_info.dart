@@ -191,7 +191,7 @@ class OrderReminderRow extends StatelessWidget {
   Widget build(BuildContext context) {
     AppLocalizations localizations = AppLocalizations.of(context);
     final String oneDayReminderTitle = localizations.translate(LocalizedKey.reminderOneDayTitle);
-    final String oneHourReminderTitle = localizations.translate(LocalizedKey.reminderOneDayTitle);
+    final String oneHourReminderTitle = localizations.translate(LocalizedKey.reminderOneHourTitle);
     return Container(
       child: Row(
         children: <Widget>[

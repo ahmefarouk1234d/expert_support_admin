@@ -7,6 +7,7 @@ class OrderInfo{
   String userPhone;
   String orderStatus;
   String workflowStatus;
+  String lastWorkflowStatus;
   DateTime dateCreated;
   DateTime dateUpdate;
   List<OrderService> orderService;
@@ -39,9 +40,10 @@ class OrderInfo{
   String discountMadeByName;
   String discountMadeByRole;
   String discountMadeByID;
+  num oldTotalPriceBeforeAdminDiscount;
 
   OrderInfo({this.documentID ,this.id, this.username, this.userPhone, this.orderStatus, this.workflowStatus, this.dateCreated, this.orderService, this.imagesUrl, this.comment, this.visitDate , this.visitTime, this.coordinate, this.discountPercent, this.totalDiscountAmount, this.totalPriceAfterDiscount, this.totalPriceBeforeDiscount, this.totalPriceWithVAT, this.vatTotal, this.visiteDateTimestamp,
-  this.adminID, this.adminName, this.adminRole, this.cancelReason, this.changeRequestDetails, this.visitDateAndTime, this.dateUpdate, this.reminderOnDay, this.reminderOneHour, this.partsFees, this.adminFees, this.totalMoneyReceived, this.vatPercentage, this.paymentMethod, this.adminDiscount, this.discountMadeByName, this.discountMadeByRole});
+  this.adminID, this.adminName, this.adminRole, this.cancelReason, this.changeRequestDetails, this.visitDateAndTime, this.dateUpdate, this.reminderOnDay, this.reminderOneHour, this.partsFees, this.adminFees, this.totalMoneyReceived, this.vatPercentage, this.paymentMethod, this.adminDiscount, this.discountMadeByName, this.discountMadeByRole, this.lastWorkflowStatus, this.oldTotalPriceBeforeAdminDiscount, this.discountMadeByID});
 
   _orderMapToList(DocumentSnapshot orderDocData){
     Map<String, dynamic> orderData = orderDocData.data;
@@ -90,6 +92,8 @@ class OrderInfo{
       this.discountMadeByName = orderData["discount_made_by_name"];
       this.discountMadeByRole = orderData["discount_made_by_role"];
       this.discountMadeByID = orderData["discount_made_by_id"];
+      this.oldTotalPriceBeforeAdminDiscount = orderData["old_total_price_before_admin_discount"];
+      this.lastWorkflowStatus = orderData["last_workflow_status"];
 
       List<dynamic> serviceList = orderData["order_services"];
       this.orderService = List<OrderService>();
@@ -154,6 +158,7 @@ class OrderInfo{
     this.adminDiscount = order.adminDiscount;
     this.discountMadeByName = order.discountMadeByName;
     this.discountMadeByRole = order.discountMadeByRole;
+    this.oldTotalPriceBeforeAdminDiscount = order.oldTotalPriceBeforeAdminDiscount;
   }
 }
 
@@ -179,8 +184,11 @@ class OrderService{
   num quantity;
   bool neededParts;
   bool isDeleted = false;
+  String offerServiceDetailsAr;
+  String offerServiceDetailsEn;
+  bool isPackageOffer;
 
-  OrderService({this.serviceCategoryId, this.mainServiceId, this.subMainServiceId, this.isSubService, this.nameAr, this.nameEn, this.priceForOnePiece, this.total, this.quantity, this.neededParts});
+  OrderService({this.serviceCategoryId, this.mainServiceId, this.subMainServiceId, this.isSubService, this.nameAr, this.nameEn, this.priceForOnePiece, this.total, this.quantity, this.neededParts, this.isPackageOffer, this.offerServiceDetailsAr, this.offerServiceDetailsEn});
 
   OrderService.fromMap(Map<dynamic, dynamic> service){
     this.serviceCategoryId = service["service_category_id"];
@@ -193,6 +201,9 @@ class OrderService{
     this.total = service["total_price"];
     this.quantity = service["quantity"];
     this.neededParts = service["needed_parts"];
+    this.offerServiceDetailsAr = service["offer_service_details_ar"];
+    this.offerServiceDetailsEn = service["offer_dervice_details_en"];
+    this.isPackageOffer = service["is_package_offer"];
   }
 
   update(OrderService serv){
@@ -203,5 +214,8 @@ class OrderService{
     this.total = serv.total;
     this.quantity = serv.quantity;
     this.neededParts = serv.neededParts;
+    this.offerServiceDetailsAr = serv.offerServiceDetailsAr;
+    this.offerServiceDetailsEn = serv.offerServiceDetailsEn;
+    this.isPackageOffer = serv.isPackageOffer;
   }
 }

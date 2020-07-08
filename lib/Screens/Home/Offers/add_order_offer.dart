@@ -152,6 +152,7 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
 
   _navigateToOfferList() {
     Navigator.of(context).pop();
+    Navigator.of(context).pop();
   }
 
   _showCompletedAlert({String message}) {
@@ -313,6 +314,7 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
                     onChange: _orderOfferBloc.priceChange,
                     keyboardType: TextInputType.number,
                     isError: snapshot.hasError,
+                    inputFormatters: Common().getNumberOnlyInputFormatters(),
                   );
                 }),
             StreamBuilder<String>(
@@ -325,6 +327,7 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
                     onChange: _orderOfferBloc.quantityChange,
                     keyboardType: TextInputType.number,
                     isError: snapshot.hasError,
+                    inputFormatters: Common().getNumberOnlyInputFormatters(),
                   );
                 }),
             Container(
@@ -355,13 +358,15 @@ class OfferTextField extends StatelessWidget {
   final bool isError;
   final Function(String) onChange;
   final TextInputType keyboardType;
+  final List<TextInputFormatter> inputFormatters;
   OfferTextField(
       {this.header,
       this.hint = "",
       this.controller,
       this.isError = false,
       @required this.onChange,
-      this.keyboardType = TextInputType.text});
+      this.keyboardType = TextInputType.text,
+      this.inputFormatters});
 
   @override
   Widget build(BuildContext context) {
@@ -381,13 +386,15 @@ class OfferTextField extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(color: borderColor, width: 2),
+              border: Border.all(color: borderColor, width: 1),
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
             child: TextField(
               controller: controller,
               keyboardType: keyboardType,
               onChanged: onChange,
               decoration: InputDecoration.collapsed(hintText: hint),
+              inputFormatters: inputFormatters,
             ),
           ),
         ],
@@ -427,7 +434,8 @@ class OfferMultiLineTextField extends StatelessWidget {
             padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(color: borderColor, width: 2),
+              border: Border.all(color: borderColor, width: 1),
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
             child: TextField(
               controller: controller,
@@ -454,7 +462,8 @@ class ServiceDropDown extends StatelessWidget {
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Colors.transparent,
-          border: Border.all(color: Colors.black, width: 2),
+          border: Border.all(color: Colors.black, width: 1),
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
         ),
         child: DropdownButtonHideUnderline(child: child));
   }

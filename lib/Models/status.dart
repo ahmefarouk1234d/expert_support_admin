@@ -15,6 +15,10 @@ class OrderStatus {
   static const String requestChangeAr = "طلب تعديل";
   static const String deleteAr = "محذوف";
   static const String deleteEn = "Deleted";
+  static const String onTheWayEn = "On The Way";
+  static const String onTheWayAr = "في الطريق";
+  static const String arrivedEn = "Technician Start Working";
+  static const String arrivedAr = "الفني يشوف شغله";
   static const String unknownAr = "حالة غير معروفة";
   static const String unknownEn = "Unknow Status";
 
@@ -24,6 +28,8 @@ class OrderStatus {
   static const String pending = "Pending";
   static const String canceled = "Canceled";
   static const String delete = "Delete";
+  static const String onTheWay = "OnTheWay";
+  static const String arrived = "Arrived";
   static const String unknown = "unknow";
 
   String getDisplayStatus({@required String status, @required BuildContext context}) {
@@ -39,6 +45,10 @@ class OrderStatus {
         return isArabic ? canceledAr : canceledEn;
       case delete:
         return isArabic ? deleteAr : deleteEn;
+      case onTheWay:
+        return isArabic ? onTheWayAr : onTheWayEn;
+      case arrived:
+        return isArabic ? arrivedAr : arrivedEn;
       default:
         return isArabic ? unknownAr : unknownEn;
     }
@@ -63,6 +73,10 @@ class WorkflowStatus {
   static const String addNewServiceAr = "اضافة خدمة جديدة";
   static const String deleteAr = "محذوف";
   static const String deleteEn = "Deleted";
+  static const String onTheWayEn = "On The Way";
+  static const String onTheWayAr = "في الطريق";
+  static const String arrivedEn = "Technician Start Working";
+  static const String arrivedAr = "الفني يشوف شغله";
   static const String unknownAr = "حالة غير معروفة";
   static const String unknownEn = "Unknow Status";
 
@@ -75,6 +89,8 @@ class WorkflowStatus {
   static const String requestChangeReply = "RequestChangeReply";
   static const String addNewService = "AddNewService";
   static const String delete = "Delete";
+  static const String onTheWay = "OnTheWay";
+  static const String arrived = "Arrived";
   static const String unknown = "unknow";
 
   String getDisplayStatus({@required String status, @required BuildContext context}) {
@@ -96,6 +112,10 @@ class WorkflowStatus {
         return isArabic ? addNewServiceAr : addNewServiceEn;
       case delete:
         return isArabic ? deleteAr : deleteEn;
+      case onTheWay:
+        return isArabic ? onTheWayAr : onTheWayEn;
+      case arrived:
+        return isArabic ? arrivedAr : arrivedEn;
       default:
         return isArabic ? unknownAr : unknownEn;
     }
