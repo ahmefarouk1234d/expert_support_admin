@@ -110,6 +110,38 @@ class _OrderDetailsState extends State<OrderDetails> {
     }
   }
 
+  bool get _isInProcess {
+    return _order.workflowStatus == WorkflowStatus.inProcess
+      || (_order.workflowStatus == WorkflowStatus.requestChangeReply
+        && _order.orderStatus == WorkflowStatus.inProcess);
+  }
+
+  bool get _isOnTheWay {
+    return _order.workflowStatus == WorkflowStatus.onTheWay
+      || (_order.workflowStatus == WorkflowStatus.requestChangeReply
+        && _order.orderStatus == WorkflowStatus.onTheWay);
+  }
+
+  bool get _isArrived {
+    return _order.workflowStatus == WorkflowStatus.arrived
+      || (_order.workflowStatus == WorkflowStatus.requestChangeReply
+        && _order.orderStatus == WorkflowStatus.arrived);
+  }
+
+  bool _isSupervior(AsyncSnapshot<AdminUserInfo> snapshot) {
+    return snapshot.hasData && snapshot.data.role == AdminRole.supervisor;
+  }
+
+  bool get _canAddDiscount {
+    return _isInProcess || _isOnTheWay || _isArrived;
+  }
+
+  String get _actionButtonTitle {
+    return _hasAdminDiscount
+      ? _localizations.translate(LocalizedKey.removeDiscountButtonTitle)
+      : _localizations.translate(LocalizedKey.addDiscountButtonTitle);
+  }
+
   @override
   Widget build(BuildContext context) {
     _appBloc = Provider.of(context);
@@ -118,24 +150,14 @@ class _OrderDetailsState extends State<OrderDetails> {
     return StreamBuilder<AdminUserInfo>(
         stream: _appBloc.admin,
         builder: (context, snapshot) {
-          bool isSupervior =
-            snapshot.hasData && snapshot.data.role == AdminRole.supervisor;
-          String actionButtonTitle = _hasAdminDiscount
-            ? _localizations.translate(LocalizedKey.removeDiscountButtonTitle)
-            : _localizations.translate(LocalizedKey.addDiscountButtonTitle);
-          bool canAddDiscount = 
-            _order.workflowStatus == WorkflowStatus.inProcess
-            || _order.workflowStatus == WorkflowStatus.onTheWay
-            || _order.workflowStatus == WorkflowStatus.arrived;
-
           return Scaffold(
             appBar: AppBar(
               title: Text(_order.id),
               elevation: 0.0,
               actions: <Widget>[
-                isSupervior && canAddDiscount
+                _isSupervior(snapshot) && _canAddDiscount
                   ? AppBarActionButton(
-                      title: actionButtonTitle,
+                      title: _actionButtonTitle,
                       onPressed: () { _onAppBarActionButtonTapped(snapshot.data); },
                     )
                   : Container()

@@ -8,6 +8,7 @@ class OrderInfo{
   String orderStatus;
   String workflowStatus;
   String lastWorkflowStatus;
+  String lastTechWorkflowStatus;
   DateTime dateCreated;
   DateTime dateUpdate;
   List<OrderService> orderService;
@@ -43,7 +44,7 @@ class OrderInfo{
   num oldTotalPriceBeforeAdminDiscount;
 
   OrderInfo({this.documentID ,this.id, this.username, this.userPhone, this.orderStatus, this.workflowStatus, this.dateCreated, this.orderService, this.imagesUrl, this.comment, this.visitDate , this.visitTime, this.coordinate, this.discountPercent, this.totalDiscountAmount, this.totalPriceAfterDiscount, this.totalPriceBeforeDiscount, this.totalPriceWithVAT, this.vatTotal, this.visiteDateTimestamp,
-  this.adminID, this.adminName, this.adminRole, this.cancelReason, this.changeRequestDetails, this.visitDateAndTime, this.dateUpdate, this.reminderOnDay, this.reminderOneHour, this.partsFees, this.adminFees, this.totalMoneyReceived, this.vatPercentage, this.paymentMethod, this.adminDiscount, this.discountMadeByName, this.discountMadeByRole, this.lastWorkflowStatus, this.oldTotalPriceBeforeAdminDiscount, this.discountMadeByID});
+  this.adminID, this.adminName, this.adminRole, this.cancelReason, this.changeRequestDetails, this.visitDateAndTime, this.dateUpdate, this.reminderOnDay, this.reminderOneHour, this.partsFees, this.adminFees, this.totalMoneyReceived, this.vatPercentage, this.paymentMethod, this.adminDiscount, this.discountMadeByName, this.discountMadeByRole, this.lastWorkflowStatus, this.oldTotalPriceBeforeAdminDiscount, this.discountMadeByID, this.lastTechWorkflowStatus});
 
   _orderMapToList(DocumentSnapshot orderDocData){
     Map<String, dynamic> orderData = orderDocData.data;
@@ -94,6 +95,7 @@ class OrderInfo{
       this.discountMadeByID = orderData["discount_made_by_id"];
       this.oldTotalPriceBeforeAdminDiscount = orderData["old_total_price_before_admin_discount"];
       this.lastWorkflowStatus = orderData["last_workflow_status"];
+      this.lastTechWorkflowStatus = orderData["last_tech_workflow_status"];
 
       List<dynamic> serviceList = orderData["order_services"];
       this.orderService = List<OrderService>();

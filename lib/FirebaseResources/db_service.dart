@@ -217,6 +217,7 @@ class DataBase{
         "order_status": order.orderStatus,
         "workflow_status": order.workflowStatus,
         "last_workflow_status": order.lastWorkflowStatus,
+        "last_tech_workflow_status": order.lastTechWorkflowStatus,
         "admin_name": admin.name,
         "admin_id": admin.id,
         "admin_role": admin.role,

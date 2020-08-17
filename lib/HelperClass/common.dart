@@ -48,4 +48,8 @@ class Common {
   removeFocus(BuildContext context) {
     FocusScope.of(context).unfocus();
   }
+
+  String getAppVersion() {
+    return "Version 1.0";
+  }
 }

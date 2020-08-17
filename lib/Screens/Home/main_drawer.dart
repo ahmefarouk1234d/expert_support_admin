@@ -1,4 +1,5 @@
 import 'package:expert_support_admin/BlocResources/app_bloc.dart';
+import 'package:expert_support_admin/HelperClass/common.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:flutter/material.dart';
 
@@ -36,6 +37,7 @@ class MainDrawer extends StatelessWidget {
                     separatorBuilder: (context, index) => Divider(color: Colors.black54,),
                   )
                 ),
+                Text(Common().getAppVersion())
               ],
             );
           }

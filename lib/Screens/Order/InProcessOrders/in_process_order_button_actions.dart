@@ -66,19 +66,19 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
   bool get _isInProcess {
     return _order.workflowStatus == WorkflowStatus.inProcess
       || (_order.workflowStatus == WorkflowStatus.requestChangeReply
-        && _order.lastWorkflowStatus == WorkflowStatus.inProcess);
+        && _order.orderStatus == WorkflowStatus.inProcess);
   }
 
   bool get _isOnTheWay {
     return _order.workflowStatus == WorkflowStatus.onTheWay
       || (_order.workflowStatus == WorkflowStatus.requestChangeReply
-        && _order.lastWorkflowStatus == WorkflowStatus.onTheWay);
+        && _order.orderStatus == WorkflowStatus.onTheWay);
   }
 
   bool get _isArrived {
     return _order.workflowStatus == WorkflowStatus.arrived
       || (_order.workflowStatus == WorkflowStatus.requestChangeReply
-        && _order.lastWorkflowStatus == WorkflowStatus.arrived);
+        && _order.orderStatus == WorkflowStatus.arrived);
   }
 
   String get _mainActionButtonTitle {
@@ -254,6 +254,7 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
 
     _order.orderStatus = orderStatus;
     _order.lastWorkflowStatus = _order.workflowStatus;
+    _order.lastTechWorkflowStatus = _order.workflowStatus;
     _order.workflowStatus = workflowStatus;
 
     _order.adminFees = partTotals.isEmpty ? 0.0 : double.parse(partTotals);
@@ -291,7 +292,7 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
           padding: EdgeInsets.symmetric(vertical: 16),
           child: Column(
             children: <Widget>[
-              (_order.workflowStatus == WorkflowStatus.arrived) 
+              _isArrived
                 ? Column(
                     children: <Widget>[
                       InProcessFinishOrderPriceTextField(
@@ -316,7 +317,7 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
                     ]
                   )
                 : Container(),
-              Container(height: _order.workflowStatus == WorkflowStatus.arrived ? 16 : 0,),
+              Container(height: _isArrived ? 16 : 0,),
               CommonButton(
                 title: AppLocalizations.of(context).translate(LocalizedKey.viewImageButtonTitle),
                 onPressed: _isViewImageEnabled ? () => _handleViewImages() : null,
