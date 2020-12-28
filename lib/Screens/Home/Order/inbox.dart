@@ -97,10 +97,18 @@ class _OrdersListState extends State<OrdersList> {
     return Column(
       children: <Widget>[
         FliterOrder(
-          onFromDateTap: (date) { _handleFromDate(date); },
-          onToDateTap: (date) { _handleToDate(date); },
-          onSearchTap: () { _handleSearch(); },
-          onClearTap: () { _handleClearSeach(); },
+          onFromDateTap: (date) {
+            _handleFromDate(date);
+          },
+          onToDateTap: (date) {
+            _handleToDate(date);
+          },
+          onSearchTap: () {
+            _handleSearch();
+          },
+          onClearTap: () {
+            _handleClearSeach();
+          },
         ),
         Expanded(
           child: StreamBuilder<QuerySnapshot>(
@@ -114,11 +122,11 @@ class _OrdersListState extends State<OrdersList> {
                       return NoData();
                     }
                     orderList = OrderInfo.fromMapList(
-                        orderDocDataList: snapshot.data.documents);
+                        orderDocDataList: snapshot.data.docs);
                     return orderList.isEmpty
                         ? NoData()
                         : OrderList(
-                            orders: orderList,//.reversed.toList(),
+                            orders: orderList, //.reversed.toList(),
                             onTap: _navigateToOrderDetails,
                           );
                 }

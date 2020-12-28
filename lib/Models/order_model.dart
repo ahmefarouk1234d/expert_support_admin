@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class OrderInfo{
+class OrderInfo {
   String documentID;
   String id;
   String username;
@@ -43,86 +43,128 @@ class OrderInfo{
   String discountMadeByID;
   num oldTotalPriceBeforeAdminDiscount;
 
-  OrderInfo({this.documentID ,this.id, this.username, this.userPhone, this.orderStatus, this.workflowStatus, this.dateCreated, this.orderService, this.imagesUrl, this.comment, this.visitDate , this.visitTime, this.coordinate, this.discountPercent, this.totalDiscountAmount, this.totalPriceAfterDiscount, this.totalPriceBeforeDiscount, this.totalPriceWithVAT, this.vatTotal, this.visiteDateTimestamp,
-  this.adminID, this.adminName, this.adminRole, this.cancelReason, this.changeRequestDetails, this.visitDateAndTime, this.dateUpdate, this.reminderOnDay, this.reminderOneHour, this.partsFees, this.adminFees, this.totalMoneyReceived, this.vatPercentage, this.paymentMethod, this.adminDiscount, this.discountMadeByName, this.discountMadeByRole, this.lastWorkflowStatus, this.oldTotalPriceBeforeAdminDiscount, this.discountMadeByID, this.lastTechWorkflowStatus});
+  OrderInfo(
+      {this.documentID,
+      this.id,
+      this.username,
+      this.userPhone,
+      this.orderStatus,
+      this.workflowStatus,
+      this.dateCreated,
+      this.orderService,
+      this.imagesUrl,
+      this.comment,
+      this.visitDate,
+      this.visitTime,
+      this.coordinate,
+      this.discountPercent,
+      this.totalDiscountAmount,
+      this.totalPriceAfterDiscount,
+      this.totalPriceBeforeDiscount,
+      this.totalPriceWithVAT,
+      this.vatTotal,
+      this.visiteDateTimestamp,
+      this.adminID,
+      this.adminName,
+      this.adminRole,
+      this.cancelReason,
+      this.changeRequestDetails,
+      this.visitDateAndTime,
+      this.dateUpdate,
+      this.reminderOnDay,
+      this.reminderOneHour,
+      this.partsFees,
+      this.adminFees,
+      this.totalMoneyReceived,
+      this.vatPercentage,
+      this.paymentMethod,
+      this.adminDiscount,
+      this.discountMadeByName,
+      this.discountMadeByRole,
+      this.lastWorkflowStatus,
+      this.oldTotalPriceBeforeAdminDiscount,
+      this.discountMadeByID,
+      this.lastTechWorkflowStatus});
 
-  _orderMapToList(DocumentSnapshot orderDocData){
-    Map<String, dynamic> orderData = orderDocData.data;
-      int dateCreated = orderData["order_date_created"];
-      int dateUpdate = orderData["order_date_updated"];
-      int visitedDate = orderData["visit_date"];
-      int visitDateAndTimeTimestamp = orderData["visit_date_and_time"];
-      DateTime visitDateAndTime = 
-        visitDateAndTimeTimestamp != null 
+  _orderMapToList(DocumentSnapshot orderDocData) {
+    Map<String, dynamic> orderData = orderDocData.data();
+    int dateCreated = orderData["order_date_created"];
+    int dateUpdate = orderData["order_date_updated"];
+    int visitedDate = orderData["visit_date"];
+    int visitDateAndTimeTimestamp = orderData["visit_date_and_time"];
+    DateTime visitDateAndTime = visitDateAndTimeTimestamp != null
         ? DateTime.fromMillisecondsSinceEpoch(visitDateAndTimeTimestamp)
         : null;
 
-      this.documentID = orderDocData.documentID;
-      this.id = orderData["order_id"];
-      this.username = orderData["username"];
-      this.userPhone = orderData["user_phone"];
-      this.orderStatus = orderData["order_status"];
-      this.workflowStatus = orderData["workflow_status"];
-      this.dateCreated = DateTime.fromMillisecondsSinceEpoch(dateCreated);
-      this.dateUpdate = DateTime.fromMillisecondsSinceEpoch(dateUpdate);
-      this.visitDate = DateTime.fromMillisecondsSinceEpoch(visitedDate);
-      this.visiteDateTimestamp = visitedDate;
-      this.visitTime = orderData["visit_time"];
-      this.visitDateAndTime = visitDateAndTime;
-      this.comment = orderData["comment"];
-      this.discountPercent = orderData["discount_percent"];
-      this.totalDiscountAmount = orderData["total_discount_amount"];
-      this.totalPriceBeforeDiscount = orderData["total_order_price"];
-      this.totalPriceAfterDiscount = orderData["total_order_price_after_discount"];
-      this.vatTotal = orderData["VAT_total"];
-      this.totalPriceWithVAT = orderData["total_price_with_VAT"];
-      this.coordinate = Coordinate.fromMap(orderData["visit_location"]);
-      this.adminID = orderData["admin_id"];
-      this.adminName = orderData["admin_name"];
-      this.adminRole = orderData["admin_role"];
-      this.cancelReason = orderData["cancel_reason"];
-      this.changeRequestDetails = orderData["change_request_details"];
-      this.reminderOnDay = orderData["one_day_reminder"];
-      this.reminderOneHour = orderData["one_hour_reminder"];
-      this.totalMoneyReceived = orderData["money_received"];
-      this.adminFees = orderData["parts_total"];
-      this.partsFees = orderData["administrative_fees"];
-      this.vatPercentage = orderData["vat_percentage"];
-      this.paymentMethod = orderData["payment_method"];
-      this.adminDiscount = orderData["admin_discount"];
-      this.discountMadeByName = orderData["discount_made_by_name"];
-      this.discountMadeByRole = orderData["discount_made_by_role"];
-      this.discountMadeByID = orderData["discount_made_by_id"];
-      this.oldTotalPriceBeforeAdminDiscount = orderData["old_total_price_before_admin_discount"];
-      this.lastWorkflowStatus = orderData["last_workflow_status"];
-      this.lastTechWorkflowStatus = orderData["last_tech_workflow_status"];
+    this.documentID = orderDocData.id;
+    this.id = orderData["order_id"];
+    this.username = orderData["username"];
+    this.userPhone = orderData["user_phone"];
+    this.orderStatus = orderData["order_status"];
+    this.workflowStatus = orderData["workflow_status"];
+    this.dateCreated = DateTime.fromMillisecondsSinceEpoch(dateCreated);
+    this.dateUpdate = DateTime.fromMillisecondsSinceEpoch(dateUpdate);
+    this.visitDate = DateTime.fromMillisecondsSinceEpoch(visitedDate);
+    this.visiteDateTimestamp = visitedDate;
+    this.visitTime = orderData["visit_time"];
+    this.visitDateAndTime = visitDateAndTime;
+    this.comment = orderData["comment"];
+    this.discountPercent = orderData["discount_percent"];
+    this.totalDiscountAmount = orderData["total_discount_amount"];
+    this.totalPriceBeforeDiscount = orderData["total_order_price"];
+    this.totalPriceAfterDiscount =
+        orderData["total_order_price_after_discount"];
+    this.vatTotal = orderData["VAT_total"];
+    this.totalPriceWithVAT = orderData["total_price_with_VAT"];
+    this.coordinate = Coordinate.fromMap(orderData["visit_location"]);
+    this.adminID = orderData["admin_id"];
+    this.adminName = orderData["admin_name"];
+    this.adminRole = orderData["admin_role"];
+    this.cancelReason = orderData["cancel_reason"];
+    this.changeRequestDetails = orderData["change_request_details"];
+    this.reminderOnDay = orderData["one_day_reminder"];
+    this.reminderOneHour = orderData["one_hour_reminder"];
+    this.totalMoneyReceived = orderData["money_received"];
+    this.adminFees = orderData["parts_total"];
+    this.partsFees = orderData["administrative_fees"];
+    this.vatPercentage = orderData["vat_percentage"];
+    this.paymentMethod = orderData["payment_method"];
+    this.adminDiscount = orderData["admin_discount"];
+    this.discountMadeByName = orderData["discount_made_by_name"];
+    this.discountMadeByRole = orderData["discount_made_by_role"];
+    this.discountMadeByID = orderData["discount_made_by_id"];
+    this.oldTotalPriceBeforeAdminDiscount =
+        orderData["old_total_price_before_admin_discount"];
+    this.lastWorkflowStatus = orderData["last_workflow_status"];
+    this.lastTechWorkflowStatus = orderData["last_tech_workflow_status"];
 
-      List<dynamic> serviceList = orderData["order_services"];
-      this.orderService = List<OrderService>();
-      serviceList.forEach((serv) {
-        this.orderService.add(OrderService.fromMap(serv));
-      });
+    List<dynamic> serviceList = orderData["order_services"];
+    this.orderService = List<OrderService>();
+    serviceList.forEach((serv) {
+      this.orderService.add(OrderService.fromMap(serv));
+    });
 
-      Map<dynamic, dynamic> imagesUrlMap = orderData["images_url"];
-      this.imagesUrl = List();
-      imagesUrlMap.forEach((key, value){
-        this.imagesUrl.add(value);
-      });
+    Map<dynamic, dynamic> imagesUrlMap = orderData["images_url"];
+    this.imagesUrl = List();
+    imagesUrlMap.forEach((key, value) {
+      this.imagesUrl.add(value);
+    });
   }
 
-  OrderInfo.fromMap({DocumentSnapshot orderDocData}){
-      this._orderMapToList(orderDocData);
+  OrderInfo.fromMap({DocumentSnapshot orderDocData}) {
+    this._orderMapToList(orderDocData);
   }
 
-  static List<OrderInfo> fromMapList({List<DocumentSnapshot> orderDocDataList}){
+  static List<OrderInfo> fromMapList(
+      {List<DocumentSnapshot> orderDocDataList}) {
     List<OrderInfo> orderList = List();
-    orderDocDataList.forEach((orderDocData){
+    orderDocDataList.forEach((orderDocData) {
       orderList.add(OrderInfo().._orderMapToList(orderDocData));
     });
     return orderList;
   }
-  
-  update(OrderInfo order){
+
+  update(OrderInfo order) {
     this.documentID = order.documentID;
     this.id = order.id;
     this.username = order.username;
@@ -143,7 +185,8 @@ class OrderInfo{
     this.totalPriceWithVAT = order.totalPriceWithVAT;
     this.coordinate = order.coordinate;
     this.orderService = List<OrderService>();
-    order.orderService.forEach((serv) => this.orderService.add(OrderService()..update(serv)));
+    order.orderService
+        .forEach((serv) => this.orderService.add(OrderService()..update(serv)));
     this.imagesUrl = order.imagesUrl;
     this.adminID = order.adminID;
     this.adminName = order.adminName;
@@ -160,21 +203,22 @@ class OrderInfo{
     this.adminDiscount = order.adminDiscount;
     this.discountMadeByName = order.discountMadeByName;
     this.discountMadeByRole = order.discountMadeByRole;
-    this.oldTotalPriceBeforeAdminDiscount = order.oldTotalPriceBeforeAdminDiscount;
+    this.oldTotalPriceBeforeAdminDiscount =
+        order.oldTotalPriceBeforeAdminDiscount;
   }
 }
 
-class Coordinate{
+class Coordinate {
   num latitude;
   num logntitude;
 
-  Coordinate.fromMap(Map<dynamic, dynamic> location){
+  Coordinate.fromMap(Map<dynamic, dynamic> location) {
     this.latitude = location["latitude"];
     this.logntitude = location["longitude"];
   }
 }
 
-class OrderService{
+class OrderService {
   String serviceCategoryId;
   String mainServiceId;
   String subMainServiceId;
@@ -190,9 +234,22 @@ class OrderService{
   String offerServiceDetailsEn;
   bool isPackageOffer;
 
-  OrderService({this.serviceCategoryId, this.mainServiceId, this.subMainServiceId, this.isSubService, this.nameAr, this.nameEn, this.priceForOnePiece, this.total, this.quantity, this.neededParts, this.isPackageOffer, this.offerServiceDetailsAr, this.offerServiceDetailsEn});
+  OrderService(
+      {this.serviceCategoryId,
+      this.mainServiceId,
+      this.subMainServiceId,
+      this.isSubService,
+      this.nameAr,
+      this.nameEn,
+      this.priceForOnePiece,
+      this.total,
+      this.quantity,
+      this.neededParts,
+      this.isPackageOffer,
+      this.offerServiceDetailsAr,
+      this.offerServiceDetailsEn});
 
-  OrderService.fromMap(Map<dynamic, dynamic> service){
+  OrderService.fromMap(Map<dynamic, dynamic> service) {
     this.serviceCategoryId = service["service_category_id"];
     this.mainServiceId = service["main_service_id"];
     this.subMainServiceId = service["sub_main_service_id"];
@@ -208,7 +265,7 @@ class OrderService{
     this.isPackageOffer = service["is_package_offer"];
   }
 
-  update(OrderService serv){
+  update(OrderService serv) {
     this.serviceCategoryId = serv.serviceCategoryId;
     this.nameAr = serv.nameAr;
     this.nameEn = serv.nameEn;

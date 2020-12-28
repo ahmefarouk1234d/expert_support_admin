@@ -66,10 +66,10 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
   _getServices() async {
     try {
       QuerySnapshot querySnapshot = await FirebaseManager().getServices();
-      if (querySnapshot.documents.length > 0) {
+      if (querySnapshot.docs.length > 0) {
         setState(() {
           serviceCategoryList =
-              ServiceCategory.fromListMap(docList: querySnapshot.documents);
+              ServiceCategory.fromListMap(docList: querySnapshot.docs);
           isLoading = false;
         });
       } else {
@@ -188,78 +188,76 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             StreamBuilder<ServiceCategory>(
-              stream: _orderOfferBloc.serviceCategory,
-              builder: (context, snapshot) {
-                return ServiceDropDown(
-                  child: ServiceCategoryDropDownButton(
-                    serviceCategoryList: serviceCategoryList,
-                    serviceCategory: snapshot.data,
-                    onChanged: (value){
-                      _handleServiceCategoryChange(value);
-                      _orderOfferBloc.serviceCategoryChange(value);
-                    },
-                  ),
-                );
-              }
-            ),
+                stream: _orderOfferBloc.serviceCategory,
+                builder: (context, snapshot) {
+                  return ServiceDropDown(
+                    child: ServiceCategoryDropDownButton(
+                      serviceCategoryList: serviceCategoryList,
+                      serviceCategory: snapshot.data,
+                      onChanged: (value) {
+                        _handleServiceCategoryChange(value);
+                        _orderOfferBloc.serviceCategoryChange(value);
+                      },
+                    ),
+                  );
+                }),
             Container(
               height: 16.0,
             ),
             StreamBuilder<ServiceType>(
-              stream: _orderOfferBloc.serviceType,
-              builder: (context, snapshot) {
-                return ServiceDropDown(
-                  child: ServiceTypeDropDownButton(
-                    serviceTypeList: serviceTypeList,
-                    serviceType: snapshot.data,
-                    onChanged: (value){
-                      _handleServiceTypeChange(value);
-                      _orderOfferBloc.serviceTypeChange(value);
-                    },
-                  ),
-                );
-              }
-            ),
+                stream: _orderOfferBloc.serviceType,
+                builder: (context, snapshot) {
+                  return ServiceDropDown(
+                    child: ServiceTypeDropDownButton(
+                      serviceTypeList: serviceTypeList,
+                      serviceType: snapshot.data,
+                      onChanged: (value) {
+                        _handleServiceTypeChange(value);
+                        _orderOfferBloc.serviceTypeChange(value);
+                      },
+                    ),
+                  );
+                }),
             Container(
               height: 16.0,
             ),
             StreamBuilder<MainService>(
-              stream: _orderOfferBloc.mainService,
-              builder: (context, snapshot) {
-                return ServiceDropDown(
-                  child: MainServiceDropDownButton(
-                    mainServiceList: mainServiceList,
-                    mainService: snapshot.data,
-                    onChanged: (value){
-                      _handleMainServiceChange(value);
-                      _orderOfferBloc.mainServiceChange(value);
-                    },
-                  ),
-                );
-              }
-            ),
+                stream: _orderOfferBloc.mainService,
+                builder: (context, snapshot) {
+                  return ServiceDropDown(
+                    child: MainServiceDropDownButton(
+                      mainServiceList: mainServiceList,
+                      mainService: snapshot.data,
+                      onChanged: (value) {
+                        _handleMainServiceChange(value);
+                        _orderOfferBloc.mainServiceChange(value);
+                      },
+                    ),
+                  );
+                }),
             Container(
               height: 16.0,
             ),
             StreamBuilder<SubMainService>(
-              stream: _orderOfferBloc.subMainService,
-              builder: (context, snapshot) {
-                return ServiceDropDown(
-                  child: SubMainServiceDropDownButton(
-                    subMainServiceList: subMainServiceList,
-                    subMainService: snapshot.data,
-                    onChanged: (value) { 
-                      _handleSubMainServiceChange(value);
-                      _orderOfferBloc.subMainServiceChange(value); 
-                    },
-                  ),
-                );
-              }
-            ),
+                stream: _orderOfferBloc.subMainService,
+                builder: (context, snapshot) {
+                  return ServiceDropDown(
+                    child: SubMainServiceDropDownButton(
+                      subMainServiceList: subMainServiceList,
+                      subMainService: snapshot.data,
+                      onChanged: (value) {
+                        _handleSubMainServiceChange(value);
+                        _orderOfferBloc.subMainServiceChange(value);
+                      },
+                    ),
+                  );
+                }),
             Container(
               height: 16.0,
             ),
-            ServiceOrigianlPrice(price: originalPrice,),
+            ServiceOrigianlPrice(
+              price: originalPrice,
+            ),
             StreamBuilder<String>(
                 stream: _orderOfferBloc.offerTitleAr,
                 builder: (context, snapshot) {
@@ -334,7 +332,9 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
               height: 16.0,
             ),
             StreamBuilder<bool>(
-                stream: hasSubService ? _orderOfferBloc.isValidAddFieldsWithSub : _orderOfferBloc.isValidAddFields,
+                stream: hasSubService
+                    ? _orderOfferBloc.isValidAddFieldsWithSub
+                    : _orderOfferBloc.isValidAddFields,
                 builder: (context, snapshot) {
                   return CommonButton(
                     title: AppLocalizations.of(context)
@@ -590,7 +590,7 @@ class SubMainServiceDropDownButton extends StatelessWidget {
 }
 
 class ServiceOrigianlPrice extends StatelessWidget {
-  ServiceOrigianlPrice({Key key, @required this.price}): super(key: key);
+  ServiceOrigianlPrice({Key key, @required this.price}) : super(key: key);
 
   final num price;
 
@@ -601,11 +601,11 @@ class ServiceOrigianlPrice extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: Text(
-              AppLocalizations.of(context).translate(LocalizedKey.offerOriginalServicePrice)
-            )
+              child: Text(AppLocalizations.of(context)
+                  .translate(LocalizedKey.offerOriginalServicePrice))),
+          Container(
+            width: 8,
           ),
-          Container(width: 8,),
           Text("$price")
         ],
       ),

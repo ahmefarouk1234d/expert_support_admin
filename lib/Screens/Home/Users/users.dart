@@ -39,30 +39,31 @@ class _UsersContentState extends State<UsersContent> {
     super.initState();
   }
 
-  _navigateToUserDetails(AdminUserInfo admin, int index){
+  _navigateToUserDetails(AdminUserInfo admin, int index) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => UserDetails(admin: admin,)
-    ));
+        builder: (context) => UserDetails(
+              admin: admin,
+            )));
   }
 
   @override
   Widget build(BuildContext context) {
     _appBloc = Provider.of<AppBloc>(context);
     return StreamBuilder<QuerySnapshot>(
-      stream: _appBloc.adminListDocument,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Loading();
-        } 
-        usersList = AdminUserInfo.fromMapList(adminDocDataList: snapshot.data.documents);
-        return usersList.isEmpty 
-          ? NoData() 
-          : UsersList(
-              adminList: usersList, //.reversed.toList(), 
-              onTap: _navigateToUserDetails,
-            );
-      }
-    );
+        stream: _appBloc.adminListDocument,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Loading();
+          }
+          usersList =
+              AdminUserInfo.fromMapList(adminDocDataList: snapshot.data.docs);
+          return usersList.isEmpty
+              ? NoData()
+              : UsersList(
+                  adminList: usersList, //.reversed.toList(),
+                  onTap: _navigateToUserDetails,
+                );
+        });
   }
 }
 
@@ -73,41 +74,51 @@ class UsersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String role =  AppLocalizations.of(context).translate(LocalizedKey.role);
+    String role = AppLocalizations.of(context).translate(LocalizedKey.role);
 
     return Container(
-      margin: EdgeInsets.only(bottom: 24),
-      child: ListView.separated(
-        padding: EdgeInsets.all(8),
-        itemCount: adminList.length,
-        separatorBuilder: (context, index) => Divider(color: Colors.black12,),
-        itemBuilder: (context, index) {
-          final AdminUserInfo admin = adminList[index];
-          bool isActive = admin.status != null && admin.status == AdminUserStatus.active;
-          IconData icon = 
-            AppLocalizations.of(context).isArabic()
-              ? Icons.keyboard_arrow_left
-              : Icons.keyboard_arrow_right;
-          BoxBorder border =
-            AppLocalizations.of(context).isArabic()
-            ? Border(right: BorderSide(width: 4, color: isActive ? Colors.green : Colors.red))
-            : Border(left: BorderSide(width: 4, color: isActive ? Colors.green : Colors.red));
+        margin: EdgeInsets.only(bottom: 24),
+        child: ListView.separated(
+            padding: EdgeInsets.all(8),
+            itemCount: adminList.length,
+            separatorBuilder: (context, index) => Divider(
+                  color: Colors.black12,
+                ),
+            itemBuilder: (context, index) {
+              final AdminUserInfo admin = adminList[index];
+              bool isActive = admin.status != null &&
+                  admin.status == AdminUserStatus.active;
+              IconData icon = AppLocalizations.of(context).isArabic()
+                  ? Icons.keyboard_arrow_left
+                  : Icons.keyboard_arrow_right;
+              BoxBorder border = AppLocalizations.of(context).isArabic()
+                  ? Border(
+                      right: BorderSide(
+                          width: 4,
+                          color: isActive ? Colors.green : Colors.red))
+                  : Border(
+                      left: BorderSide(
+                          width: 4,
+                          color: isActive ? Colors.green : Colors.red));
 
-          return Container(
-            decoration: BoxDecoration(
-              border: border,
-            ),
-            child: ListTile(
-              onTap: () => onTap(admin, index),
-              title: Text(admin.email ?? ""),
-              subtitle: Text(
-                role + ": " + (AdminRole().getDisplayRole(role: admin.role, context: context))),
-              trailing: Icon(icon, color: Colors.black12,),
-            ),
-          );
-        }
-      )
-    );
+              return Container(
+                decoration: BoxDecoration(
+                  border: border,
+                ),
+                child: ListTile(
+                  onTap: () => onTap(admin, index),
+                  title: Text(admin.email ?? ""),
+                  subtitle: Text(role +
+                      ": " +
+                      (AdminRole()
+                          .getDisplayRole(role: admin.role, context: context))),
+                  trailing: Icon(
+                    icon,
+                    color: Colors.black12,
+                  ),
+                ),
+              );
+            }));
   }
 }
 
@@ -130,35 +141,37 @@ class _UserDetailsState extends State<UserDetails> {
     super.initState();
   }
 
-  _navigateToEditUser(AdminUserInfo user){
+  _navigateToEditUser(AdminUserInfo user) {
     AdminUserInfo userToEdit = AdminUserInfo()..update(user);
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => UpdateUser(admin: userToEdit, userDetailsBloc: _bloc,)
-    ));
+        builder: (context) => UpdateUser(
+              admin: userToEdit,
+              userDetailsBloc: _bloc,
+            )));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate(LocalizedKey.userDetailsAppBarTitle)),
+        title: Text(AppLocalizations.of(context)
+            .translate(LocalizedKey.userDetailsAppBarTitle)),
         elevation: 0.0,
       ),
       body: StreamBuilder<AdminUserInfo>(
-        stream: _bloc.user,
-        initialData: admin,
-        builder: (context, snapshot) {
-          return SingleChildScrollView(
-            child: Container(
+          stream: _bloc.user,
+          initialData: admin,
+          builder: (context, snapshot) {
+            return SingleChildScrollView(
+                child: Container(
               padding: EdgeInsets.all(8),
               child: UserDetailsContent(
-                admin: snapshot.data, 
-                onEdit: () => _navigateToEditUser(snapshot.data,)
-              ),
-            )
-          );
-        }
-      ),
+                  admin: snapshot.data,
+                  onEdit: () => _navigateToEditUser(
+                        snapshot.data,
+                      )),
+            ));
+          }),
     );
   }
 }
@@ -171,35 +184,50 @@ class UserDetailsContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-            children: <Widget>[
-              UserDetailsRow(
-                title: AppLocalizations.of(context).translate(LocalizedKey.usernameTitle), 
-                text: admin.name ?? "",),
-              UserDetailsRow(
-                title: AppLocalizations.of(context).translate(LocalizedKey.userPhoneTitle), 
-                text: admin.phone ?? "",),
-              UserDetailsRow(
-                title: AppLocalizations.of(context).translate(LocalizedKey.userEmailTitle), 
-                text: admin.email ?? "",),
-              UserDetailsRow(
-                title: AppLocalizations.of(context).translate(LocalizedKey.role), 
-                text: AdminRole().getDisplayRole(role: admin.role, context: context),),
-              UserDetailsRow(
-                title: AppLocalizations.of(context).translate(LocalizedKey.userStatusTitle), 
-                text: AdminUserStatus().getDisplayStatus(status: admin.status, context: context),),
-              UserDetailsRow(
-                title: AppLocalizations.of(context).translate(LocalizedKey.userLastActionTitle), 
-                text: DateConvert().toStringFromTimestamp(
-                  timestamp: admin.dateUpdated, 
-                  locale: AppLocalizations.of(context).locale.languageCode, 
-                  isFull: true),),
-              Container(height: 16,),
-              CommonButton(
-                title: AppLocalizations.of(context).translate(LocalizedKey.userEditButtonTitle),
-                onPressed: onEdit,
-              ),
-            ],
-          );
+      children: <Widget>[
+        UserDetailsRow(
+          title: AppLocalizations.of(context)
+              .translate(LocalizedKey.usernameTitle),
+          text: admin.name ?? "",
+        ),
+        UserDetailsRow(
+          title: AppLocalizations.of(context)
+              .translate(LocalizedKey.userPhoneTitle),
+          text: admin.phone ?? "",
+        ),
+        UserDetailsRow(
+          title: AppLocalizations.of(context)
+              .translate(LocalizedKey.userEmailTitle),
+          text: admin.email ?? "",
+        ),
+        UserDetailsRow(
+          title: AppLocalizations.of(context).translate(LocalizedKey.role),
+          text: AdminRole().getDisplayRole(role: admin.role, context: context),
+        ),
+        UserDetailsRow(
+          title: AppLocalizations.of(context)
+              .translate(LocalizedKey.userStatusTitle),
+          text: AdminUserStatus()
+              .getDisplayStatus(status: admin.status, context: context),
+        ),
+        UserDetailsRow(
+          title: AppLocalizations.of(context)
+              .translate(LocalizedKey.userLastActionTitle),
+          text: DateConvert().toStringFromTimestamp(
+              timestamp: admin.dateUpdated,
+              locale: AppLocalizations.of(context).locale.languageCode,
+              isFull: true),
+        ),
+        Container(
+          height: 16,
+        ),
+        CommonButton(
+          title: AppLocalizations.of(context)
+              .translate(LocalizedKey.userEditButtonTitle),
+          onPressed: onEdit,
+        ),
+      ],
+    );
   }
 }
 
@@ -214,16 +242,18 @@ class UserDetailsRow extends StatelessWidget {
       padding: EdgeInsets.all(8),
       child: Row(
         children: <Widget>[
-          Text(title + ":", style: TextStyle(fontWeight: FontWeight.w700),),
-          Container(width: 8,),
-          Expanded(child: Text(text),)
+          Text(
+            title + ":",
+            style: TextStyle(fontWeight: FontWeight.w700),
+          ),
+          Container(
+            width: 8,
+          ),
+          Expanded(
+            child: Text(text),
+          )
         ],
       ),
     );
   }
 }
-
-
-
-
-

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:flutter/material.dart';
 
-class AdminUserStatus{
+class AdminUserStatus {
   // ---------------- Database status ----------------------
   static const String active = "active";
   static const String deleted = "deleted";
@@ -19,7 +19,8 @@ class AdminUserStatus{
   static const String unknownEn = "Unknow Status";
   static const String unknownAr = "حالة غير معروفة";
 
-  String getDisplayStatus({@required String status, @required BuildContext context}) {
+  String getDisplayStatus(
+      {@required String status, @required BuildContext context}) {
     bool isArabic = AppLocalizations.of(context).isArabic();
     switch (status) {
       case active:
@@ -34,7 +35,7 @@ class AdminUserStatus{
   }
 }
 
-class AdminUserInfo{
+class AdminUserInfo {
   String id;
   String name;
   String phone;
@@ -45,11 +46,20 @@ class AdminUserInfo{
   int dateCreated;
   int dateUpdated;
 
-  AdminUserInfo({this.id, this.email, this.role, this.fcmToken, this.name, this.phone, this.dateCreated, this.dateUpdated, this.status});
+  AdminUserInfo(
+      {this.id,
+      this.email,
+      this.role,
+      this.fcmToken,
+      this.name,
+      this.phone,
+      this.dateCreated,
+      this.dateUpdated,
+      this.status});
 
-  _userMapToList(DocumentSnapshot adminDocData){
-    Map<String, dynamic> adminData = adminDocData.data;
-    this.id = adminDocData.documentID;
+  _userMapToList(DocumentSnapshot adminDocData) {
+    Map<String, dynamic> adminData = adminDocData.data();
+    this.id = adminDocData.id;
     this.email = adminData["email"];
     this.role = adminData["role"];
     this.fcmToken = adminData["fcm_token"];
@@ -60,19 +70,20 @@ class AdminUserInfo{
     this.dateUpdated = adminData["date_updated"];
   }
 
-  AdminUserInfo.fromMap(DocumentSnapshot adminDocData){
+  AdminUserInfo.fromMap(DocumentSnapshot adminDocData) {
     this._userMapToList(adminDocData);
   }
 
-  static List<AdminUserInfo> fromMapList({List<DocumentSnapshot> adminDocDataList}){
+  static List<AdminUserInfo> fromMapList(
+      {List<DocumentSnapshot> adminDocDataList}) {
     List<AdminUserInfo> aminList = List();
-    adminDocDataList.forEach((adminDocData){
+    adminDocDataList.forEach((adminDocData) {
       aminList.add(AdminUserInfo().._userMapToList(adminDocData));
     });
     return aminList;
   }
 
-  Map<String, dynamic> toMap(AdminUserInfo admin){
+  Map<String, dynamic> toMap(AdminUserInfo admin) {
     return {
       "name": admin.name,
       "phone": admin.phone,
@@ -85,7 +96,7 @@ class AdminUserInfo{
     };
   }
 
-  Map<String, dynamic> toUpdateInfoMap(AdminUserInfo admin){
+  Map<String, dynamic> toUpdateInfoMap(AdminUserInfo admin) {
     return {
       "name": admin.name,
       "phone": admin.phone,
@@ -95,14 +106,14 @@ class AdminUserInfo{
     };
   }
 
-  Map<String, dynamic> toDeletedInfoMap(AdminUserInfo admin){
+  Map<String, dynamic> toDeletedInfoMap(AdminUserInfo admin) {
     return {
       "status": admin.status,
       "date_updated": admin.dateUpdated,
     };
   }
 
-  update(AdminUserInfo admin){
+  update(AdminUserInfo admin) {
     this.id = admin.id;
     this.email = admin.email;
     this.role = admin.role;

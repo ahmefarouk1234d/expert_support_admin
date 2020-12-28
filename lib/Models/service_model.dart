@@ -19,8 +19,8 @@ class ServiceCategory {
       this.serviceTypeList});
 
   _serivceMapToList(DocumentSnapshot doc) {
-    Map<String, dynamic> serviceData = doc.data;
-    this.docID = doc.documentID;
+    Map<String, dynamic> serviceData = doc.data();
+    this.docID = doc.id;
     this.id = serviceData["ID"];
     this.nameAr = serviceData["NameAr"];
     this.nameEn = serviceData["NameEn"];
@@ -35,7 +35,7 @@ class ServiceCategory {
   static List<ServiceCategory> fromListMap({List<DocumentSnapshot> docList}) {
     List<ServiceCategory> services = List();
     docList.forEach((doc) {
-      if (doc.data["Items"] is List<dynamic>) {
+      if (doc.data()["Items"] is List<dynamic>) {
         services.add(ServiceCategory().._serivceMapToList(doc));
       }
     });
@@ -67,7 +67,7 @@ class ServiceType {
       this.remarkEn,
       this.optionTitleAr,
       this.optionTitleEn,
-      this.gauranteePeriodInDays, 
+      this.gauranteePeriodInDays,
       this.minRate,
       this.mainServiceList});
 
@@ -111,7 +111,16 @@ class MainService {
   //List<ServicePrice> servicePrice;
   List<SubMainService> subMainServiceList;
 
-  MainService({this.id, this.nameEn, this.nameAr, this.type, this.hasSub, this.price, this.priceDescAr, this.priceDescEn, this.subMainServiceList});
+  MainService(
+      {this.id,
+      this.nameEn,
+      this.nameAr,
+      this.type,
+      this.hasSub,
+      this.price,
+      this.priceDescAr,
+      this.priceDescEn,
+      this.subMainServiceList});
 
   _subSubSerivceMapToList(Map<dynamic, dynamic> mainService) {
     this.id = mainService["ID"];
@@ -119,8 +128,9 @@ class MainService {
     this.nameEn = mainService["NameEn"];
     this.type = mainService["Type"];
     this.hasSub = mainService["HasSub"];
-    if (this.hasSub){
-      this.subMainServiceList = SubMainService.fromListMap(mainService["SubMainService"]);
+    if (this.hasSub) {
+      this.subMainServiceList =
+          SubMainService.fromListMap(mainService["SubMainService"]);
     } else {
       this.price = mainService["Price"];
       this.priceDescAr = mainService["PriceDescAr"];
@@ -150,7 +160,13 @@ class SubMainService {
   String priceDescAr;
   String priceDescEn;
 
-  SubMainService({this.id, this.nameEn, this.nameAr, this.price, this.priceDescAr, this.priceDescEn});
+  SubMainService(
+      {this.id,
+      this.nameEn,
+      this.nameAr,
+      this.price,
+      this.priceDescAr,
+      this.priceDescEn});
 
   _servicePriceMapToList(Map<dynamic, dynamic> subMainService) {
     this.id = subMainService["ID"];

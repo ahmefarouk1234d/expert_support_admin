@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class DiscountPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,7 +23,6 @@ class DiscountPage extends StatelessWidget {
 }
 
 class DiscountPageContent extends StatefulWidget {
-
   @override
   _DiscountPageContentState createState() => _DiscountPageContentState();
 }
@@ -33,88 +31,93 @@ class _DiscountPageContentState extends State<DiscountPageContent> {
   AppBloc _appBloc;
   List<DiscountInfo> _discountList;
 
-
   @override
   void initState() {
     _discountList = List();
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     _appBloc = Provider.of<AppBloc>(context);
     return StreamBuilder<QuerySnapshot>(
-      stream: _appBloc.discountListDocument,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+        stream: _appBloc.discountListDocument,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
             return Loading();
           }
           _discountList =
-              DiscountInfo.fromMapList(discountDocDataList: snapshot.data.documents);
+              DiscountInfo.fromMapList(discountDocDataList: snapshot.data.docs);
           return _discountList.isEmpty
               ? NoData()
               : DiscountList(
                   discountList: _discountList,
                 );
-      }
-    );
+        });
   }
 }
 
 class DiscountList extends StatelessWidget {
-  DiscountList({Key key, @required this.discountList}): super(key: key);
+  DiscountList({Key key, @required this.discountList}) : super(key: key);
 
   final List<DiscountInfo> discountList;
 
   _onTap(BuildContext context, int index) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => DiscountDetails(discountInfo: discountList[index],)
-    ));
+        builder: (context) => DiscountDetails(
+              discountInfo: discountList[index],
+            )));
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ListView.separated(
-        padding: EdgeInsets.all(8),
-        itemCount: discountList.length,
-        separatorBuilder: (context, index) => Divider(color: Colors.black12,), 
-        itemBuilder: (_, index) {
-          DiscountInfo discount = discountList[index];
-          bool isValid = discount.isValid;
-          IconData icon = 
-            AppLocalizations.of(context).isArabic()
+        child: ListView.separated(
+      padding: EdgeInsets.all(8),
+      itemCount: discountList.length,
+      separatorBuilder: (context, index) => Divider(
+        color: Colors.black12,
+      ),
+      itemBuilder: (_, index) {
+        DiscountInfo discount = discountList[index];
+        bool isValid = discount.isValid;
+        IconData icon = AppLocalizations.of(context).isArabic()
             ? Icons.keyboard_arrow_left
             : Icons.keyboard_arrow_right;
-          BoxBorder border =
-            AppLocalizations.of(context).isArabic()
-            ? Border(right: BorderSide(width: 4, color:  isValid ? Colors.green : Colors.red))
-            : Border(left: BorderSide(width: 4, color: isValid ? Colors.green : Colors.red));
+        BoxBorder border = AppLocalizations.of(context).isArabic()
+            ? Border(
+                right: BorderSide(
+                    width: 4, color: isValid ? Colors.green : Colors.red))
+            : Border(
+                left: BorderSide(
+                    width: 4, color: isValid ? Colors.green : Colors.red));
 
-          return Container(
-            decoration: BoxDecoration(
-              border: border,
+        return Container(
+          decoration: BoxDecoration(
+            border: border,
+          ),
+          child: ListTile(
+            onTap: () => _onTap(context, index),
+            title: Row(
+              children: <Widget>[
+                Expanded(child: Text(discount.code)),
+                Text("${discount.percent}%")
+              ],
             ),
-            child: ListTile(
-              onTap: () => _onTap(context, index),
-              title: Row(
-                children: <Widget>[
-                  Expanded(child: Text(discount.code)),
-                  Text("${discount.percent}%")
-                ],
-              ),
-              subtitle: Text(discount.dateUpdate),
-              trailing: Icon(icon, color: Colors.black12,),
+            subtitle: Text(discount.dateUpdate),
+            trailing: Icon(
+              icon,
+              color: Colors.black12,
             ),
-          );
-        }, 
-      )
-    );
+          ),
+        );
+      },
+    ));
   }
 }
 
 class DiscountDetails extends StatefulWidget {
-  DiscountDetails({Key key, @required this.discountInfo}): super(key: key);
+  DiscountDetails({Key key, @required this.discountInfo}) : super(key: key);
   final DiscountInfo discountInfo;
 
   @override
@@ -137,40 +140,37 @@ class _DiscountDetailsState extends State<DiscountDetails> {
   }
 
   _showConformatiomAlert() {
-    String message = AppLocalizations.of(context).translate(LocalizedKey.discountCodeDetailsAlertMessage);
+    String message = AppLocalizations.of(context)
+        .translate(LocalizedKey.discountCodeDetailsAlertMessage);
     Alert().conformation(
-        context, 
-        AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), 
-        message, 
+        context,
+        AppLocalizations.of(context)
+            .translate(LocalizedKey.conformationAlertTitle),
+        message,
         () => _handleChangeStatus());
   }
 
   _handleChangeStatus() async {
     final bool isValid = !_discountInfo.isValid;
-    try{
+    try {
       Common().loading(context);
-      DiscountInfo discount = DiscountInfo(
-        id: _discountInfo.id,
-        isValid: isValid
-      );
+      DiscountInfo discount =
+          DiscountInfo(id: _discountInfo.id, isValid: isValid);
       await _firebaseManager.updateDiscountCode(discount);
       setState(() {
         _isValid = isValid;
       });
       Common().dismiss(context);
       _showCompletedAlert(
-        message: AppLocalizations
-                  .of(context)
-                  .translate(
-                    LocalizedKey.discountCodeDetailsSuccessMessage)
-      );
-    } on PlatformException catch(e){
+          message: AppLocalizations.of(context)
+              .translate(LocalizedKey.discountCodeDetailsSuccessMessage));
+    } on PlatformException catch (e) {
       Common().dismiss(context);
       Alert().error(context, e.message, () => Common().dismiss(context));
     }
   }
 
-  _showCompletedAlert({String message}){
+  _showCompletedAlert({String message}) {
     Alert().success(context, message, () {
       Common().dismiss(context);
     });
@@ -178,18 +178,21 @@ class _DiscountDetailsState extends State<DiscountDetails> {
 
   @override
   Widget build(BuildContext context) {
-    _buttonTitle = 
-      _isValid 
-      ? AppLocalizations.of(context).translate(LocalizedKey.discountCodeDetailsButtonTitleEnd)
-      : AppLocalizations.of(context).translate(LocalizedKey.discountCodeDetailsButtonTitleRestart);
-    _isValidTitle = 
-      _isValid 
-      ? AppLocalizations.of(context).translate(LocalizedKey.discountCodeDetailsValidValueYes) 
-      : AppLocalizations.of(context).translate(LocalizedKey.discountCodeDetailsValidValueNo);
+    _buttonTitle = _isValid
+        ? AppLocalizations.of(context)
+            .translate(LocalizedKey.discountCodeDetailsButtonTitleEnd)
+        : AppLocalizations.of(context)
+            .translate(LocalizedKey.discountCodeDetailsButtonTitleRestart);
+    _isValidTitle = _isValid
+        ? AppLocalizations.of(context)
+            .translate(LocalizedKey.discountCodeDetailsValidValueYes)
+        : AppLocalizations.of(context)
+            .translate(LocalizedKey.discountCodeDetailsValidValueNo);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate(LocalizedKey.discountCodeDetailsAppBarTitle) ),
+        title: Text(AppLocalizations.of(context)
+            .translate(LocalizedKey.discountCodeDetailsAppBarTitle)),
         elevation: 0.0,
       ),
       body: Container(
@@ -197,26 +200,33 @@ class _DiscountDetailsState extends State<DiscountDetails> {
         child: Column(
           children: <Widget>[
             DiscountDetailsRow(
-              title: AppLocalizations.of(context).translate(LocalizedKey.discountCodeDetailsCodeTitle),
+              title: AppLocalizations.of(context)
+                  .translate(LocalizedKey.discountCodeDetailsCodeTitle),
               value: _discountInfo.code,
             ),
             DiscountDetailsRow(
-              title: AppLocalizations.of(context).translate(LocalizedKey.discountCodeDetailsPercentTitle),
+              title: AppLocalizations.of(context)
+                  .translate(LocalizedKey.discountCodeDetailsPercentTitle),
               value: _discountInfo.percent.toString(),
             ),
             DiscountDetailsRow(
-              title: AppLocalizations.of(context).translate(LocalizedKey.discountCodeDetailsValidTitle),
+              title: AppLocalizations.of(context)
+                  .translate(LocalizedKey.discountCodeDetailsValidTitle),
               value: _isValidTitle,
             ),
             DiscountDetailsRow(
-              title: AppLocalizations.of(context).translate(LocalizedKey.discountCodeDetailsDateCreateTitle),
+              title: AppLocalizations.of(context)
+                  .translate(LocalizedKey.discountCodeDetailsDateCreateTitle),
               value: _discountInfo.dateCreate,
             ),
             DiscountDetailsRow(
-              title: AppLocalizations.of(context).translate(LocalizedKey.discountCodeDetailsDateUpdateTitle),
+              title: AppLocalizations.of(context)
+                  .translate(LocalizedKey.discountCodeDetailsDateUpdateTitle),
               value: _discountInfo.dateUpdate,
             ),
-            Container(height: 16,),
+            Container(
+              height: 16,
+            ),
             CommonButton(
               title: _buttonTitle,
               onPressed: _showConformatiomAlert,
@@ -232,16 +242,23 @@ class DiscountDetailsRow extends StatelessWidget {
   DiscountDetailsRow({Key key, this.title, this.value});
   final String title;
   final String value;
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(8),
       child: Row(
         children: <Widget>[
-          Text(title + ":", style: TextStyle(fontWeight: FontWeight.w700),),
-          Container(width: 8,),
-          Expanded(child: Text(value),)
+          Text(
+            title + ":",
+            style: TextStyle(fontWeight: FontWeight.w700),
+          ),
+          Container(
+            width: 8,
+          ),
+          Expanded(
+            child: Text(value),
+          )
         ],
       ),
     );

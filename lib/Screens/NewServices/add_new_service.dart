@@ -28,16 +28,21 @@ class SubServ {
 class AddNewService extends StatelessWidget {
   final OrderBloc orderBloc;
   final List<OrderService> services;
-  const AddNewService({Key key, this.orderBloc, this.services}) : super(key: key);
+  const AddNewService({Key key, this.orderBloc, this.services})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate(LocalizedKey.newServiceAppBarTitle)),
+        title: Text(AppLocalizations.of(context)
+            .translate(LocalizedKey.newServiceAppBarTitle)),
         elevation: 0.0,
       ),
-      body: AddNewServiceContent(orderBloc: orderBloc, services: services,),
+      body: AddNewServiceContent(
+        orderBloc: orderBloc,
+        services: services,
+      ),
     );
   }
 }
@@ -45,7 +50,8 @@ class AddNewService extends StatelessWidget {
 class AddNewServiceContent extends StatefulWidget {
   final OrderBloc orderBloc;
   final List<OrderService> services;
-  const AddNewServiceContent({Key key, this.orderBloc, this.services}) : super(key: key);
+  const AddNewServiceContent({Key key, this.orderBloc, this.services})
+      : super(key: key);
 
   @override
   _AddNewServiceContentState createState() => _AddNewServiceContentState();
@@ -93,9 +99,10 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
   _getServices() async {
     try {
       QuerySnapshot querySnapshot = await FirebaseManager().getServices();
-      if (querySnapshot.documents.length > 0) {
+      if (querySnapshot.docs.length > 0) {
         setState(() {
-          serviceCategoryList = ServiceCategory.fromListMap(docList: querySnapshot.documents);
+          serviceCategoryList =
+              ServiceCategory.fromListMap(docList: querySnapshot.docs);
           isLoading = false;
         });
       } else {
@@ -111,7 +118,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
     }
   }
 
-  _resetPrice(){
+  _resetPrice() {
     totalPrice = 0.0;
     qty = 0;
     priceForOne = 0.0;
@@ -163,7 +170,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
       });
       hasSubService = mainService.hasSub;
       subMainService = null;
-      if (!mainService.hasSub){
+      if (!mainService.hasSub) {
         _updateTotal();
       } else {
         _resetPrice();
@@ -171,7 +178,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
     });
   }
 
-  _handleSubMainServiceChange(SubMainService value){
+  _handleSubMainServiceChange(SubMainService value) {
     setState(() {
       subMainService = value;
       _updateTotal();
@@ -185,11 +192,11 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
     });
   }
 
-  _updateTotal(){
+  _updateTotal() {
     num price = 0.0;
-    if (mainService != null){
-      if (mainService.hasSub){
-        if (subMainService != null){
+    if (mainService != null) {
+      if (mainService.hasSub) {
+        if (subMainService != null) {
           price = subMainService.price;
         }
       } else {
@@ -200,19 +207,23 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
     totalPrice = price * qty;
   }
 
-  _showConformatiomAlert(){
+  _showConformatiomAlert() {
     final bool isValidSub = subMainService != null;
     final bool isValidMain = mainService != null;
     final bool isValid = hasSubService ? isValidSub : isValidMain;
-    if (isValid && qty != 0.0){
-      String message = AppLocalizations.of(context).translate(LocalizedKey.newServiceAddAlertMessage);
+    if (isValid && qty != 0.0) {
+      String message = AppLocalizations.of(context)
+          .translate(LocalizedKey.newServiceAddAlertMessage);
       Alert().conformation(
-        context, AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, 
-        () => _handleAddingNewService());
+          context,
+          AppLocalizations.of(context)
+              .translate(LocalizedKey.conformationAlertTitle),
+          message,
+          () => _handleAddingNewService());
     }
   }
 
-  _handleAddingNewService(){
+  _handleAddingNewService() {
     Common().loading(context);
     String nameAr;
     String nameEn;
@@ -226,18 +237,17 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
     }
 
     addedService = OrderService(
-      serviceCategoryId: serviceCategory.id,
-      mainServiceId: mainService.id,
-      subMainServiceId: subMainService == null ? "" : subMainService.id,
-      isSubService: mainService.hasSub,
-      nameAr: nameAr,
-      nameEn: nameEn,
-      priceForOnePiece: priceForOne,
-      total: totalPrice,
-      quantity: qty,
-      neededParts: valueSelected
-    );
-    
+        serviceCategoryId: serviceCategory.id,
+        mainServiceId: mainService.id,
+        subMainServiceId: subMainService == null ? "" : subMainService.id,
+        isSubService: mainService.hasSub,
+        nameAr: nameAr,
+        nameEn: nameEn,
+        priceForOnePiece: priceForOne,
+        total: totalPrice,
+        quantity: qty,
+        neededParts: valueSelected);
+
     List<OrderService> orderServices = widget.services;
     orderServices.add(addedService);
     widget.orderBloc.servicesChange.add(orderServices);
@@ -248,151 +258,154 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
   @override
   Widget build(BuildContext context) {
     bool isArabic = AppLocalizations.of(context).isArabic();
-    if (isLoading){
+    if (isLoading) {
       return Center(
         child: CircularProgressIndicator(),
       );
-    } else if (serviceCategoryList.isEmpty){
+    } else if (serviceCategoryList.isEmpty) {
       return NoData();
     }
     return Container(
       padding: EdgeInsets.all(16),
-        child: Column(
-          children: <Widget>[
-            DropdownButton(
-              hint: Text(
-                AppLocalizations.of(context).translate(LocalizedKey.newServiceDropDownServiceCategoryPlaceholderText)),
-              value: serviceCategory,
-              isExpanded: true,
-              onChanged: _handleMainServiceCategoryChange,
-              items: serviceCategoryList
-                  .map((value) => DropdownMenuItem(
-                        child: Text(isArabic ? value.nameAr : value.nameEn),
-                        value: value,
-                      ))
-                  .toList(),
-            ),
-            Container(
-              height: 16,
-            ),
-            DropdownButton(
-              hint: Text(
-                AppLocalizations.of(context).translate(LocalizedKey.newServiceDropDownServiceTypePlaceholderText)),
-              value: serviceType,
-              isExpanded: true,
-              onChanged: _handleServiceTypeChange,
-              items: serviceTypeList== null || serviceTypeList.isEmpty
-                  ? null
-                  : serviceTypeList
-                      .map((value) => DropdownMenuItem(
-                            child: Text(isArabic ? value.nameAr : value.nameEn),
-                            value: value,
+      child: Column(
+        children: <Widget>[
+          DropdownButton(
+            hint: Text(AppLocalizations.of(context).translate(
+                LocalizedKey.newServiceDropDownServiceCategoryPlaceholderText)),
+            value: serviceCategory,
+            isExpanded: true,
+            onChanged: _handleMainServiceCategoryChange,
+            items: serviceCategoryList
+                .map((value) => DropdownMenuItem(
+                      child: Text(isArabic ? value.nameAr : value.nameEn),
+                      value: value,
+                    ))
+                .toList(),
+          ),
+          Container(
+            height: 16,
+          ),
+          DropdownButton(
+            hint: Text(AppLocalizations.of(context).translate(
+                LocalizedKey.newServiceDropDownServiceTypePlaceholderText)),
+            value: serviceType,
+            isExpanded: true,
+            onChanged: _handleServiceTypeChange,
+            items: serviceTypeList == null || serviceTypeList.isEmpty
+                ? null
+                : serviceTypeList
+                    .map((value) => DropdownMenuItem(
+                          child: Text(isArabic ? value.nameAr : value.nameEn),
+                          value: value,
+                        ))
+                    .toList(),
+          ),
+          Container(
+            height: 16,
+          ),
+          DropdownButton(
+            hint: Text(AppLocalizations.of(context).translate(
+                LocalizedKey.newServiceDropDownMainServicePlaceholderText)),
+            value: mainService,
+            isExpanded: true,
+            onChanged: _handleMainServiceChange,
+            items: mainServiceList == null || mainServiceList.isEmpty
+                ? null
+                : mainServiceList
+                    .map((value) => DropdownMenuItem(
+                          child: Text(isArabic ? value.nameAr : value.nameEn),
+                          value: value,
+                        ))
+                    .toList(),
+          ),
+          Container(
+            height: 16,
+          ),
+          DropdownButton(
+            hint: Text(AppLocalizations.of(context).translate(
+                LocalizedKey.newServiceDropDownSubMainServicePlaceholderText)),
+            value: subMainService,
+            isExpanded: true,
+            onChanged: _handleSubMainServiceChange,
+            items: subMainServiceList == null || subMainServiceList.isEmpty
+                ? null
+                : subMainServiceList
+                    .map((value) => DropdownMenuItem(
+                          child: Text(isArabic ? value.nameAr : value.nameEn),
+                          value: value,
+                        ))
+                    .toList(),
+          ),
+          Container(
+            height: 16,
+          ),
+          Row(
+            children: <Widget>[
+              Checkbox(
+                  value: valueSelected,
+                  onChanged: (value) {
+                    setState(() {
+                      valueSelected = value;
+                    });
+                  }),
+              Expanded(
+                  child: Text(AppLocalizations.of(context)
+                      .translate(LocalizedKey.neededPartsTitle))),
+              DropdownButton(
+                  value: qty,
+                  hint: Text("0"),
+                  onChanged: _handleQauntityChange,
+                  items: _qaunityList
+                      .map((q) => DropdownMenuItem(
+                            child: Text("$q"),
+                            value: q,
                           ))
-                      .toList(),
-            ),
-            Container(
-              height: 16,
-            ),
-            DropdownButton(
-              hint: Text(
-                AppLocalizations.of(context).translate(LocalizedKey.newServiceDropDownMainServicePlaceholderText)),
-              value: mainService,
-              isExpanded: true,
-              onChanged: _handleMainServiceChange,
-              items: mainServiceList == null ||
-                      mainServiceList.isEmpty
-                  ? null
-                  : mainServiceList
-                      .map((value) => DropdownMenuItem(
-                            child: Text(isArabic ? value.nameAr : value.nameEn),
-                            value: value,
-                          ))
-                      .toList(),
-            ),
-            Container(
-              height: 16,
-            ),
-            DropdownButton(
-              hint: Text(
-                AppLocalizations.of(context).translate(LocalizedKey.newServiceDropDownSubMainServicePlaceholderText)),
-              value: subMainService,
-              isExpanded: true,
-              onChanged: _handleSubMainServiceChange,
-              items: subMainServiceList == null ||
-                      subMainServiceList.isEmpty
-                  ? null
-                  : subMainServiceList
-                      .map((value) => DropdownMenuItem(
-                            child: Text(isArabic ? value.nameAr : value.nameEn),
-                            value: value,
-                          ))
-                      .toList(),
-            ),
-            Container(
-              height: 16,
-            ),
-            Row(
-              children: <Widget>[
-                Checkbox(
-                    value: valueSelected,
-                    onChanged: (value) {
-                      setState(() {
-                        valueSelected = value;
-                      });
-                    }),
-                Expanded(
-                  child: Text(
-                    AppLocalizations.of(context).translate(LocalizedKey.neededPartsTitle))),
-                DropdownButton(
-                    value: qty,
-                    hint: Text("0"),
-                    onChanged: _handleQauntityChange,
-                    items: _qaunityList
-                        .map((q) => DropdownMenuItem(
-                              child: Text("$q"),
-                              value: q,
-                            ))
-                        .toList())
-              ],
-            ),
-            Container(
-              height: 16,
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    AppLocalizations.of(context).translate(LocalizedKey.newServicePriceForOne), 
-                    style: TextStyle(fontWeight: FontWeight.w700),),
+                      .toList())
+            ],
+          ),
+          Container(
+            height: 16,
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  AppLocalizations.of(context)
+                      .translate(LocalizedKey.newServicePriceForOne),
+                  style: TextStyle(fontWeight: FontWeight.w700),
                 ),
-                Text(priceForOne.toString())
-              ],
-            ),
-            Container(
-              height: 16,
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    AppLocalizations.of(context).translate(LocalizedKey.totalPriceTitle), 
-                    style: TextStyle(fontWeight: FontWeight.w700),),
+              ),
+              Text(priceForOne.toString())
+            ],
+          ),
+          Container(
+            height: 16,
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  AppLocalizations.of(context)
+                      .translate(LocalizedKey.totalPriceTitle),
+                  style: TextStyle(fontWeight: FontWeight.w700),
                 ),
-                Text(totalPrice.toString())
-              ],
-            ),
-            Container(
-              height: 16,
-            ),
-            Container(
-              height: 16,
-            ),
-            CommonButton(
-              title: AppLocalizations.of(context).translate(LocalizedKey.newSerivceAddServiceButtonTitle),
-              onPressed: () => _showConformatiomAlert(),
-            ),
-          ],
-        ),
+              ),
+              Text(totalPrice.toString())
+            ],
+          ),
+          Container(
+            height: 16,
+          ),
+          Container(
+            height: 16,
+          ),
+          CommonButton(
+            title: AppLocalizations.of(context)
+                .translate(LocalizedKey.newSerivceAddServiceButtonTitle),
+            onPressed: () => _showConformatiomAlert(),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -13,10 +13,10 @@ class GeneralDetailsModel {
 
   GeneralDetailsModel();
 
-  _fromDocumentSnapshotToObject(DocumentSnapshot doc){
-    Map<String, dynamic> data = doc.data;
+  _fromDocumentSnapshotToObject(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data();
 
-    switch (doc.documentID) {
+    switch (doc.id) {
       case "ContactUs":
         this.aboutUs = AboutUs.fromMap(data);
         this.type = GeneralDetailsType.contactUs;
@@ -42,11 +42,12 @@ class GeneralDetailsModel {
     }
   }
 
-  GeneralDetailsModel.fromDocumentSnapshot(DocumentSnapshot doc){
+  GeneralDetailsModel.fromDocumentSnapshot(DocumentSnapshot doc) {
     this._fromDocumentSnapshotToObject(doc);
   }
 
-  static List<GeneralDetailsModel> fromDocumentSnapshotList({@required List<DocumentSnapshot> docList}){
+  static List<GeneralDetailsModel> fromDocumentSnapshotList(
+      {@required List<DocumentSnapshot> docList}) {
     List<GeneralDetailsModel> detailList = List();
     docList.forEach((doc) {
       detailList.add(GeneralDetailsModel().._fromDocumentSnapshotToObject(doc));
@@ -57,8 +58,8 @@ class GeneralDetailsModel {
   static String getDisplayType(GeneralDetailsType type, BuildContext context) {
     AppLocalizations localizations = AppLocalizations.of(context);
     String diplayType = "";
-    
-    switch (type){
+
+    switch (type) {
       case GeneralDetailsType.contactUs:
         diplayType = localizations.translate(LocalizedKey.aboutUsItemTitle);
         break;
@@ -71,7 +72,7 @@ class GeneralDetailsModel {
       case GeneralDetailsType.orderLimit:
         diplayType = localizations.translate(LocalizedKey.orderLimitItemTitle);
         break;
-      default: 
+      default:
         diplayType = "unknow type";
         break;
     }
@@ -92,7 +93,7 @@ class AboutUs {
 
   AboutUs();
 
-  _fromMapToObject(Map<dynamic, dynamic> data){
+  _fromMapToObject(Map<dynamic, dynamic> data) {
     this.headerAr = data["header_ar"];
     this.headerEn = data["header_en"];
     this.aboutUsAr = data["about_us_ar"];
@@ -103,11 +104,11 @@ class AboutUs {
     this.facebook = data["facebook"];
   }
 
-  AboutUs.fromMap(Map<dynamic, dynamic> data){
+  AboutUs.fromMap(Map<dynamic, dynamic> data) {
     this._fromMapToObject(data);
   }
 
-  static List<AboutUs> fromMapList({@required List<dynamic> dataList}){
+  static List<AboutUs> fromMapList({@required List<dynamic> dataList}) {
     List<AboutUs> list = List();
     dataList.forEach((data) => list.add(AboutUs().._fromMapToObject(data)));
     return list;
@@ -133,26 +134,23 @@ class Shared {
 
   Shared();
 
-  _fromMapToObject(Map<dynamic, dynamic> data){
+  _fromMapToObject(Map<dynamic, dynamic> data) {
     this.link = data["link"];
     this.linkAndroid = data["link_android"];
   }
 
-  Shared.fromMap(Map<dynamic, dynamic> data){
+  Shared.fromMap(Map<dynamic, dynamic> data) {
     this._fromMapToObject(data);
   }
 
-  static List<Shared> fromMapList({@required List<dynamic> dataList}){
+  static List<Shared> fromMapList({@required List<dynamic> dataList}) {
     List<Shared> list = List();
     dataList.forEach((data) => list.add(Shared().._fromMapToObject(data)));
     return list;
   }
 
   Map<String, dynamic> toMapOnUpdate(Shared shared) {
-    return {
-      "link": shared.link,
-      "link_android": shared.linkAndroid
-    };
+    return {"link": shared.link, "link_android": shared.linkAndroid};
   }
 }
 
@@ -169,8 +167,9 @@ class SubmitOrder {
   SubmitOrder();
 
   _fromDocumentSnapshotToObject(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data;
-    this.termsAndConditions = TermsAndConditions.fromMapList(dataList: data["TermsConditions"]);
+    Map<String, dynamic> data = doc.data();
+    this.termsAndConditions =
+        TermsAndConditions.fromMapList(dataList: data["TermsConditions"]);
     this.limitRate = data["limit_rate"];
     this.isCashEnabled = data["is_cash_enabled"];
     this.isPOSEnabled = data["is_pos_enabled"];
@@ -180,12 +179,13 @@ class SubmitOrder {
     this.canShowVatNote = data["can_show_vat_note"];
   }
 
-  SubmitOrder.fromDocumentSnapshot(DocumentSnapshot doc){
+  SubmitOrder.fromDocumentSnapshot(DocumentSnapshot doc) {
     this._fromDocumentSnapshotToObject(doc);
   }
 
-  _fromMapToObject(Map<dynamic, dynamic> data){
-    this.termsAndConditions = TermsAndConditions.fromMapList(dataList: data["TermsConditions"]);
+  _fromMapToObject(Map<dynamic, dynamic> data) {
+    this.termsAndConditions =
+        TermsAndConditions.fromMapList(dataList: data["TermsConditions"]);
     this.limitRate = data["limit_rate"];
     this.isCashEnabled = data["is_cash_enabled"];
     this.isPOSEnabled = data["is_pos_enabled"];
@@ -195,11 +195,11 @@ class SubmitOrder {
     this.canShowVatNote = data["can_show_vat_note"];
   }
 
-  SubmitOrder.fromMap(Map<dynamic, dynamic> data){
+  SubmitOrder.fromMap(Map<dynamic, dynamic> data) {
     this._fromMapToObject(data);
   }
 
-  static List<SubmitOrder> fromMapList({@required List<dynamic> dataList}){
+  static List<SubmitOrder> fromMapList({@required List<dynamic> dataList}) {
     List<SubmitOrder> list = List();
     dataList.forEach((data) => list.add(SubmitOrder().._fromMapToObject(data)));
     return list;
@@ -218,24 +218,26 @@ class SubmitOrder {
   }
 }
 
-class TermsAndConditions{
+class TermsAndConditions {
   String textAr;
   String textEn;
 
   TermsAndConditions();
 
-  _fromMapToObject(Map<dynamic, dynamic> data){
+  _fromMapToObject(Map<dynamic, dynamic> data) {
     this.textAr = data["text_ar"];
     this.textEn = data["text_en"];
   }
 
-  TermsAndConditions.fromMap(Map<dynamic, dynamic> data){
+  TermsAndConditions.fromMap(Map<dynamic, dynamic> data) {
     this._fromMapToObject(data);
   }
 
-  static List<TermsAndConditions> fromMapList({@required List<dynamic> dataList}){
+  static List<TermsAndConditions> fromMapList(
+      {@required List<dynamic> dataList}) {
     List<TermsAndConditions> list = List();
-    dataList.forEach((data) => list.add(TermsAndConditions().._fromMapToObject(data)));
+    dataList.forEach(
+        (data) => list.add(TermsAndConditions().._fromMapToObject(data)));
     return list;
   }
 }
@@ -244,20 +246,20 @@ class OrderLimit {
   int perDay;
   int unavaliableStartDateTimestamp;
   int unavaliableEndDateTimestamp;
-  
+
   OrderLimit();
 
-  _fromMapToObject(Map<dynamic, dynamic> data){
+  _fromMapToObject(Map<dynamic, dynamic> data) {
     this.perDay = data["per_day"];
     this.unavaliableStartDateTimestamp = data["unavailable_start_date"];
     this.unavaliableEndDateTimestamp = data["unavailable_end_date"];
   }
 
-  OrderLimit.fromMap(Map<dynamic, dynamic> data){
+  OrderLimit.fromMap(Map<dynamic, dynamic> data) {
     this._fromMapToObject(data);
   }
 
-  static List<OrderLimit> fromMapList({@required List<dynamic> dataList}){
+  static List<OrderLimit> fromMapList({@required List<dynamic> dataList}) {
     List<OrderLimit> list = List();
     dataList.forEach((data) => list.add(OrderLimit().._fromMapToObject(data)));
     return list;

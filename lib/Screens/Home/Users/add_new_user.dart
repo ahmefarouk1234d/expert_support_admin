@@ -20,18 +20,17 @@ class AddNewUser extends StatelessWidget {
       builder: (context, userBloc) => userBloc ?? UserBloc(),
       onDispose: (context, userBloc) => userBloc.dispose(),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context).translate(LocalizedKey.userNewAppBarTitle)),
-          elevation: 0.0,
-        ),
-        body: AddNewUserContent()
-      ),
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context)
+                .translate(LocalizedKey.userNewAppBarTitle)),
+            elevation: 0.0,
+          ),
+          body: AddNewUserContent()),
     );
   }
 }
 
 class AddNewUserContent extends StatefulWidget {
-
   @override
   _AddNewUserContentState createState() => _AddNewUserContentState();
 }
@@ -45,58 +44,63 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
   UserBloc _userBloc;
 
   _showConformatiomAlert() {
-    String message = AppLocalizations.of(context).translate(LocalizedKey.userAddAlertMessage);
+    String message = AppLocalizations.of(context)
+        .translate(LocalizedKey.userAddAlertMessage);
     Alert().conformation(
-        context, AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, () => _handleAddingNewUser());
+        context,
+        AppLocalizations.of(context)
+            .translate(LocalizedKey.conformationAlertTitle),
+        message,
+        () => _handleAddingNewUser());
   }
- 
-  _saveAdminInfo(String id) async{
+
+  _saveAdminInfo(String id) async {
     try {
       _userBloc.saveAdminInfo(id);
-    } on PlatformException catch (e){
+    } on PlatformException catch (e) {
       Alert().error(context, e.message, () => Common().dismiss(context));
     }
   }
 
-  _sendEmailVerification(FirebaseUser firebaseUser) async {
-    try{
+  _sendEmailVerification(User firebaseUser) async {
+    try {
       await firebaseUser.sendEmailVerification();
-    } on PlatformException catch(e){
+    } on PlatformException catch (e) {
       print(e.message);
-      String alertMessage = AppLocalizations.of(context).translate(LocalizedKey.userEmailErrorAlertMessage);
-      Alert().error(context, alertMessage, (){
+      String alertMessage = AppLocalizations.of(context)
+          .translate(LocalizedKey.userEmailErrorAlertMessage);
+      Alert().error(context, alertMessage, () {
         Common().dismiss(context);
       });
     }
   }
 
-  _showCompletedAlert({String message}){
+  _showCompletedAlert({String message}) {
     Alert().success(context, message, () {
       Common().dismiss(context);
       _navigateToUsers();
     });
   }
 
-  _navigateToUsers(){
+  _navigateToUsers() {
     Common().dismiss(context);
   }
 
-  _handleAddingNewUser() async{
-    try{
+  _handleAddingNewUser() async {
+    try {
       Common().loading(context);
-      await _userBloc.signUp(
-        onSuccess: (firebaseUser) async{
-          await _saveAdminInfo(firebaseUser.user.uid);
-          _sendEmailVerification(firebaseUser.user);
-          Common().dismiss(context);
-          _showCompletedAlert(message: AppLocalizations.of(context).translate(LocalizedKey.userAddSuccessAlertMessage));
-        }, 
-        onError: (error){
-          Common().dismiss(context);
-          Alert().error(context, error, () => Common().dismiss(context));
-        }
-      );
-    } catch (e){
+      await _userBloc.signUp(onSuccess: (firebaseUser) async {
+        await _saveAdminInfo(firebaseUser.user.uid);
+        _sendEmailVerification(firebaseUser.user);
+        Common().dismiss(context);
+        _showCompletedAlert(
+            message: AppLocalizations.of(context)
+                .translate(LocalizedKey.userAddSuccessAlertMessage));
+      }, onError: (error) {
+        Common().dismiss(context);
+        Alert().error(context, error, () => Common().dismiss(context));
+      });
+    } catch (e) {
       Common().dismiss(context);
       print(e.toString());
     }
@@ -111,88 +115,93 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
         child: Column(
           children: <Widget>[
             StreamBuilder<String>(
-              stream: _userBloc.name,
-              builder: (context, snapshot) {
-                return NewUserTextFieldForm(
-                  hint: AppLocalizations.of(context).translate(LocalizedKey.usernameTitle),
-                  controller: nameController,
-                  onChange: _userBloc.nameChange,
-                  isError: snapshot.hasError,
-                );
-              }
-            ),
+                stream: _userBloc.name,
+                builder: (context, snapshot) {
+                  return NewUserTextFieldForm(
+                    hint: AppLocalizations.of(context)
+                        .translate(LocalizedKey.usernameTitle),
+                    controller: nameController,
+                    onChange: _userBloc.nameChange,
+                    isError: snapshot.hasError,
+                  );
+                }),
             StreamBuilder<String>(
-              stream: _userBloc.phone,
-              builder: (context, snapshot) {
-                return NewUserTextFieldForm(
-                  hint:  AppLocalizations.of(context).translate(LocalizedKey.userPhoneTitle) 
-                        + " " + AppLocalizations.of(context).translate(LocalizedKey.userPhoneExample),
-                  controller: phoneController,
-                  onChange: _userBloc.phoneChange,
-                  isError: snapshot.hasError,
-                  keyboardType: TextInputType.phone,
-                  isPhoneNumber: true,
-                );
-              }
-            ),
+                stream: _userBloc.phone,
+                builder: (context, snapshot) {
+                  return NewUserTextFieldForm(
+                    hint: AppLocalizations.of(context)
+                            .translate(LocalizedKey.userPhoneTitle) +
+                        " " +
+                        AppLocalizations.of(context)
+                            .translate(LocalizedKey.userPhoneExample),
+                    controller: phoneController,
+                    onChange: _userBloc.phoneChange,
+                    isError: snapshot.hasError,
+                    keyboardType: TextInputType.phone,
+                    isPhoneNumber: true,
+                  );
+                }),
             StreamBuilder<String>(
-              stream: _userBloc.email,
-              builder: (context, snapshot) {
-                return NewUserTextFieldForm(
-                  hint:  AppLocalizations.of(context).translate(LocalizedKey.userEmailTitle) 
-                        + " " + AppLocalizations.of(context).translate(LocalizedKey.userEmailExample),
-                  controller: emailController,
-                  onChange: _userBloc.emailChange,
-                  isError: snapshot.hasError,
-                  keyboardType: TextInputType.emailAddress,
-                );
-              }
-            ),
+                stream: _userBloc.email,
+                builder: (context, snapshot) {
+                  return NewUserTextFieldForm(
+                    hint: AppLocalizations.of(context)
+                            .translate(LocalizedKey.userEmailTitle) +
+                        " " +
+                        AppLocalizations.of(context)
+                            .translate(LocalizedKey.userEmailExample),
+                    controller: emailController,
+                    onChange: _userBloc.emailChange,
+                    isError: snapshot.hasError,
+                    keyboardType: TextInputType.emailAddress,
+                  );
+                }),
             StreamBuilder<String>(
-              stream: _userBloc.password,
-              builder: (context, snapshot) {
-                return NewUserTextFieldForm(
-                  hint: AppLocalizations.of(context).translate(LocalizedKey.userPasswordPlaceholderText),
-                  controller: passwordController,
-                  onChange: _userBloc.passwordChange,
-                  isError: snapshot.hasError,
-                  isPassword: true,
-                );
-              }
-            ),
+                stream: _userBloc.password,
+                builder: (context, snapshot) {
+                  return NewUserTextFieldForm(
+                    hint: AppLocalizations.of(context)
+                        .translate(LocalizedKey.userPasswordPlaceholderText),
+                    controller: passwordController,
+                    onChange: _userBloc.passwordChange,
+                    isError: snapshot.hasError,
+                    isPassword: true,
+                  );
+                }),
             StreamBuilder<String>(
-              stream: _userBloc.reEnterPassword,
-              builder: (context, snapshot) {
-                return NewUserTextFieldForm(
-                  hint: AppLocalizations.of(context).translate(LocalizedKey.userReEnterPasswordPlaceholderText),
-                  controller: reEnterPasswordController,
-                  onChange: _userBloc.reEnterPasswordChange,
-                  isError: snapshot.hasError,
-                  isPassword: true,
-                );
-              }
-            ),
+                stream: _userBloc.reEnterPassword,
+                builder: (context, snapshot) {
+                  return NewUserTextFieldForm(
+                    hint: AppLocalizations.of(context).translate(
+                        LocalizedKey.userReEnterPasswordPlaceholderText),
+                    controller: reEnterPasswordController,
+                    onChange: _userBloc.reEnterPasswordChange,
+                    isError: snapshot.hasError,
+                    isPassword: true,
+                  );
+                }),
             StreamBuilder<String>(
-              stream: _userBloc.role,
-              builder: (context, snapshot) {
-                return UserTypeDropDown(
-                  userRole: snapshot.data,
-                  onUserRoleSelect: _userBloc.roleChange,
-                );
-              }
-            ),
+                stream: _userBloc.role,
+                builder: (context, snapshot) {
+                  return UserTypeDropDown(
+                    userRole: snapshot.data,
+                    onUserRoleSelect: _userBloc.roleChange,
+                  );
+                }),
             Container(
               height: 16,
             ),
             StreamBuilder<bool>(
-              stream: _userBloc.isValidAddFields,
-              builder: (context, snapshot) {
-                return CommonButton(
-                  title: AppLocalizations.of(context).translate(LocalizedKey.userAddButtonTitle),
-                  onPressed: snapshot.hasData ? () => _showConformatiomAlert() : null,
-                );
-              }
-            ),
+                stream: _userBloc.isValidAddFields,
+                builder: (context, snapshot) {
+                  return CommonButton(
+                    title: AppLocalizations.of(context)
+                        .translate(LocalizedKey.userAddButtonTitle),
+                    onPressed: snapshot.hasData
+                        ? () => _showConformatiomAlert()
+                        : null,
+                  );
+                }),
           ],
         ),
       ),
@@ -209,15 +218,15 @@ class NewUserTextFieldForm extends StatelessWidget {
   final bool isPassword;
   final bool isPhoneNumber;
   final bool isEnabled;
-  NewUserTextFieldForm({
-    @required this.hint, 
-    @required this.controller,
-    this.onChange,
-    @required this.isError,
-    this.keyboardType = TextInputType.text,
-    this.isPassword = false,
-    this.isPhoneNumber = false,
-    this.isEnabled = true});
+  NewUserTextFieldForm(
+      {@required this.hint,
+      @required this.controller,
+      this.onChange,
+      @required this.isError,
+      this.keyboardType = TextInputType.text,
+      this.isPassword = false,
+      this.isPhoneNumber = false,
+      this.isEnabled = true});
 
   @override
   Widget build(BuildContext context) {
@@ -226,18 +235,22 @@ class NewUserTextFieldForm extends StatelessWidget {
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(width: 1, color: isError ? Colors.red : Colors.black12)),
+        border: Border(
+            bottom: BorderSide(
+                width: 1, color: isError ? Colors.red : Colors.black12)),
       ),
       child: Row(
         children: <Widget>[
-          isPhoneNumber 
-          ? SizedBox(
-            width: Screen.screenWidth * 0.12,
-            child: TextField(
-                controller: TextEditingController(text: "+966"),
-                enabled: false,
-                decoration: InputDecoration.collapsed(hintText: "+966"),),
-          ) : Container(),
+          isPhoneNumber
+              ? SizedBox(
+                  width: Screen.screenWidth * 0.12,
+                  child: TextField(
+                    controller: TextEditingController(text: "+966"),
+                    enabled: false,
+                    decoration: InputDecoration.collapsed(hintText: "+966"),
+                  ),
+                )
+              : Container(),
           Expanded(
             child: TextField(
               controller: controller,
@@ -270,26 +283,29 @@ class UserTypeDropDown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: Screen.screenWidth * 0.15,
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(width: 1, color: Colors.black12)),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton(
-          hint: Text(AppLocalizations.of(context).translate(LocalizedKey.userTypeDropDownPlaceholderText)),
-          value: userRole,
-          isExpanded: true,
-          onChanged: onUserRoleSelect,
-          items: userRoleList
-              .map((role) => DropdownMenuItem(
-                    child: Container(child: Text(AdminRole().getDisplayRole(role: role, context: context)),),
-                    value: role,
-                  ))
-              .toList(),
+        height: Screen.screenWidth * 0.15,
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(bottom: BorderSide(width: 1, color: Colors.black12)),
         ),
-      )
-    );
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton(
+            hint: Text(AppLocalizations.of(context)
+                .translate(LocalizedKey.userTypeDropDownPlaceholderText)),
+            value: userRole,
+            isExpanded: true,
+            onChanged: onUserRoleSelect,
+            items: userRoleList
+                .map((role) => DropdownMenuItem(
+                      child: Container(
+                        child: Text(AdminRole()
+                            .getDisplayRole(role: role, context: context)),
+                      ),
+                      value: role,
+                    ))
+                .toList(),
+          ),
+        ));
   }
 }

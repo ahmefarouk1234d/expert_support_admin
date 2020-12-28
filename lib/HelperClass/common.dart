@@ -4,13 +4,12 @@ import 'package:flutter/services.dart';
 class Common {
   loading(BuildContext context) {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-    );
+        context: context,
+        builder: (BuildContext context) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
   }
 
   dismiss(BuildContext context) {
@@ -19,8 +18,8 @@ class Common {
 
   getNumberOnlyInputFormatters() {
     return [
-      WhitelistingTextInputFormatter(RegExp("[0-9]")),
-      WhitelistingTextInputFormatter.digitsOnly
+      FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+      FilteringTextInputFormatter.digitsOnly
     ];
   }
 

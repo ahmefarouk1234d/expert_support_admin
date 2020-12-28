@@ -18,6 +18,7 @@ import 'package:expert_support_admin/Screens/LoginServices/forgot_password.dart'
 import 'package:expert_support_admin/Screens/LoginServices/send_verification_emai.dart';
 import 'package:expert_support_admin/Screens/nav_screens.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'HelperClass/app_localizations.dart';
 import 'Screens/Login/login.dart';
@@ -27,7 +28,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'Screens/Order/Common/order_details.dart';
 import 'SharedWidget/loading.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -109,7 +112,7 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
-  AuthStatus _authStatus;// = AuthStatus.notSingedIn;
+  AuthStatus _authStatus; // = AuthStatus.notSingedIn;
   final _firebaseManager = FirebaseManager();
 
   get adminID => null;
@@ -131,15 +134,17 @@ class _MainState extends State<Main> {
     });
   }
 
-  _checkSignIn(AppBloc appBloc) async{
-    FirebaseUser user = await _firebaseManager.getUser();
-    if (user == null){
+  _checkSignIn(AppBloc appBloc) async {
+    User user = await _firebaseManager.getUser();
+    if (user == null) {
       setState(() {
         _authStatus = AuthStatus.notSingedIn;
       });
     } else {
-      DocumentSnapshot _adminDoc = await _firebaseManager.getAdminInfo(user.uid);
-      AdminUserInfo _adminInfo = AdminUserInfo.fromMap(_adminDoc)..id = user.uid;
+      DocumentSnapshot _adminDoc =
+          await _firebaseManager.getAdminInfo(user.uid);
+      AdminUserInfo _adminInfo = AdminUserInfo.fromMap(_adminDoc)
+        ..id = user.uid;
       appBloc.adminChange.add(_adminInfo);
       setState(() {
         _authStatus = AuthStatus.signedIn;
@@ -151,18 +156,22 @@ class _MainState extends State<Main> {
   Widget build(BuildContext context) {
     //Screen.instance.init(context);
     AppBloc _appBloc = Provider.of<AppBloc>(context);
-    if (_authStatus != null){
+    if (_authStatus != null) {
       if (_authStatus == AuthStatus.signedIn) {
-        return NavigatorScreens(onSignedOut: _signedOut,);
+        return NavigatorScreens(
+          onSignedOut: _signedOut,
+        );
       }
-      return Login(onSignedIn: _signedIn,);
+      return Login(
+        onSignedIn: _signedIn,
+      );
     }
     _checkSignIn(_appBloc);
     return Scaffold(
-      appBar: AppBar(elevation: 0.0,),
+      appBar: AppBar(
+        elevation: 0.0,
+      ),
       body: Loading(),
     );
   }
 }
-
-

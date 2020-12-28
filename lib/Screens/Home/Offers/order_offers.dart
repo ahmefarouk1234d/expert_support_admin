@@ -43,8 +43,9 @@ class _OrderOfferContentState extends State<OrderOfferContent> {
 
   _navigateToOfferDetails(OrderOfferInfo offer, int index) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => OrderOfferDetails(offerInfo: offer,)
-    ));
+        builder: (context) => OrderOfferDetails(
+              offerInfo: offer,
+            )));
   }
 
   @override
@@ -57,7 +58,7 @@ class _OrderOfferContentState extends State<OrderOfferContent> {
             return Loading();
           }
           offerList =
-              OrderOfferInfo.fromMapList(offerDocDataList: snapshot.data.documents);
+              OrderOfferInfo.fromMapList(offerDocDataList: snapshot.data.docs);
           return offerList.isEmpty
               ? NoData()
               : OrderOfferList(
@@ -78,44 +79,49 @@ class OrderOfferList extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(bottom: 24),
       child: ListView.separated(
-        padding: EdgeInsets.all(8),
-        itemCount: offerList.length,
-        separatorBuilder: (context, index) => Divider(color: Colors.black12,),
-        itemBuilder: (context, index){
-          final OrderOfferInfo offer = offerList[index];
-          bool isActive = offer.status == OfferStatus.active;
-          String offerTitle = 
-            AppLocalizations.of(context).isArabic()
-            ? offer.titleAr ?? ""
-            : offer.titleEn ?? "";
-          String dateUpdate = 
-            offer.dateUpdateTimestamp == null ? "" :
-            DateConvert().toStringFromTimestamp(
-              timestamp: offer.dateUpdateTimestamp, 
-              locale: AppLocalizations.of(context).locale.languageCode, 
-              isFull: true);
-          IconData icon = 
-            AppLocalizations.of(context).isArabic()
-            ? Icons.keyboard_arrow_left
-            : Icons.keyboard_arrow_right;
-          BoxBorder border =
-            AppLocalizations.of(context).isArabic()
-            ? Border(right: BorderSide(width: 4, color: isActive ? Colors.green : Colors.red))
-            : Border(left: BorderSide(width: 4, color: isActive ? Colors.green : Colors.red));
-          
-          return Container(
-            decoration: BoxDecoration(
-              border: border,
-            ),
-            child: ListTile(
-              onTap: () => onTap(offer, index),
-              title: Text(offerTitle),
-              subtitle: Text(dateUpdate),
-              trailing: Icon(icon, color: Colors.black12,),
-            ),
-          );
-        }
-      ),
+          padding: EdgeInsets.all(8),
+          itemCount: offerList.length,
+          separatorBuilder: (context, index) => Divider(
+                color: Colors.black12,
+              ),
+          itemBuilder: (context, index) {
+            final OrderOfferInfo offer = offerList[index];
+            bool isActive = offer.status == OfferStatus.active;
+            String offerTitle = AppLocalizations.of(context).isArabic()
+                ? offer.titleAr ?? ""
+                : offer.titleEn ?? "";
+            String dateUpdate = offer.dateUpdateTimestamp == null
+                ? ""
+                : DateConvert().toStringFromTimestamp(
+                    timestamp: offer.dateUpdateTimestamp,
+                    locale: AppLocalizations.of(context).locale.languageCode,
+                    isFull: true);
+            IconData icon = AppLocalizations.of(context).isArabic()
+                ? Icons.keyboard_arrow_left
+                : Icons.keyboard_arrow_right;
+            BoxBorder border = AppLocalizations.of(context).isArabic()
+                ? Border(
+                    right: BorderSide(
+                        width: 4, color: isActive ? Colors.green : Colors.red))
+                : Border(
+                    left: BorderSide(
+                        width: 4, color: isActive ? Colors.green : Colors.red));
+
+            return Container(
+              decoration: BoxDecoration(
+                border: border,
+              ),
+              child: ListTile(
+                onTap: () => onTap(offer, index),
+                title: Text(offerTitle),
+                subtitle: Text(dateUpdate),
+                trailing: Icon(
+                  icon,
+                  color: Colors.black12,
+                ),
+              ),
+            );
+          }),
     );
   }
 }
@@ -148,29 +154,30 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
   }
 
   _showConformatiomAlert(String status) {
-    String message = 
-      status != OfferStatus.deleted
-      ? AppLocalizations.of(context).translate(LocalizedKey.offerStatusChangeAlertMessage)
-      : AppLocalizations.of(context).translate(LocalizedKey.offerStatusDeleteAlertMessage);
-      
+    String message = status != OfferStatus.deleted
+        ? AppLocalizations.of(context)
+            .translate(LocalizedKey.offerStatusChangeAlertMessage)
+        : AppLocalizations.of(context)
+            .translate(LocalizedKey.offerStatusDeleteAlertMessage);
+
     Alert().conformation(
-        context, AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, 
+        context,
+        AppLocalizations.of(context)
+            .translate(LocalizedKey.conformationAlertTitle),
+        message,
         () => _handleChangeStatus(status));
   }
 
-  _showCompletedAlert({String message}){
+  _showCompletedAlert({String message}) {
     Alert().success(context, message, () {
       Common().dismiss(context);
     });
   }
 
-  _handleChangeStatus(String status) async{
-    try{
+  _handleChangeStatus(String status) async {
+    try {
       Common().loading(context);
-      OrderOfferInfo offerInfo = OrderOfferInfo(
-        id: _info.id,
-        status: status
-      );
+      OrderOfferInfo offerInfo = OrderOfferInfo(id: _info.id, status: status);
       await _firebaseManager.updateOrderOfferStatus(offerInfo);
       setState(() {
         _offerStatus = status;
@@ -183,12 +190,12 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
       });
       Common().dismiss(context);
       _showCompletedAlert(
-        message: 
-          status != OfferStatus.deleted
-          ? AppLocalizations.of(context).translate(LocalizedKey.offerStatusChangeSuccessAlertMessage)
-          : AppLocalizations.of(context).translate(LocalizedKey.offerStatusDeleteSuccessAlertMessage)
-      );
-    } on PlatformException catch(e){
+          message: status != OfferStatus.deleted
+              ? AppLocalizations.of(context)
+                  .translate(LocalizedKey.offerStatusChangeSuccessAlertMessage)
+              : AppLocalizations.of(context).translate(
+                  LocalizedKey.offerStatusDeleteSuccessAlertMessage));
+    } on PlatformException catch (e) {
       Common().dismiss(context);
       Alert().error(context, e.message, () => Common().dismiss(context));
     }
@@ -197,12 +204,15 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
   @override
   Widget build(BuildContext context) {
     _buttonTitle = isActive
-      ? AppLocalizations.of(context).translate(LocalizedKey.offerDeactiveButtonTitle) 
-      : AppLocalizations.of(context).translate(LocalizedKey.offerActiveButtonTitle);
-    
+        ? AppLocalizations.of(context)
+            .translate(LocalizedKey.offerDeactiveButtonTitle)
+        : AppLocalizations.of(context)
+            .translate(LocalizedKey.offerActiveButtonTitle);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate(LocalizedKey.offerAppBarTitle)),
+        title: Text(AppLocalizations.of(context)
+            .translate(LocalizedKey.offerAppBarTitle)),
         elevation: 0.0,
       ),
       body: Container(
@@ -210,46 +220,77 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
         child: Column(
           children: <Widget>[
             OrderOfferDetailsRow(
-              title: AppLocalizations.of(context).translate(LocalizedKey.offerTitle), 
-              value: AppLocalizations.of(context).isArabic() ? _info.titleAr : _info.titleEn,),
+              title: AppLocalizations.of(context)
+                  .translate(LocalizedKey.offerTitle),
+              value: AppLocalizations.of(context).isArabic()
+                  ? _info.titleAr
+                  : _info.titleEn,
+            ),
             OrderOfferDetailsRow(
-              title: AppLocalizations.of(context).translate(LocalizedKey.offerDescTitle), 
-              value: AppLocalizations.of(context).isArabic() ? _info.descAr : _info.descEn,),
+              title: AppLocalizations.of(context)
+                  .translate(LocalizedKey.offerDescTitle),
+              value: AppLocalizations.of(context).isArabic()
+                  ? _info.descAr
+                  : _info.descEn,
+            ),
             _info.offerType == OfferType.packages
-            ? OrderOfferDetailsRow(
-                title: AppLocalizations.of(context).translate(LocalizedKey.offerServiceDetailsTitle), 
-                value: AppLocalizations.of(context).isArabic() ? _info.serviceDetailsAr : _info.serviceDetailsEn,)
-            : Container(),
+                ? OrderOfferDetailsRow(
+                    title: AppLocalizations.of(context)
+                        .translate(LocalizedKey.offerServiceDetailsTitle),
+                    value: AppLocalizations.of(context).isArabic()
+                        ? _info.serviceDetailsAr
+                        : _info.serviceDetailsEn,
+                  )
+                : Container(),
             _info.offerType == OfferType.services
-            ? OrderOfferDetailsRow(
-                title: AppLocalizations.of(context).translate(LocalizedKey.offerOriginalServicePrice), 
-                value: _info.originalPrice.toString(),)
-            : Container(),
+                ? OrderOfferDetailsRow(
+                    title: AppLocalizations.of(context)
+                        .translate(LocalizedKey.offerOriginalServicePrice),
+                    value: _info.originalPrice.toString(),
+                  )
+                : Container(),
             OrderOfferDetailsRow(
-              title: AppLocalizations.of(context).translate(LocalizedKey.offerPriceTitle), 
-              value: _info.priceForOne.toString(),),
+              title: AppLocalizations.of(context)
+                  .translate(LocalizedKey.offerPriceTitle),
+              value: _info.priceForOne.toString(),
+            ),
             _info.offerType == OfferType.services
-            ? OrderOfferDetailsRow(
-                title: AppLocalizations.of(context).translate(LocalizedKey.offerQtyTitle), 
-                value: _info.qauntity.toString(),)
-            : Container(),
+                ? OrderOfferDetailsRow(
+                    title: AppLocalizations.of(context)
+                        .translate(LocalizedKey.offerQtyTitle),
+                    value: _info.qauntity.toString(),
+                  )
+                : Container(),
             OrderOfferDetailsRow(
-              title: AppLocalizations.of(context).translate(LocalizedKey.offerStatusTitle), 
-              value: OfferStatus().getDisplayStaus(status: _offerStatus, context: context),),
-            Container(height: 16,),
+              title: AppLocalizations.of(context)
+                  .translate(LocalizedKey.offerStatusTitle),
+              value: OfferStatus()
+                  .getDisplayStaus(status: _offerStatus, context: context),
+            ),
+            Container(
+              height: 16,
+            ),
             CommonButton(
               title: _buttonTitle,
-              onPressed: isButtonsEnable ? () { 
-                String status = isActive ? OfferStatus.deactive : OfferStatus.active;
-                _showConformatiomAlert(status);
-              } : null,
+              onPressed: isButtonsEnable
+                  ? () {
+                      String status =
+                          isActive ? OfferStatus.deactive : OfferStatus.active;
+                      _showConformatiomAlert(status);
+                    }
+                  : null,
             ),
-            Container(height: 16,),
+            Container(
+              height: 16,
+            ),
             CommonButton(
-              title: AppLocalizations.of(context).translate(LocalizedKey.offerDeleteButtonTitle),
-              onPressed: isButtonsEnable ? () {
-                _showConformatiomAlert(OfferStatus.deleted);
-              } : null,
+              title: AppLocalizations.of(context)
+                  .translate(LocalizedKey.offerDeleteButtonTitle),
+              onPressed: isButtonsEnable
+                  ? () {
+                      _showConformatiomAlert(OfferStatus.deleted);
+                    }
+                  : null,
             ),
           ],
         ),
@@ -269,9 +310,16 @@ class OrderOfferDetailsRow extends StatelessWidget {
       padding: EdgeInsets.all(8),
       child: Row(
         children: <Widget>[
-          Text(title + ":", style: TextStyle(fontWeight: FontWeight.w700),),
-          Container(width: 8,),
-          Expanded(child: Text(value),)
+          Text(
+            title + ":",
+            style: TextStyle(fontWeight: FontWeight.w700),
+          ),
+          Container(
+            width: 8,
+          ),
+          Expanded(
+            child: Text(value),
+          )
         ],
       ),
     );

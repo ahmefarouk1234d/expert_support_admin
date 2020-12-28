@@ -6,7 +6,6 @@ import 'package:expert_support_admin/HelperClass/app_localizations.dart';
 import 'package:expert_support_admin/HelperClass/common.dart';
 import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
-import 'package:expert_support_admin/Models/general_details_model.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:expert_support_admin/Screens/EditOrder/Services/editty_services_action_buttons.dart';
 import 'package:expert_support_admin/Screens/EditOrder/Services/service_list_to_edit.dart';
@@ -19,7 +18,8 @@ class EditServicesContent extends StatefulWidget {
   final List<OrderService> services;
   final OrderInfo order;
   final OrderBloc orderBloc;
-  EditServicesContent(this.services, this.orderDocID, this.order, this.orderBloc, this.admin);
+  EditServicesContent(
+      this.services, this.orderDocID, this.order, this.orderBloc, this.admin);
 
   @override
   _EditServicesContentState createState() => _EditServicesContentState();
@@ -42,47 +42,54 @@ class _EditServicesContentState extends State<EditServicesContent> {
     super.initState();
   }
 
-  _handleAddService(){
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => AddNewService(orderBloc: _currentOrderBloc, services: _services,)
-      )
-    );
+  _handleAddService() {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => AddNewService(
+              orderBloc: _currentOrderBloc,
+              services: _services,
+            )));
   }
 
-  _showConformatiomAlert(){
+  _showConformatiomAlert() {
     if (_services != null && _services.length > 0) {
-      List<OrderService> noDeletedServices = _services.where((element) => element.isDeleted == false).toList();
+      List<OrderService> noDeletedServices =
+          _services.where((element) => element.isDeleted == false).toList();
       if (noDeletedServices.length == 0) {
         Alert().warning(
-          context, 
-          AppLocalizations.of(context).translate(LocalizedKey.allServicesDeletedAlertMessage), 
-          () { Common().dismiss(context); } );
+            context,
+            AppLocalizations.of(context)
+                .translate(LocalizedKey.allServicesDeletedAlertMessage), () {
+          Common().dismiss(context);
+        });
       } else {
         Alert().conformation(
-          context, 
-          AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), 
-          AppLocalizations.of(context).translate(LocalizedKey.editOrderSaveAlertMessage), 
-          () { _handleSaveChanges(); });
+            context,
+            AppLocalizations.of(context)
+                .translate(LocalizedKey.conformationAlertTitle),
+            AppLocalizations.of(context)
+                .translate(LocalizedKey.editOrderSaveAlertMessage), () {
+          _handleSaveChanges();
+        });
       }
     } else {
       Alert().warning(
-          context, 
-          AppLocalizations.of(context).translate(LocalizedKey.noServiceFoundAlertMessage), 
-          () { Common().dismiss(context); } );
+          context,
+          AppLocalizations.of(context)
+              .translate(LocalizedKey.noServiceFoundAlertMessage), () {
+        Common().dismiss(context);
+      });
     }
   }
 
-  _handleSaveChanges() async{
-    try{
+  _handleSaveChanges() async {
+    try {
       Common().loading(context);
       await _handleServicePriceChanges();
       await _firebaseManager.updateServices(_orderInfo, widget.orderDocID);
       _orderBloc.ordersChange.add(_orderInfo);
       Common().dismiss(context);
       Navigator.of(context).pop();
-    }
-    catch (error){
+    } catch (error) {
       print("Updateing services error: $error");
     }
   }
@@ -98,11 +105,11 @@ class _EditServicesContentState extends State<EditServicesContent> {
 
     //SubmitOrder submitOrder = await _firebaseManager.getSubmittedOrderGeneralDetails();
     //submitOrder.vatPercentage / 100;
-    double vatPercentage = _orderInfo.vatPercentage != null 
-      ? (_orderInfo.vatPercentage / 100) 
-      : 0.05;
-    
-    _services.forEach((serv){
+    double vatPercentage = _orderInfo.vatPercentage != null
+        ? (_orderInfo.vatPercentage / 100)
+        : 0.05;
+
+    _services.forEach((serv) {
       if (!serv.isDeleted) {
         _total += serv.total;
         _updatedServices.add(serv);
@@ -129,26 +136,28 @@ class _EditServicesContentState extends State<EditServicesContent> {
   Widget build(BuildContext context) {
     _currentOrderBloc = Provider.of<OrderBloc>(context);
     return StreamBuilder<List<OrderService>>(
-      stream: _currentOrderBloc.services,
-      initialData: _services,
-      builder: (context, snapshot) {
-        widgetList = [
-          ServiceListToEdit(services: snapshot.data,), 
-          EditServicesButtons(
-            onSave: () => _showConformatiomAlert(), 
-            onAddNewService: () => _handleAddService(),
-            services: snapshot.data,)
-        ];
-        return ListView.builder(
-          padding: EdgeInsets.all(16),
-          itemCount: widgetList.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: <Widget>[widgetList[index]],
-            );
-          },
-        );
-      }
-    );
+        stream: _currentOrderBloc.services,
+        initialData: _services,
+        builder: (context, snapshot) {
+          widgetList = [
+            ServiceListToEdit(
+              services: snapshot.data,
+            ),
+            EditServicesButtons(
+              onSave: () => _showConformatiomAlert(),
+              onAddNewService: () => _handleAddService(),
+              services: snapshot.data,
+            )
+          ];
+          return ListView.builder(
+            padding: EdgeInsets.all(16),
+            itemCount: widgetList.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: <Widget>[widgetList[index]],
+              );
+            },
+          );
+        });
   }
 }
