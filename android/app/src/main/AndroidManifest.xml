@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.f3deve.flutter.expert_support_admin">
+    package="com.expertsSupport.flutter.adminApp.android">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -8,8 +10,11 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="expert_support_admin"
+        android:label="ES Admin"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="true"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

@@ -5,3 +5,23 @@ enum eOrderStatus{
   canceled,
   unknown
 }
+
+enum AuthStatus{
+  signedIn,
+  notSingedIn
+}
+
+enum OrderToDisplay{
+  pending,
+  inProcess,
+  done,
+  canceled,
+  all
+}
+
+enum GeneralDetailsType {
+  contactUs,
+  shared,
+  submitOrder,
+  orderLimit
+}

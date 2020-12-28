@@ -1,16 +1,70 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 
-class Auth{
+import 'package:flutter/services.dart';
+
+class Auth {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<FirebaseUser> signIn(String email, String password) async{
-    FirebaseUser user = await _auth.signInWithEmailAndPassword(email: email, password: password);
+  User getUser() {
+    User user = _auth.currentUser;
     return user;
   }
 
-  Future<void> signOut(){
+  Future<void> signIn(String email, String password,
+      Function(UserCredential) onSuccess, Function(String) onError) async {
+    try {
+      UserCredential user = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      onSuccess(user);
+    } on PlatformException catch (e) {
+      onError(e.message);
+    }
+  }
+
+  Future<void> signUp(String email, String password,
+      Function(UserCredential) onSuccess, Function(String) onError) async {
+    try {
+      UserCredential user = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      onSuccess(user);
+    } on PlatformException catch (e) {
+      onError(e.message);
+    }
+  }
+
+  Future<void> signOut() {
     return _auth.signOut();
   }
 
+  Future<void> changePassword(String newPassword, Function() onSuccess,
+      Function(String) onError) async {
+    try {
+      User user = _auth.currentUser;
+      await user.updatePassword(newPassword);
+      onSuccess();
+    } on PlatformException catch (e) {
+      onError(e.message);
+    }
+  }
+
+  Future<void> resetPassword(
+      String email, Function() onSuccess, Function(String) onError) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      onSuccess();
+    } on PlatformException catch (e) {
+      onError(e.message);
+    }
+  }
+
+  Future<void> resendVerificationEmail(
+      User user, Function() onSuccess, Function(String) onError) async {
+    try {
+      await user.sendEmailVerification();
+      onSuccess();
+    } on PlatformException catch (e) {
+      onError(e.message);
+    }
+  }
 }

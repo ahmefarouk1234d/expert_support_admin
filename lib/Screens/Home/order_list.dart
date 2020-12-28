@@ -1,41 +1,82 @@
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
+import 'package:expert_support_admin/HelperClass/date_common.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
-import 'package:expert_support_admin/Screens/Order/order_details.dart';
+import 'package:expert_support_admin/Models/status.dart';
 import 'package:flutter/material.dart';
 
 class OrderList extends StatelessWidget {
   final List<OrderInfo> orders;
-  OrderList({this.orders});
-  //AppBloc _appBloc;
+  final Function(OrderInfo order, int index) onTap;
+  OrderList({this.orders, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Container(
           child: ListView.separated(
             padding: EdgeInsets.all(8),
-            itemBuilder: (context, index) => OrderRow(index, orders[index]),
             itemCount: orders.length,
             separatorBuilder: (context, index) => Divider(color: Colors.black12,),
+            itemBuilder: (context, index) {
+              final OrderInfo order = orders[index];
+              
+              return OrderListTile(order: order, onTap: () => onTap(order, index),);
+            }
           )
         );
   }
 }
 
-class OrderRow extends StatelessWidget {
-  final int index;
-  final OrderInfo order;
-  OrderRow(this.index, this.order);
+class OrderListTile extends StatelessWidget {
+  OrderListTile({Key key, this.order, this.onTap}): super(key: key);
 
-  _navigateToOrderDetails(BuildContext context){
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetails(order: order, index: index,)));
+  final OrderInfo order;
+  final Function() onTap;
+
+  String _getVisitDateDisplay(BuildContext context) {
+    String title = AppLocalizations.of(context).translate(LocalizedKey.orderVisitDateTitle);
+    String dateString = DateConvert().toStringFromDate(
+      date: order.visitDate, 
+      locale: AppLocalizations.of(context).locale.languageCode, 
+      isFull: true
+    );
+
+    return "$title : $dateString";
+  }
+
+  String _getLastUpdateDateDisplay(BuildContext context) {
+    String title = AppLocalizations.of(context).translate(LocalizedKey.lastUpdateDateTitle);
+    String dateString = DateConvert().toStringFromDate(
+      date: order.dateUpdate ?? order.dateCreated, 
+      locale: AppLocalizations.of(context).locale.languageCode, 
+      isFull: true
+    );
+
+    return "$title : $dateString";
   }
 
   @override
   Widget build(BuildContext context) {
+    final String workflowStatus = 
+      order.workflowStatus != null 
+      ? WorkflowStatus().getDisplayStatus(status: order.workflowStatus, context: context)
+      : "";
+
     return ListTile(
-      onTap: () => _navigateToOrderDetails(context),
-      title: Text(order.id ?? ""),
-      subtitle: Text(order.dateCreated ?? ""),
-      trailing: Text(order.status ?? ""),
+      onTap: onTap,
+      title: Container(
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: Text(order.id ?? "")
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(_getVisitDateDisplay(context)),
+          Container(height: 4),
+          Text(_getLastUpdateDateDisplay(context))
+        ],
+      ),
+      trailing: Text(workflowStatus)
     );
   }
 }

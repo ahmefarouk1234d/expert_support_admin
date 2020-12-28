@@ -1,17 +1,19 @@
-import 'package:expert_support_admin/BlocResources/Login/auth_bloc.dart';
-import 'package:expert_support_admin/HelperClass/string.dart';
+import 'package:expert_support_admin/BlocResources/auth_bloc.dart';
+import 'package:expert_support_admin/HelperClass/app_localizations.dart';
+import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
+import 'package:expert_support_admin/BlocResources/base_provider.dart';
 import 'package:flutter/material.dart';
 
 class LoginEmailTextField extends StatelessWidget {
   final TextEditingController controller;
-  final AuthBloc bloc;
-  LoginEmailTextField({this.controller, this.bloc});
+  LoginEmailTextField({this.controller});
 
   @override
   Widget build(BuildContext context) {
+    AuthBloc bloc = Provider.of<AuthBloc>(context);
     return Container(
-        height: Screen.screenWidth * 0.12,
+        height: Screen.screenWidth * 0.13,
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -25,7 +27,9 @@ class LoginEmailTextField extends StatelessWidget {
                 controller: controller,
                 onChanged: bloc.emailChange,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration.collapsed(hintText: TextContent.emailPlaceholder),
+                style: TextStyle(fontSize: Screen.fontSize(size: 20)),
+                decoration: InputDecoration.collapsed(
+                  hintText: AppLocalizations.of(context).translate(LocalizedKey.emailPlaceholder)),
               );
             }));
   }

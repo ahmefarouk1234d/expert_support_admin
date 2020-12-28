@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:expert_support_admin/BlocResources/Login/auth_bloc.dart';
+import 'package:expert_support_admin/BlocResources/auth_bloc.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FirebaseNotifications {

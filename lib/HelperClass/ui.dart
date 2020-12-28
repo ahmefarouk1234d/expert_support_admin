@@ -52,7 +52,8 @@ class Screen {
   static double get screenHeight => _screenHeight;
   static double get screenWidthPR => _screenWidth * _pixelRatio;
   static double get screenHeightPR => _screenHeight * _pixelRatio;
-  static double get statusBarHeight => _statusBarHeight * _pixelRatio;
+  static double get statusBarHeight => _statusBarHeight;
+  static double get statusBarHeightPR => _statusBarHeight * _pixelRatio;
   static double get bottomBarHeight => _bottomBarHeight * _pixelRatio;
 
   static double fontSize({@required double size}) =>
