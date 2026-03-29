@@ -3,26 +3,26 @@ import 'package:expert_support_admin/HelperClass/date_common.dart';
 import 'package:expert_support_admin/Models/offer_status.dart';
 
 class OfferInfo {
-  String offerID;
-  String serviceCategoryID;
-  String serviceTypeID;
-  String mainServiceID;
-  String subMainServiceID;
-  String servNameAr;
-  String servNameEn;
-  String offerTitleAr;
-  String offerTitleEn;
-  String offerDescAr;
-  String offerDescEn;
-  String price;
-  String qauntity;
-  String dateCreate;
-  num dateCreateTimestamp;
-  String dateUpdate;
-  num dateUpdateTimestamp;
-  bool isActive;
-  num startDate;
-  num endDate;
+  String? offerID;
+  String? serviceCategoryID;
+  String? serviceTypeID;
+  String? mainServiceID;
+  String? subMainServiceID;
+  String? servNameAr;
+  String? servNameEn;
+  String? offerTitleAr;
+  String? offerTitleEn;
+  String? offerDescAr;
+  String? offerDescEn;
+  String? price;
+  String? qauntity;
+  String? dateCreate;
+  num? dateCreateTimestamp;
+  String? dateUpdate;
+  num? dateUpdateTimestamp;
+  bool? isActive;
+  num? startDate;
+  num? endDate;
 
   OfferInfo(
       {this.serviceCategoryID,
@@ -46,45 +46,45 @@ class OfferInfo {
 
   //DateConvert().toStringFromTimestamp(timestamp: dateCreated)
 
-  _offerMapToList(DocumentSnapshot offerDocData) {
-    Map<String, dynamic> offerData = offerDocData.data();
+  void _offerMapToList(DocumentSnapshot offerDocData) {
+    Map<String, dynamic> offerData = offerDocData.data() as Map<String, dynamic>;
     num dateCreate = offerData["dateCreate"];
     num dateUpdate = offerData["dateUpdate"];
 
-    this.offerID = offerDocData.id;
-    this.serviceCategoryID = offerData["serviceCategoryID"];
-    this.serviceTypeID = offerData["serviceTypeID"];
-    this.mainServiceID = offerData["mainServiceID"];
-    this.subMainServiceID = offerData["subMainServiceID"];
-    this.servNameAr = offerData["serviceNameAr"];
-    this.servNameEn = offerData["serviceNameEn"];
-    this.offerTitleAr = offerData["offerTitleAr"];
-    this.offerTitleEn = offerData["offerTitleEn"];
-    this.offerDescAr = offerData["offerDescAr"];
-    this.offerDescEn = offerData["offerDescEn"];
-    this.price = offerData["price"];
-    this.qauntity = offerData["qauntity"];
+    offerID = offerDocData.id;
+    serviceCategoryID = offerData["serviceCategoryID"];
+    serviceTypeID = offerData["serviceTypeID"];
+    mainServiceID = offerData["mainServiceID"];
+    subMainServiceID = offerData["subMainServiceID"];
+    servNameAr = offerData["serviceNameAr"];
+    servNameEn = offerData["serviceNameEn"];
+    offerTitleAr = offerData["offerTitleAr"];
+    offerTitleEn = offerData["offerTitleEn"];
+    offerDescAr = offerData["offerDescAr"];
+    offerDescEn = offerData["offerDescEn"];
+    price = offerData["price"];
+    qauntity = offerData["qauntity"];
     this.dateCreate = DateConvert()
-        .toStringFromTimestamp(timestamp: dateCreate, isFull: true);
-    this.dateCreateTimestamp = dateCreate;
+        .toStringFromTimestamp(timestamp: dateCreate.toInt(), isFull: true);
+    dateCreateTimestamp = dateCreate;
     this.dateUpdate = DateConvert()
-        .toStringFromTimestamp(timestamp: dateUpdate, isFull: true);
-    this.dateUpdateTimestamp = dateUpdate;
-    this.isActive = offerData["isActive"];
-    this.startDate = offerData["startDate"];
-    this.endDate = offerData["endDate"];
+        .toStringFromTimestamp(timestamp: dateUpdate.toInt(), isFull: true);
+    dateUpdateTimestamp = dateUpdate;
+    isActive = offerData["isActive"];
+    startDate = offerData["startDate"];
+    endDate = offerData["endDate"];
   }
 
   OfferInfo.fromMap(DocumentSnapshot offerDocData) {
-    this._offerMapToList(offerDocData);
+    _offerMapToList(offerDocData);
   }
 
   static List<OfferInfo> fromMapList(
-      {List<DocumentSnapshot> offerDocDataList}) {
-    List<OfferInfo> offerList = List();
-    offerDocDataList.forEach((offerDocData) {
+      {required List<DocumentSnapshot> offerDocDataList}) {
+    List<OfferInfo> offerList = <OfferInfo>[];
+    for (var offerDocData in offerDocDataList) {
       offerList.add(OfferInfo().._offerMapToList(offerDocData));
-    });
+    }
     return offerList;
   }
 
@@ -136,28 +136,28 @@ class OfferInfo {
 }
 
 class OrderOfferInfo {
-  String id;
-  String serviceCategoryID;
-  String serviceTypeID;
-  String mainServiceID;
-  String subMainServiceID;
-  String titleAr;
-  String titleEn;
-  String descAr;
-  String descEn;
-  num priceForOne;
-  num qauntity;
-  String dateCreate;
-  num dateCreateTimestamp;
-  String dateUpdate;
-  num dateUpdateTimestamp;
-  String status;
-  num startDate;
-  num endDate;
-  num originalPrice;
-  String serviceDetailsAr;
-  String serviceDetailsEn;
-  String offerType;
+  String? id;
+  String? serviceCategoryID;
+  String? serviceTypeID;
+  String? mainServiceID;
+  String? subMainServiceID;
+  String? titleAr;
+  String? titleEn;
+  String? descAr;
+  String? descEn;
+  num? priceForOne;
+  num? qauntity;
+  String? dateCreate;
+  num? dateCreateTimestamp;
+  String? dateUpdate;
+  num? dateUpdateTimestamp;
+  String? status;
+  num? startDate;
+  num? endDate;
+  num? originalPrice;
+  String? serviceDetailsAr;
+  String? serviceDetailsEn;
+  String? offerType;
 
   OrderOfferInfo(
       {this.dateUpdateTimestamp,
@@ -183,47 +183,47 @@ class OrderOfferInfo {
       this.serviceDetailsEn,
       this.offerType});
 
-  _fromMapToObject(DocumentSnapshot offerDocData) {
-    Map<String, dynamic> offerData = offerDocData.data();
+  void _fromMapToObject(DocumentSnapshot offerDocData) {
+    Map<String, dynamic> offerData = offerDocData.data() as Map<String, dynamic>;
     num dateCreate = offerData["date_create"];
     num dateUpdate = offerData["date_update"];
 
-    this.id = offerDocData.id;
-    this.serviceCategoryID = offerData["service_category_id"];
-    this.serviceTypeID = offerData["service_type_id"];
-    this.mainServiceID = offerData["main_service_id"];
-    this.subMainServiceID = offerData["sub_main_service_id"];
-    this.titleAr = offerData["offer_title_ar"];
-    this.titleEn = offerData["offer_title_en"];
-    this.descAr = offerData["offer_desc_ar"];
-    this.descEn = offerData["offer_desc_en"];
-    this.priceForOne = offerData["price"];
-    this.qauntity = offerData["qauntity"];
+    id = offerDocData.id;
+    serviceCategoryID = offerData["service_category_id"];
+    serviceTypeID = offerData["service_type_id"];
+    mainServiceID = offerData["main_service_id"];
+    subMainServiceID = offerData["sub_main_service_id"];
+    titleAr = offerData["offer_title_ar"];
+    titleEn = offerData["offer_title_en"];
+    descAr = offerData["offer_desc_ar"];
+    descEn = offerData["offer_desc_en"];
+    priceForOne = offerData["price"];
+    qauntity = offerData["qauntity"];
     this.dateCreate = DateConvert()
-        .toStringFromTimestamp(timestamp: dateCreate, isFull: true);
-    this.dateCreateTimestamp = dateCreate;
+        .toStringFromTimestamp(timestamp: dateCreate.toInt(), isFull: true);
+    dateCreateTimestamp = dateCreate;
     this.dateUpdate = DateConvert()
-        .toStringFromTimestamp(timestamp: dateUpdate, isFull: true);
-    this.dateUpdateTimestamp = dateUpdate;
-    this.status = offerData["status"];
-    this.startDate = offerData["start_date"];
-    this.endDate = offerData["end_date"];
-    this.originalPrice = offerData["original_price"];
-    this.serviceDetailsAr = offerData["service_details_ar"];
-    this.serviceDetailsEn = offerData["service_details_en"];
-    this.offerType = offerData["offer_type"];
+        .toStringFromTimestamp(timestamp: dateUpdate.toInt(), isFull: true);
+    dateUpdateTimestamp = dateUpdate;
+    status = offerData["status"];
+    startDate = offerData["start_date"];
+    endDate = offerData["end_date"];
+    originalPrice = offerData["original_price"];
+    serviceDetailsAr = offerData["service_details_ar"];
+    serviceDetailsEn = offerData["service_details_en"];
+    offerType = offerData["offer_type"];
   }
 
   OrderOfferInfo.fromMap(DocumentSnapshot offerDocData) {
-    this._fromMapToObject(offerDocData);
+    _fromMapToObject(offerDocData);
   }
 
   static List<OrderOfferInfo> fromMapList(
-      {List<DocumentSnapshot> offerDocDataList}) {
-    List<OrderOfferInfo> offerList = List();
-    offerDocDataList.forEach((offerDocData) {
+      {required List<DocumentSnapshot> offerDocDataList}) {
+    List<OrderOfferInfo> offerList = <OrderOfferInfo>[];
+    for (var offerDocData in offerDocDataList) {
       offerList.add(OrderOfferInfo().._fromMapToObject(offerDocData));
-    });
+    }
     return offerList;
   }
 

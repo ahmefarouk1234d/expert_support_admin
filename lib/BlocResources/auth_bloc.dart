@@ -10,14 +10,15 @@ class AuthBloc with Validator {
   final BehaviorSubject<String> _email = BehaviorSubject();
   final BehaviorSubject<String> _password = BehaviorSubject();
   final BehaviorSubject<String> _fcmToken = BehaviorSubject();
-  final BehaviorSubject<AdminUserInfo> _admin = BehaviorSubject();
+  final BehaviorSubject<AdminUserInfo?> _admin =
+      BehaviorSubject<AdminUserInfo?>.seeded(null);
 
   final _firebaseManager = FirebaseManager();
 
   reset() {
-    _email.add(null);
-    _password.add(null);
-    _fcmToken.add(null);
+    _email.add('');
+    _password.add('');
+    _fcmToken.add('');
     _admin.add(null);
   }
 
@@ -26,23 +27,23 @@ class AuthBloc with Validator {
   Stream<bool> get isValidSignUpFields =>
       Rx.combineLatest2(email, password, (e, p) => true);
   Stream<String> get fcmToken => _fcmToken.stream;
-  Stream<AdminUserInfo> get admin => _admin.stream;
+  Stream<AdminUserInfo?> get admin => _admin.stream;
 
   Function(String) get emailChange => _email.sink.add;
   Function(String) get passwordChange => _password.sink.add;
   Sink<String> get fcmTokenChange => _fcmToken.sink;
-  Sink<AdminUserInfo> get adminChange => _admin.sink;
+  Sink<AdminUserInfo?> get adminChange => _admin.sink;
 
   bool validateField() {
-    bool isValidEmail = _email.value != null && _email.value.isNotEmpty;
-    bool isValidPassword =
-        _password.value != null && _password.value.isNotEmpty;
+    bool isValidEmail = _email.value.isNotEmpty;
+    bool isValidPassword = _password.value.isNotEmpty;
 
     return isValidEmail && isValidPassword;
   }
 
   Future<void> signIn(
-      {Function(UserCredential) onSuccess, Function(String) onError}) {
+      {required Function(UserCredential) onSuccess,
+      required Function(String) onError}) {
     return _firebaseManager.signIn(
         email: _email.value,
         password: _password.value,

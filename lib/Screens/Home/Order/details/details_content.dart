@@ -14,18 +14,18 @@ import 'package:expert_support_admin/Screens/Order/PendingOrders/pending_order_b
 import 'package:flutter/material.dart';
 
 class OrderDetailsContent extends StatefulWidget {
-  final OrderInfo order;
-  final OrderToDisplay orderToDisplay;
-  OrderDetailsContent({this.order, this.orderToDisplay});
+  final OrderInfo? order;
+  final OrderToDisplay? orderToDisplay;
+  const OrderDetailsContent({super.key, this.order, this.orderToDisplay});
 
   @override
   _OrderDetailsContentState createState() => _OrderDetailsContentState();
 }
 
 class _OrderDetailsContentState extends State<OrderDetailsContent> {
-  List<Widget> widgetList;
-  OrderInfo _order;
-  OrderBloc _orderBloc;
+  late List<Widget> widgetList;
+  late OrderInfo _order;
+  late OrderBloc _orderBloc;
   TextEditingController cancelReasonController = TextEditingController();
   TextEditingController changeDetailsControl = TextEditingController();
   TextEditingController totalMoneyReceivedController = TextEditingController();
@@ -34,7 +34,7 @@ class _OrderDetailsContentState extends State<OrderDetailsContent> {
 
   @override
   void initState() {
-    _order = widget.order;
+    _order = widget.order!;
     super.initState();
   }
 
@@ -45,22 +45,22 @@ class _OrderDetailsContentState extends State<OrderDetailsContent> {
       OrderPrices(order),
     ];
 
-    switch (widget.orderToDisplay) {
+    switch (widget.orderToDisplay!) {
       case OrderToDisplay.pending:
         if (order.changeRequestDetails != null) {
           widgets.add(
             ReasonLabel(
               header: AppLocalizations.of(context)
                   .translate(LocalizedKey.requestChangeDetailsTitle),
-              reason: order.changeRequestDetails,
+              reason: order.changeRequestDetails!,
             ),
           );
         }
         if (order.adminName != null && order.adminRole != null) {
           widgets.add(
             OrderUpdatedByView(
-              name: order.adminName,
-              role: order.adminRole,
+              name: order.adminName!,
+              role: order.adminRole!,
             ),
           );
         }
@@ -70,8 +70,8 @@ class _OrderDetailsContentState extends State<OrderDetailsContent> {
         if (order.adminName != null && order.adminRole != null) {
           widgets.add(
             OrderUpdatedByView(
-              name: order.adminName,
-              role: order.adminRole,
+              name: order.adminName!,
+              role: order.adminRole!,
             ),
           );
         }
@@ -87,8 +87,8 @@ class _OrderDetailsContentState extends State<OrderDetailsContent> {
         if (order.adminName != null && order.adminRole != null) {
           widgets.add(
             OrderUpdatedByView(
-              name: order.adminName,
-              role: order.adminRole,
+              name: order.adminName!,
+              role: order.adminRole!,
             ),
           );
         }
@@ -99,15 +99,15 @@ class _OrderDetailsContentState extends State<OrderDetailsContent> {
             ReasonLabel(
               header: AppLocalizations.of(context)
                   .translate(LocalizedKey.cancelReseanDetailsTitle),
-              reason: order.cancelReason,
+              reason: order.cancelReason!,
             ),
           );
         }
         if (order.adminName != null && order.adminRole != null) {
           widgets.add(
             OrderUpdatedByView(
-              name: order.adminName,
-              role: order.adminRole,
+              name: order.adminName!,
+              role: order.adminRole!,
             ),
           );
         }
@@ -119,7 +119,7 @@ class _OrderDetailsContentState extends State<OrderDetailsContent> {
             ReasonLabel(
               header: AppLocalizations.of(context)
                   .translate(LocalizedKey.cancelReseanDetailsTitle),
-              reason: order.cancelReason,
+              reason: order.cancelReason!,
             ),
           );
         } else if (order.changeRequestDetails != null) {
@@ -127,15 +127,15 @@ class _OrderDetailsContentState extends State<OrderDetailsContent> {
             ReasonLabel(
               header: AppLocalizations.of(context)
                   .translate(LocalizedKey.requestChangeDetailsTitle),
-              reason: order.changeRequestDetails,
+              reason: order.changeRequestDetails!,
             ),
           );
         }
         if (order.adminName != null && order.adminRole != null) {
           widgets.add(
             OrderUpdatedByView(
-              name: order.adminName,
-              role: order.adminRole,
+              name: order.adminName!,
+              role: order.adminRole!,
             ),
           );
         }
@@ -150,7 +150,7 @@ class _OrderDetailsContentState extends State<OrderDetailsContent> {
         stream: _orderBloc.order,
         initialData: _order,
         builder: (context, snapshot) {
-          widgetList = _getList(snapshot.data);
+          widgetList = _getList(snapshot.data!);
           return ListView.builder(
             padding: EdgeInsets.all(16),
             itemCount: widgetList.length,

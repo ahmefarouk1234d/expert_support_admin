@@ -5,7 +5,6 @@ import 'package:expert_support_admin/Models/general_details_model.dart';
 import 'package:expert_support_admin/Models/offer_model.dart';
 import 'package:expert_support_admin/Models/order_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'auth_service.dart';
 import 'db_service.dart';
 
@@ -15,23 +14,23 @@ class FirebaseManager {
 
   // -------------------- Auth Services -------------------
 
-  Future<User> getUser() async {
+  Future<User?> getUser() async {
     return _auth.getUser();
   }
 
   Future<void> signIn(
-      {@required String email,
-      @required String password,
-      @required Function(UserCredential) onSuccess,
-      @required Function(String) onError}) {
+      {required String email,
+      required String password,
+      required Function(UserCredential) onSuccess,
+      required Function(String) onError}) {
     return _auth.signIn(email, password, onSuccess, onError);
   }
 
   Future<void> signUp(
-      {@required String email,
-      @required String password,
-      @required Function(UserCredential) onSuccess,
-      @required Function(String) onError}) {
+      {required String email,
+      required String password,
+      required Function(UserCredential) onSuccess,
+      required Function(String) onError}) {
     return _auth.signUp(email, password, onSuccess, onError);
   }
 
@@ -70,28 +69,28 @@ class FirebaseManager {
     return _db.deleteAdminUser(admin);
   }
 
-  Stream<QuerySnapshot> getPendingOrders(int fromDate, int toDate) {
+  Stream<QuerySnapshot> getPendingOrders(int? fromDate, int? toDate) {
     return _db.getPendingOrders(fromDate, toDate);
   }
 
-  Stream<QuerySnapshot> getInProcessOrders(int fromDate, int toDate) {
+  Stream<QuerySnapshot> getInProcessOrders(int? fromDate, int? toDate) {
     return _db.getInProcessOrders(fromDate, toDate);
   }
 
-  Stream<QuerySnapshot> getDoneOrders(int fromDate, int toDate) {
+  Stream<QuerySnapshot> getDoneOrders(int? fromDate, int? toDate) {
     return _db.getDoneOrders(fromDate, toDate);
   }
 
-  Stream<QuerySnapshot> getCanceledOrders(int fromDate, int toDate) {
+  Stream<QuerySnapshot> getCanceledOrders(int? fromDate, int? toDate) {
     return _db.getCanceledOrders(fromDate, toDate);
   }
 
-  Stream<QuerySnapshot> getOrders(int fromDate, int toDate) {
+  Stream<QuerySnapshot> getOrders(int? fromDate, int? toDate) {
     return _db.getOrders(fromDate, toDate);
   }
 
   Future<void> updateOrderStatus(OrderInfo order, AdminUserInfo admin,
-      {String cancelReason, String changeRequestDetails}) {
+      {String? cancelReason, String? changeRequestDetails}) {
     return _db.updateOrderStatus(order, admin,
         cancelReason: cancelReason, changeRequestDetails: changeRequestDetails);
   }

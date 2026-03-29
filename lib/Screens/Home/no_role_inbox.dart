@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 class NoRoleInbox extends StatefulWidget {
   static const route = "/Home";
 
+  const NoRoleInbox({super.key});
+
   @override
   _NoRoleInboxState createState() => _NoRoleInboxState();
 }

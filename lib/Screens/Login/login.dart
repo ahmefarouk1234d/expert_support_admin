@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 class Login extends StatelessWidget {
   static String route = "/Login";
   final VoidCallback onSignedIn;
-  Login({@required this.onSignedIn});
+  Login({super.key, required this.onSignedIn});
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -32,7 +32,7 @@ class Login extends StatelessWidget {
     Screen.instance.init(context);
     return BlocProvider<AuthBloc>(
       builder: (context, authBloc) => authBloc ?? AuthBloc(),
-      onDispose: (context, authBloc) => authBloc.dispose(),
+      onDispose: (context, authBloc) => authBloc?.dispose(),
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.0,
@@ -51,7 +51,7 @@ class LoginForm extends StatelessWidget {
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final VoidCallback onSignedIn;
-  LoginForm({@required this.onSignedIn, this.emailController, this.passwordController});
+  const LoginForm({super.key, required this.onSignedIn, required this.emailController, required this.passwordController});
 
   _navigateToForgatPassword(BuildContext context){
     Navigator.of(context).pushNamed(ForgotPassword.route);
@@ -59,8 +59,8 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AuthBloc _authBloc = Provider.of<AuthBloc>(context);
-    FirebaseNotifications().setUpFirebase(_authBloc);
+    AuthBloc authBloc = Provider.of<AuthBloc>(context);
+    FirebaseNotifications().setUpFirebase(authBloc);
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.all(32),
@@ -91,15 +91,17 @@ class LoginForm extends StatelessWidget {
 class LinkButton extends StatelessWidget {
   final String title;
   final VoidCallback onPressed;
-  LinkButton({@required this.title, @required this.onPressed});
+  const LinkButton({super.key, required this.title, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
-      padding: EdgeInsets.all(0),
-      child: Text(title),
+    return TextButton(
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.all(0),
+        foregroundColor: Colors.blue,
+      ),
       onPressed: onPressed,
-      textColor: Colors.blue,
+      child: Text(title),
     );
   }
 }

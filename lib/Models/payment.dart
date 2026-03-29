@@ -12,7 +12,7 @@ class Payment {
   static const String unknownAr = "غير معروفة";
   static const String unknownEn = "Unknow";
 
-  String getDisplayStatus({@required String status, @required BuildContext context}) {
+  String getDisplayStatus({required String status, required BuildContext context}) {
     bool isArabic = AppLocalizations.of(context).isArabic();
     switch (status) {
       case cash:

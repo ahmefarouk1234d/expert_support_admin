@@ -5,10 +5,10 @@ import 'package:expert_support_admin/SharedWidget/commom_button.dart';
 import 'package:flutter/material.dart';
 
 class EditServicesButtons extends StatelessWidget {
-  final VoidCallback onSave;
-  final VoidCallback onAddNewService;
-  final List<OrderService> services;
-  EditServicesButtons({this.onSave, this.onAddNewService, this.services});
+  final VoidCallback? onSave;
+  final VoidCallback? onAddNewService;
+  final List<OrderService>? services;
+  const EditServicesButtons({super.key, this.onSave, this.onAddNewService, this.services});
 
   @override
   Widget build(BuildContext context) {

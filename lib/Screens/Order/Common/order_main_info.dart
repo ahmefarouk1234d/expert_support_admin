@@ -10,24 +10,24 @@ import 'package:url_launcher/url_launcher.dart';
 
 class OrderMainInfo extends StatelessWidget {
   final OrderInfo order;
-  OrderMainInfo(this.order);
+  const OrderMainInfo(this.order, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    String phone = order.userPhone == null ? '' : order.userPhone.replaceAll("+966", '0');
+    String phone = order.userPhone == null ? '' : order.userPhone!.replaceAll("+966", '0');
     String localCode = AppLocalizations.of(context).locale.languageCode;
-    String visitDate = DateConvert().toStringFromDate(date: order.visitDate, locale: localCode, isFull: true);
+    String visitDate = DateConvert().toStringFromDate(date: order.visitDate!, locale: localCode, isFull: true);
     AppLocalizations localizations = AppLocalizations.of(context);
-    String workflowStatus = WorkflowStatus().getDisplayStatus(status: order.workflowStatus, context: context);
+    String workflowStatus = WorkflowStatus().getDisplayStatus(status: order.workflowStatus!, context: context);
     String visitTime = 
       order.visitDateAndTime != null
       ? TimeOfDay(
-        hour: order.visitDateAndTime.hour, 
-        minute: order.visitDateAndTime.minute).format(context)
-      : DayTime().getDisplayStatus(dayTime: order.visitTime, context: context);
-    String payment = Payment().getDisplayStatus(status: order.paymentMethod, context: context);
+        hour: order.visitDateAndTime!.hour, 
+        minute: order.visitDateAndTime!.minute).format(context)
+      : DayTime().getDisplayStatus(dayTime: order.visitTime!, context: context);
+    String payment = Payment().getDisplayStatus(status: order.paymentMethod!, context: context);
     
-    bool hasReminder = order.reminderOnDay || order.reminderOneHour;
+    bool hasReminder = (order.reminderOnDay ?? false) || (order.reminderOneHour ?? false);
     return Container(
           child: Column(
             children: <Widget>[
@@ -42,27 +42,27 @@ class OrderMainInfo extends StatelessWidget {
                 value: workflowStatus,),
               OrderInfoRow(
                 title: localizations.translate(LocalizedKey.dateTitle), 
-                value: "$visitDate",),
+                value: visitDate,),
               OrderInfoRow(
                 title: localizations.translate(LocalizedKey.timeTitle), 
                 value: visitTime,),
               OrderInfoMapRow(
                 title: localizations.translate(LocalizedKey.locationTitle), 
-                latitude: order.coordinate.latitude, 
-                logntitude: order.coordinate.logntitude,),
+                latitude: order.coordinate!.latitude!, 
+                logntitude: order.coordinate!.logntitude!,),
               OrderInfoRow(
                 title: localizations.translate(LocalizedKey.otherDetailsTitle), 
                 value: "${order.comment}",),
               hasReminder ?
                 OrderReminderRow(
                   title: localizations.translate(LocalizedKey.reminderTitle), 
-                  isOneDayReminder: order.reminderOnDay,
-                  isOneHourReminder: order.reminderOneHour,
+                  isOneDayReminder: order.reminderOnDay ?? false,
+                  isOneHourReminder: order.reminderOneHour ?? false,
                 )
                 : Container(),
               OrderInfoRow(
                 title: localizations.translate(LocalizedKey.paymentMethodTitle), 
-                value: "$payment",),
+                value: payment,),
             ],
           ),
         );
@@ -72,7 +72,7 @@ class OrderMainInfo extends StatelessWidget {
 class OrderInfoRow extends StatelessWidget {
   final String title;
   final String value;
-  OrderInfoRow({@required this.title, @required this.value});
+  const OrderInfoRow({super.key, required this.title, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +80,7 @@ class OrderInfoRow extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 16),
       child: Row(
             children: <Widget>[
-              Text(title + ":", style: TextStyle(fontWeight: FontWeight.w700),),
+              Text("$title:", style: TextStyle(fontWeight: FontWeight.w700),),
               Container(width: 8,),
               Expanded(child: Text(value),)
             ],
@@ -92,7 +92,7 @@ class OrderInfoRow extends StatelessWidget {
 class OrderInfoPhoneRow extends StatelessWidget {
   final String title;
   final String value;
-  OrderInfoPhoneRow({@required this.title, @required this.value});
+  const OrderInfoPhoneRow({super.key, required this.title, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +100,7 @@ class OrderInfoPhoneRow extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 16),
       child: Row(
             children: <Widget>[
-              Text(title + ":", style: TextStyle(fontWeight: FontWeight.w700),),
+              Text("$title:", style: TextStyle(fontWeight: FontWeight.w700),),
               Container(width: 8,),
               Expanded(child: PhoneLauncher(phone: value,))
             ],
@@ -113,7 +113,7 @@ class OrderInfoMapRow extends StatelessWidget {
   final String title;
   final num latitude;
   final num logntitude;
-  OrderInfoMapRow({@required this.title, @required this.latitude, @required this.logntitude});
+  const OrderInfoMapRow({super.key, required this.title, required this.latitude, required this.logntitude});
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +121,7 @@ class OrderInfoMapRow extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 16),
       child: Row(
             children: <Widget>[
-              Text(title + ":", style: TextStyle(fontWeight: FontWeight.w700),),
+              Text("$title:", style: TextStyle(fontWeight: FontWeight.w700),),
               Container(width: 8,),
               Expanded(child: MapLauncher(latitude: latitude, logntitude: logntitude,))
             ],
@@ -132,7 +132,7 @@ class OrderInfoMapRow extends StatelessWidget {
 
 class PhoneLauncher extends StatelessWidget {
   final String phone;
-  PhoneLauncher({@required this.phone});
+  const PhoneLauncher({super.key, required this.phone});
 
   launchUrl() async{
     String url = "tel://$phone";
@@ -155,7 +155,7 @@ class PhoneLauncher extends StatelessWidget {
 class MapLauncher extends StatelessWidget {
   final num latitude;
   final num logntitude;
-  MapLauncher({@required this.latitude, @required this.logntitude});
+  const MapLauncher({super.key, required this.latitude, required this.logntitude});
 
   launchUrl() async{
     String url = "https://www.google.com/maps/search/?api=1&query=$latitude,$logntitude";
@@ -182,10 +182,10 @@ class OrderReminderRow extends StatelessWidget {
   final String title;
   final bool isOneDayReminder;
   final bool isOneHourReminder;
-  OrderReminderRow({
-    @required this.title, 
-    @required this.isOneDayReminder, 
-    @required this.isOneHourReminder});
+  const OrderReminderRow({super.key, 
+    required this.title, 
+    required this.isOneDayReminder, 
+    required this.isOneHourReminder});
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +198,7 @@ class OrderReminderRow extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(title + ":", style: TextStyle(fontWeight: FontWeight.w700),),
+              Text("$title:", style: TextStyle(fontWeight: FontWeight.w700),),
               Container(
                 padding: EdgeInsets.all(16),
                 child: Column(

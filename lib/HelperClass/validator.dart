@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:expert_support_admin/Models/service_model.dart';
 import 'package:expert_support_admin/Models/status.dart';
 
-class Validator{
+mixin class Validator{
   final validateUsername = StreamTransformer<String, String>.fromHandlers(
     handleData: (username, sink){
       if (username.isEmpty) {
@@ -55,12 +55,8 @@ class Validator{
 
   final validateUserRole = StreamTransformer<String, String>.fromHandlers(
     handleData: (userRole, sink){
-      if(userRole == null){
-        sink.addError("User Role should not be empty");
-      } else {
-        sink.add(userRole);
-      }
-    }
+      sink.add(userRole);
+        }
   );
 
   final validateOrderActionButton = StreamTransformer<String, bool>.fromHandlers(
@@ -118,15 +114,11 @@ class Validator{
 
   final validateServiceCategory = StreamTransformer<ServiceCategory, ServiceCategory>.fromHandlers(
     handleData: (serviceCategory, sink){
-      if(serviceCategory == null){
-        sink.addError("service category should not be empty");
-      } else {
-        sink.add(serviceCategory);
-      }
-    }
+      sink.add(serviceCategory);
+        }
   );
 
-  final validateServiceType = StreamTransformer<ServiceType, ServiceType>.fromHandlers(
+  final validateServiceType = StreamTransformer<ServiceType?, ServiceType?>.fromHandlers(
     handleData: (serviceType, sink){
       if(serviceType == null){
         sink.addError("Service type should not be empty");
@@ -136,7 +128,7 @@ class Validator{
     }
   );
 
-  final validateMainService = StreamTransformer<MainService, MainService>.fromHandlers(
+  final validateMainService = StreamTransformer<MainService?, MainService?>.fromHandlers(
     handleData: (mainService, sink){
       if(mainService == null){
         sink.addError("Main service should not be empty");
@@ -146,7 +138,7 @@ class Validator{
     }
   );
 
-  final validateSubMainService = StreamTransformer<SubMainService, SubMainService>.fromHandlers(
+  final validateSubMainService = StreamTransformer<SubMainService?, SubMainService?>.fromHandlers(
     handleData: (subMainService, sink){
       if(subMainService == null){
         sink.addError("Sub main service should not be empty");
@@ -158,7 +150,7 @@ class Validator{
 
   final validateDiscountCode = StreamTransformer<String, String>.fromHandlers(
     handleData: (code, sink){
-      if (code == null || code.isEmpty) {
+      if (code.isEmpty) {
         sink.addError("Code should not be empty");
       } 
 
@@ -166,7 +158,7 @@ class Validator{
       Iterable<RegExpMatch> regSpaceMatches = regSpace.allMatches(code);
       if (code.contains(" ")) {
         sink.addError("Code should not include space");
-      } else if (regSpaceMatches.length > 0) {
+      } else if (regSpaceMatches.isNotEmpty) {
         sink.addError("Code should not include space");
       } else {
         sink.add(code);
@@ -177,7 +169,7 @@ class Validator{
   final validateDiscountPercent = StreamTransformer<String, String>.fromHandlers(
     handleData: (percent, sink){
       RegExp regExpForNum = RegExp("^\\d+(\\.\\d{1,2})?\$");
-      if (percent == null || percent.isEmpty) {
+      if (percent.isEmpty) {
         sink.addError("Percent should not be empty");
       } else if (!regExpForNum.hasMatch(percent)){
         sink.addError("Field should be positive number only");
@@ -189,11 +181,7 @@ class Validator{
 
   final validateDate = StreamTransformer<DateTime, DateTime>.fromHandlers(
     handleData: (date, sink){
-      if(date == null){
-        sink.addError("Date should not be empty");
-      } else {
-        sink.add(date);
-      }
-    }
+      sink.add(date);
+        }
   );
 }

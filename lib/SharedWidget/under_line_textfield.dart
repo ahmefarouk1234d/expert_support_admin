@@ -2,13 +2,13 @@ import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:flutter/material.dart';
 
 class UnderLineTextField extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final bool isError;
-  final Function(String) onChange;
+  final Function(String)? onChange;
   final String hint;
   final bool isPassowrd;
   final TextInputType keyboardType;
-  UnderLineTextField({this.onChange, this.isError = false, this.controller, this.hint = "", this.isPassowrd = false, this.keyboardType = TextInputType.text});
+  const UnderLineTextField({super.key, this.onChange, this.isError = false, this.controller, this.hint = "", this.isPassowrd = false, this.keyboardType = TextInputType.text});
 
 
   @override

@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 
 class OrderList extends StatelessWidget {
   final List<OrderInfo> orders;
-  final Function(OrderInfo order, int index) onTap;
-  OrderList({this.orders, this.onTap});
+  final Function(OrderInfo order, int index)? onTap;
+  const OrderList({super.key, this.orders = const [], this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class OrderList extends StatelessWidget {
             itemBuilder: (context, index) {
               final OrderInfo order = orders[index];
               
-              return OrderListTile(order: order, onTap: () => onTap(order, index),);
+              return OrderListTile(order: order, onTap: () => onTap!(order, index),);
             }
           )
         );
@@ -28,15 +28,15 @@ class OrderList extends StatelessWidget {
 }
 
 class OrderListTile extends StatelessWidget {
-  OrderListTile({Key key, this.order, this.onTap}): super(key: key);
+  const OrderListTile({super.key, required this.order, this.onTap});
 
   final OrderInfo order;
-  final Function() onTap;
+  final Function()? onTap;
 
   String _getVisitDateDisplay(BuildContext context) {
     String title = AppLocalizations.of(context).translate(LocalizedKey.orderVisitDateTitle);
     String dateString = DateConvert().toStringFromDate(
-      date: order.visitDate, 
+      date: order.visitDate!, 
       locale: AppLocalizations.of(context).locale.languageCode, 
       isFull: true
     );
@@ -47,7 +47,7 @@ class OrderListTile extends StatelessWidget {
   String _getLastUpdateDateDisplay(BuildContext context) {
     String title = AppLocalizations.of(context).translate(LocalizedKey.lastUpdateDateTitle);
     String dateString = DateConvert().toStringFromDate(
-      date: order.dateUpdate ?? order.dateCreated, 
+      date: (order.dateUpdate ?? order.dateCreated)!, 
       locale: AppLocalizations.of(context).locale.languageCode, 
       isFull: true
     );
@@ -59,7 +59,7 @@ class OrderListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final String workflowStatus = 
       order.workflowStatus != null 
-      ? WorkflowStatus().getDisplayStatus(status: order.workflowStatus, context: context)
+      ? WorkflowStatus().getDisplayStatus(status: order.workflowStatus!, context: context)
       : "";
 
     return ListTile(

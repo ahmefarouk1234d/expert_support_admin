@@ -42,11 +42,13 @@ void main() async {
 // }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AppBloc>(
         builder: (context, appBloc) => appBloc ?? AppBloc(),
-        onDispose: (context, appBloc) => appBloc.dispose(),
+        onDispose: (context, appBloc) => appBloc?.dispose(),
         child: MaterialApp(
           theme: ThemeData(
               primarySwatch: CommonData.mainMaterialColor,
@@ -107,12 +109,14 @@ class MyApp extends StatelessWidget {
 class Main extends StatefulWidget {
   static String route = "/Main";
 
+  const Main({super.key});
+
   @override
   _MainState createState() => _MainState();
 }
 
 class _MainState extends State<Main> {
-  AuthStatus _authStatus; // = AuthStatus.notSingedIn;
+  AuthStatus? _authStatus; // = AuthStatus.notSingedIn;
   final _firebaseManager = FirebaseManager();
 
   get adminID => null;
@@ -122,30 +126,30 @@ class _MainState extends State<Main> {
     super.initState();
   }
 
-  _signedIn() {
+  void _signedIn() {
     setState(() {
       _authStatus = AuthStatus.signedIn;
     });
   }
 
-  _signedOut() {
+  void _signedOut() {
     setState(() {
       _authStatus = AuthStatus.notSingedIn;
     });
   }
 
-  _checkSignIn(AppBloc appBloc) async {
-    User user = await _firebaseManager.getUser();
+  void _checkSignIn(AppBloc appBloc) async {
+    User? user = await _firebaseManager.getUser();
     if (user == null) {
       setState(() {
         _authStatus = AuthStatus.notSingedIn;
       });
     } else {
-      DocumentSnapshot _adminDoc =
+      DocumentSnapshot adminDoc =
           await _firebaseManager.getAdminInfo(user.uid);
-      AdminUserInfo _adminInfo = AdminUserInfo.fromMap(_adminDoc)
+      AdminUserInfo adminInfo = AdminUserInfo.fromMap(adminDoc)
         ..id = user.uid;
-      appBloc.adminChange.add(_adminInfo);
+      appBloc.adminChange.add(adminInfo);
       setState(() {
         _authStatus = AuthStatus.signedIn;
       });
@@ -155,7 +159,7 @@ class _MainState extends State<Main> {
   @override
   Widget build(BuildContext context) {
     //Screen.instance.init(context);
-    AppBloc _appBloc = Provider.of<AppBloc>(context);
+    AppBloc appBloc = Provider.of<AppBloc>(context);
     if (_authStatus != null) {
       if (_authStatus == AuthStatus.signedIn) {
         return NavigatorScreens(
@@ -166,7 +170,7 @@ class _MainState extends State<Main> {
         onSignedIn: _signedIn,
       );
     }
-    _checkSignIn(_appBloc);
+    _checkSignIn(appBloc);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,

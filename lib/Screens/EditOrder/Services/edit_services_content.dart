@@ -13,31 +13,31 @@ import 'package:expert_support_admin/Screens/NewServices/add_new_service.dart';
 import 'package:flutter/material.dart';
 
 class EditServicesContent extends StatefulWidget {
-  final AdminUserInfo admin;
+  final AdminUserInfo? admin;
   final String orderDocID;
   final List<OrderService> services;
   final OrderInfo order;
   final OrderBloc orderBloc;
-  EditServicesContent(
-      this.services, this.orderDocID, this.order, this.orderBloc, this.admin);
+  const EditServicesContent(
+      this.services, this.orderDocID, this.order, this.orderBloc, this.admin, {super.key});
 
   @override
   _EditServicesContentState createState() => _EditServicesContentState();
 }
 
 class _EditServicesContentState extends State<EditServicesContent> {
-  List<Widget> widgetList;
-  FirebaseManager _firebaseManager;
-  OrderBloc _orderBloc;
-  OrderBloc _currentOrderBloc;
-  List<OrderService> _services;
-  OrderInfo _orderInfo;
+  late List<Widget> widgetList;
+  late FirebaseManager _firebaseManager;
+  late OrderBloc _orderBloc;
+  late OrderBloc _currentOrderBloc;
+  late List<OrderService> _services;
+  late OrderInfo _orderInfo;
 
   @override
   void initState() {
     _firebaseManager = FirebaseManager();
     _orderInfo = widget.order;
-    _services = _orderInfo.orderService;
+    _services = _orderInfo.orderService!;
     _orderBloc = widget.orderBloc;
     super.initState();
   }
@@ -51,10 +51,10 @@ class _EditServicesContentState extends State<EditServicesContent> {
   }
 
   _showConformatiomAlert() {
-    if (_services != null && _services.length > 0) {
+    if (_services.isNotEmpty) {
       List<OrderService> noDeletedServices =
           _services.where((element) => element.isDeleted == false).toList();
-      if (noDeletedServices.length == 0) {
+      if (noDeletedServices.isEmpty) {
         Alert().warning(
             context,
             AppLocalizations.of(context)
@@ -95,41 +95,41 @@ class _EditServicesContentState extends State<EditServicesContent> {
   }
 
   _handleServicePriceChanges() async {
-    double _total = 0.0;
-    double _vatTotal = 0.0;
-    double _totalPriceAfterVAT = 0.0;
-    double _discountPrecent = 0.0;
-    double _totalDiscount = 0.0;
-    double _totalPriceAfterDiscount = 0.0;
-    List<OrderService> _updatedServices = List();
+    double total = 0.0;
+    double vatTotal = 0.0;
+    double totalPriceAfterVAT = 0.0;
+    double discountPrecent = 0.0;
+    double totalDiscount = 0.0;
+    double totalPriceAfterDiscount = 0.0;
+    List<OrderService> updatedServices = [];
 
     //SubmitOrder submitOrder = await _firebaseManager.getSubmittedOrderGeneralDetails();
     //submitOrder.vatPercentage / 100;
     double vatPercentage = _orderInfo.vatPercentage != null
-        ? (_orderInfo.vatPercentage / 100)
+        ? (_orderInfo.vatPercentage! / 100)
         : 0.05;
 
-    _services.forEach((serv) {
+    for (var serv in _services) {
       if (!serv.isDeleted) {
-        _total += serv.total;
-        _updatedServices.add(serv);
+        total += serv.total!.toDouble();
+        updatedServices.add(serv);
       }
-    });
+    }
 
-    _orderInfo.orderService = _updatedServices;
+    _orderInfo.orderService = updatedServices;
 
-    _discountPrecent = (_orderInfo.discountPercent / 100);
-    _totalDiscount = (_total * _discountPrecent);
-    _totalPriceAfterDiscount = (_total - _totalDiscount);
-    _vatTotal = (_totalPriceAfterDiscount * vatPercentage);
-    _totalPriceAfterVAT = (_totalPriceAfterDiscount + _vatTotal);
+    discountPrecent = (_orderInfo.discountPercent! / 100);
+    totalDiscount = (total * discountPrecent);
+    totalPriceAfterDiscount = (total - totalDiscount);
+    vatTotal = (totalPriceAfterDiscount * vatPercentage);
+    totalPriceAfterVAT = (totalPriceAfterDiscount + vatTotal);
 
-    _orderInfo.discountPercent = _discountPrecent;
-    _orderInfo.totalDiscountAmount = _totalDiscount;
-    _orderInfo.totalPriceBeforeDiscount = _total;
-    _orderInfo.totalPriceAfterDiscount = _totalPriceAfterDiscount;
-    _orderInfo.vatTotal = _vatTotal;
-    _orderInfo.totalPriceWithVAT = _totalPriceAfterVAT;
+    _orderInfo.discountPercent = discountPrecent;
+    _orderInfo.totalDiscountAmount = totalDiscount;
+    _orderInfo.totalPriceBeforeDiscount = total;
+    _orderInfo.totalPriceAfterDiscount = totalPriceAfterDiscount;
+    _orderInfo.vatTotal = vatTotal;
+    _orderInfo.totalPriceWithVAT = totalPriceAfterVAT;
   }
 
   @override

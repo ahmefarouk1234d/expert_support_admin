@@ -32,7 +32,7 @@ class OrderStatus {
   static const String arrived = "Arrived";
   static const String unknown = "unknow";
 
-  String getDisplayStatus({@required String status, @required BuildContext context}) {
+  String getDisplayStatus({required String status, required BuildContext context}) {
     bool isArabic = AppLocalizations.of(context).isArabic();
     switch (status) {
       case inProcess:
@@ -93,7 +93,7 @@ class WorkflowStatus {
   static const String arrived = "Arrived";
   static const String unknown = "unknow";
 
-  String getDisplayStatus({@required String status, @required BuildContext context}) {
+  String getDisplayStatus({required String status, required BuildContext context}) {
     bool isArabic = AppLocalizations.of(context).isArabic();
     switch (status) {
       case inProcess:

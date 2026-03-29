@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 
 class NewServiceBloc{
-  FirebaseManager _firebaseManager = FirebaseManager();
+  final FirebaseManager _firebaseManager = FirebaseManager();
 
   Future<QuerySnapshot> get serviceDocument => _firebaseManager.getServices();
 }

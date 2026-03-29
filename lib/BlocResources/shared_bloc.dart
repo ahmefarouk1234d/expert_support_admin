@@ -15,11 +15,11 @@ class SharedBloc extends Validator {
   final FirebaseManager _firebaseManager = FirebaseManager();
 
   SharedBloc({
-    String ios,
-    String android
+    required String ios,
+    required String android
   }) {
-    this._iosLink.add(ios);
-    this._androidLink.add(android);
+    _iosLink.add(ios);
+    _androidLink.add(android);
   }
 
   Stream<String> get iosLink => _iosLink.stream.transform(validateTextField);
@@ -40,8 +40,8 @@ class SharedBloc extends Validator {
     AppLocalizations localizations = AppLocalizations.of(context);
 
     if (
-      (_iosLink != null && _iosLink.value.isNotEmpty)
-      && (_androidLink != null && _androidLink.value.isNotEmpty)
+      (_iosLink.value.isNotEmpty)
+      && (_androidLink.value.isNotEmpty)
     ) {
 
       Common().loading(context);

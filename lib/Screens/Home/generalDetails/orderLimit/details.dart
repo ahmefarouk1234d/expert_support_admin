@@ -13,19 +13,19 @@ import 'package:expert_support_admin/SharedWidget/commom_button.dart';
 import 'package:flutter/material.dart';
 
 class OrderLimitGeneralDetails extends StatelessWidget {
-  OrderLimitGeneralDetails({Key key, this.orderLimit});
+  OrderLimitGeneralDetails({super.key, this.orderLimit});
   
-  final OrderLimit orderLimit;
+  final OrderLimit? orderLimit;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<OrderLimitBloc>(
       builder: (context, orderLimitBloc) => OrderLimitBloc(
-        perDay: orderLimit.perDay.toString(),
-        startDate: DateConvert().getDate(timestamp: orderLimit.unavaliableStartDateTimestamp),
-        endDate: DateConvert().getDate(timestamp: orderLimit.unavaliableEndDateTimestamp)
+        perDay: orderLimit!.perDay.toString(),
+        startDate: DateConvert().getDate(timestamp: orderLimit!.unavaliableStartDateTimestamp!),
+        endDate: DateConvert().getDate(timestamp: orderLimit!.unavaliableEndDateTimestamp!)
       ),
-      onDispose: (context, orderLimitBloc) => orderLimitBloc.dispose(),
+      onDispose: (context, orderLimitBloc) => orderLimitBloc?.dispose(),
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -40,9 +40,9 @@ class OrderLimitGeneralDetails extends StatelessWidget {
 }
 
 class OrderLimitGeneralDetailsContent extends StatefulWidget {
-  OrderLimitGeneralDetailsContent({Key key, this.orderLimit});
+  OrderLimitGeneralDetailsContent({super.key, this.orderLimit});
   
-  final OrderLimit orderLimit;
+  final OrderLimit? orderLimit;
 
   @override
   _OrderLimitGeneralDetailsContentState createState() => _OrderLimitGeneralDetailsContentState();
@@ -50,40 +50,40 @@ class OrderLimitGeneralDetailsContent extends StatefulWidget {
 
 class _OrderLimitGeneralDetailsContentState extends State<OrderLimitGeneralDetailsContent> {
 
-  OrderLimit orderLimit;
-  TextEditingController _perDayController;
-  OrderLimitBloc _orderLimitBloc;
-  AppLocalizations _localizations;
+  late OrderLimit orderLimit;
+  late TextEditingController _perDayController;
+  late OrderLimitBloc _orderLimitBloc;
+  late AppLocalizations _localizations;
 
-  DateTime _startDate;
-  DateTime _endDate;
+  late DateTime _startDate;
+  late DateTime _endDate;
 
   @override
   void initState() {
-    orderLimit = widget.orderLimit;
+    orderLimit = widget.orderLimit!;
     _perDayController = TextEditingController(text: orderLimit.perDay.toString());
 
-    _startDate = DateConvert().getDate(timestamp: orderLimit.unavaliableStartDateTimestamp);
-    _endDate = DateConvert().getDate(timestamp: orderLimit.unavaliableEndDateTimestamp);
+    _startDate = DateConvert().getDate(timestamp: orderLimit.unavaliableStartDateTimestamp!);
+    _endDate = DateConvert().getDate(timestamp: orderLimit.unavaliableEndDateTimestamp!);
 
     super.initState();
   }
 
-  _handleStartDate(DateTime date) async {
-    DateTime dateSelected = await _showDate(_startDate);
+  void _handleStartDate(DateTime date) async {
+    DateTime? dateSelected = await _showDate(_startDate);
     if (dateSelected != null) {
       _orderLimitBloc.unavailableStartDateChange(dateSelected);
     }
   }
 
-  _handleEndDate(DateTime date) async {
-    DateTime dateSelected = await _showDate(_endDate);
+  void _handleEndDate(DateTime date) async {
+    DateTime? dateSelected = await _showDate(_endDate);
     if (dateSelected != null) {
       _orderLimitBloc.unavailableEndDateChange(dateSelected);
     }
   }
 
-  Future<DateTime> _showDate(DateTime date) {
+  Future<DateTime?> _showDate(DateTime date) {
     return showDatePicker(
       context: context,
       initialDate: date,
@@ -92,7 +92,7 @@ class _OrderLimitGeneralDetailsContentState extends State<OrderLimitGeneralDetai
     );
   }
 
-  _showConformation() {
+  void _showConformation() {
     FocusScope.of(context).unfocus();
     Alert().conformation(
       context, 
@@ -133,10 +133,10 @@ class _OrderLimitGeneralDetailsContentState extends State<OrderLimitGeneralDetai
               initialData: _startDate,
               builder: (context, snapshot) {
                 return GestureDetector(
-                  onTap: () { _handleStartDate(snapshot.data); },
+                  onTap: () { _handleStartDate(snapshot.data!); },
                   child: DateDisplayWithBroderContainer(
                     header: _localizations.translate(LocalizedKey.unavailableStartDateTitle),
-                    date: snapshot.data,
+                    date: snapshot.data!,
                     isError: snapshot.hasError,
                   ),
                 );
@@ -147,10 +147,10 @@ class _OrderLimitGeneralDetailsContentState extends State<OrderLimitGeneralDetai
               initialData: _endDate,
               builder: (context, snapshot) {
                 return GestureDetector(
-                  onTap: () { _handleEndDate(snapshot.data); },
+                  onTap: () { _handleEndDate(snapshot.data!); },
                   child: DateDisplayWithBroderContainer(
                     header: _localizations.translate(LocalizedKey.unavailableEndDateTitle),
-                    date: snapshot.data,
+                    date: snapshot.data!,
                     isError: snapshot.hasError,
                   ),
                 );
@@ -175,9 +175,9 @@ class _OrderLimitGeneralDetailsContentState extends State<OrderLimitGeneralDetai
 
 class DateDisplayWithBroderContainer extends StatelessWidget {
   DateDisplayWithBroderContainer({
-    Key key, 
-    this.header = "", 
-    @required this.date,
+    Key? key,
+    this.header = "",
+    required this.date,
     this.isError = false,}): super(key: key);
 
   final String header;

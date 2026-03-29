@@ -12,8 +12,8 @@ import 'package:flutter/material.dart';
 
 class OrderInbox extends StatelessWidget {
   static const route = "/OrderInbox";
-  final OrderToDisplay orderToDisplay;
-  OrderInbox({this.orderToDisplay});
+  final OrderToDisplay? orderToDisplay;
+  const OrderInbox({super.key, this.orderToDisplay});
 
   @override
   Widget build(BuildContext context) {
@@ -24,24 +24,23 @@ class OrderInbox extends StatelessWidget {
 }
 
 class OrdersList extends StatefulWidget {
-  final OrderToDisplay orderToDisplay;
-  OrdersList({this.orderToDisplay});
+  final OrderToDisplay? orderToDisplay;
+  const OrdersList({super.key, this.orderToDisplay});
 
   @override
   _OrdersListState createState() => _OrdersListState();
 }
 
 class _OrdersListState extends State<OrdersList> {
-  List<OrderInfo> orderList;
-  AppBloc _appBloc;
+  List<OrderInfo> orderList = [];
+  late AppBloc _appBloc;
 
   @override
   void initState() {
-    orderList = List();
     super.initState();
   }
 
-  _navigateToOrderDetails(OrderInfo order, int index) {
+  void _navigateToOrderDetails(OrderInfo order, int index) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => OrderDetails(
               order: order,
@@ -50,9 +49,9 @@ class _OrdersListState extends State<OrdersList> {
             )));
   }
 
-  Stream<QuerySnapshot> getOrderDocStream() {
-    Stream<QuerySnapshot> orderStream;
-    switch (widget.orderToDisplay) {
+  Stream<QuerySnapshot>? getOrderDocStream() {
+    Stream<QuerySnapshot>? orderStream;
+    switch (widget.orderToDisplay!) {
       //Getting all pending and change request orders
       case OrderToDisplay.pending:
         orderStream = _appBloc.pendingOrderDocument;
@@ -72,19 +71,19 @@ class _OrdersListState extends State<OrdersList> {
     return orderStream;
   }
 
-  _handleFromDate(DateTime date) async {
+  void _handleFromDate(DateTime date) async {
     _appBloc.fromDateChange.add(date);
   }
 
-  _handleToDate(DateTime date) async {
+  void _handleToDate(DateTime date) async {
     _appBloc.toDateChange.add(date);
   }
 
-  _handleSearch() {
+  void _handleSearch() {
     setState(() {});
   }
 
-  _handleClearSeach() {
+  void _handleClearSeach() {
     setState(() {
       _appBloc.fromDateChange.add(null);
       _appBloc.toDateChange.add(null);
@@ -122,7 +121,7 @@ class _OrdersListState extends State<OrdersList> {
                       return NoData();
                     }
                     orderList = OrderInfo.fromMapList(
-                        orderDocDataList: snapshot.data.docs);
+                        orderDocDataList: snapshot.data!.docs);
                     return orderList.isEmpty
                         ? NoData()
                         : OrderList(

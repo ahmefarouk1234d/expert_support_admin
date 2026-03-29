@@ -10,13 +10,15 @@ import 'package:flutter/material.dart';
 class ForgotPassword extends StatefulWidget {
   static const String route = "/ForgatPassword";
 
+  const ForgotPassword({super.key});
+
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController emailController = TextEditingController();
-  LoginServicesBloc _bloc;
+  late LoginServicesBloc _bloc;
 
   @override
   void initState(){
@@ -44,7 +46,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     () {
       Common().dismiss(context);
       emailController.clear();
-      _bloc.emailChange(null);
+      _bloc.emailChange('');
     });
   }
 

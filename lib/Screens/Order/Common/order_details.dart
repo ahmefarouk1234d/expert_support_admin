@@ -8,20 +8,20 @@ import 'service_list.dart';
 
 class OrderDetails extends StatelessWidget {
   static String route = "/OrderDetails";
-  final int index;
-  final OrderInfo order;
-  OrderDetails({this.order, this.index});
+  final int? index;
+  final OrderInfo? order;
+  const OrderDetails({super.key, this.order, this.index});
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(order.id),
+        title: Text(order!.id!),
         elevation: 0.0,
       ),
       body: BlocProvider<OrderBloc>(
-        builder: (context, _orderBloc) => _orderBloc ?? OrderBloc(),
-        onDispose: (context, _orderBloc) => _orderBloc.dispose(),
+        builder: (context, orderBloc) => orderBloc ?? OrderBloc(),
+        onDispose: (context, orderBloc) => orderBloc?.dispose(),
         child: Container(
           child: OrderDetailsContent(order: order,),
         ),
@@ -31,21 +31,21 @@ class OrderDetails extends StatelessWidget {
 }
 
 class OrderDetailsContent extends StatefulWidget {
-  final OrderInfo order;
-  OrderDetailsContent({this.order});
+  final OrderInfo? order;
+  const OrderDetailsContent({super.key, this.order});
 
   @override
   _OrderDetailsContentState createState() => _OrderDetailsContentState();
 }
 
 class _OrderDetailsContentState extends State<OrderDetailsContent> {
-  List<Widget> widgetList;
-   OrderInfo _order;
-   OrderBloc _orderBloc;
+  late List<Widget> widgetList;
+   late OrderInfo _order;
+   late OrderBloc _orderBloc;
 
    @override
   void initState() {
-    _order = widget.order;
+    _order = widget.order!;
     super.initState();
   }
 
@@ -58,9 +58,9 @@ class _OrderDetailsContentState extends State<OrderDetailsContent> {
       initialData: _order,
       builder: (context, snapshot) {
         widgetList = [
-          OrderMainInfo(snapshot.data),
-          ServicesList(snapshot.data), 
-          OrderPrices(snapshot.data), ];
+          OrderMainInfo(snapshot.data!),
+          ServicesList(snapshot.data!),
+          OrderPrices(snapshot.data!), ];
 
         return ListView.builder(
           padding: EdgeInsets.all(16),

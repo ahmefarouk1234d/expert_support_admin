@@ -24,7 +24,7 @@ class AdminRole{
   static const String admin = "admin" ;
   static const String unknown = "unknow";
 
-  String getDisplayRole({@required String role, @required BuildContext context}) {
+  String getDisplayRole({required String role, required BuildContext context}) {
     bool isArabic = AppLocalizations.of(context).isArabic();
     switch (role) {
       case customerService:

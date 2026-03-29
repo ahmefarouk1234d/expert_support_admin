@@ -16,6 +16,8 @@ import 'package:flutter/material.dart';
 class Users extends StatelessWidget {
   static String route = "/Users";
 
+  const Users({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,21 +27,22 @@ class Users extends StatelessWidget {
 }
 
 class UsersContent extends StatefulWidget {
+  const UsersContent({super.key});
+
   @override
   _UsersContentState createState() => _UsersContentState();
 }
 
 class _UsersContentState extends State<UsersContent> {
-  List<AdminUserInfo> usersList;
-  AppBloc _appBloc;
+  List<AdminUserInfo> usersList = [];
+  late AppBloc _appBloc;
 
   @override
   void initState() {
-    usersList = List();
     super.initState();
   }
 
-  _navigateToUserDetails(AdminUserInfo admin, int index) {
+  void _navigateToUserDetails(AdminUserInfo admin, int index) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => UserDetails(
               admin: admin,
@@ -56,7 +59,7 @@ class _UsersContentState extends State<UsersContent> {
             return Loading();
           }
           usersList =
-              AdminUserInfo.fromMapList(adminDocDataList: snapshot.data.docs);
+              AdminUserInfo.fromMapList(adminDocDataList: snapshot.data!.docs);
           return usersList.isEmpty
               ? NoData()
               : UsersList(
@@ -69,8 +72,8 @@ class _UsersContentState extends State<UsersContent> {
 
 class UsersList extends StatelessWidget {
   final List<AdminUserInfo> adminList;
-  final Function(AdminUserInfo admin, int index) onTap;
-  UsersList({this.adminList, this.onTap});
+  final Function(AdminUserInfo admin, int index)? onTap;
+  const UsersList({super.key, this.adminList = const [], this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -106,12 +109,10 @@ class UsersList extends StatelessWidget {
                   border: border,
                 ),
                 child: ListTile(
-                  onTap: () => onTap(admin, index),
+                  onTap: () => onTap!(admin, index),
                   title: Text(admin.email ?? ""),
-                  subtitle: Text(role +
-                      ": " +
-                      (AdminRole()
-                          .getDisplayRole(role: admin.role, context: context))),
+                  subtitle: Text("$role: ${AdminRole()
+                          .getDisplayRole(role: admin.role!, context: context)}"),
                   trailing: Icon(
                     icon,
                     color: Colors.black12,
@@ -124,15 +125,15 @@ class UsersList extends StatelessWidget {
 
 class UserDetails extends StatefulWidget {
   final AdminUserInfo admin;
-  UserDetails({@required this.admin});
+  const UserDetails({super.key, required this.admin});
 
   @override
   _UserDetailsState createState() => _UserDetailsState();
 }
 
 class _UserDetailsState extends State<UserDetails> {
-  AdminUserInfo admin;
-  UserDetailsBloc _bloc;
+  late AdminUserInfo admin;
+  late UserDetailsBloc _bloc;
 
   @override
   void initState() {
@@ -141,7 +142,7 @@ class _UserDetailsState extends State<UserDetails> {
     super.initState();
   }
 
-  _navigateToEditUser(AdminUserInfo user) {
+  void _navigateToEditUser(AdminUserInfo user) {
     AdminUserInfo userToEdit = AdminUserInfo()..update(user);
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => UpdateUser(
@@ -166,9 +167,9 @@ class _UserDetailsState extends State<UserDetails> {
                 child: Container(
               padding: EdgeInsets.all(8),
               child: UserDetailsContent(
-                  admin: snapshot.data,
+                  admin: snapshot.data!,
                   onEdit: () => _navigateToEditUser(
-                        snapshot.data,
+                        snapshot.data!,
                       )),
             ));
           }),
@@ -179,7 +180,7 @@ class _UserDetailsState extends State<UserDetails> {
 class UserDetailsContent extends StatelessWidget {
   final AdminUserInfo admin;
   final VoidCallback onEdit;
-  UserDetailsContent({@required this.admin, @required this.onEdit});
+  const UserDetailsContent({super.key, required this.admin, required this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -202,19 +203,19 @@ class UserDetailsContent extends StatelessWidget {
         ),
         UserDetailsRow(
           title: AppLocalizations.of(context).translate(LocalizedKey.role),
-          text: AdminRole().getDisplayRole(role: admin.role, context: context),
+          text: AdminRole().getDisplayRole(role: admin.role!, context: context),
         ),
         UserDetailsRow(
           title: AppLocalizations.of(context)
               .translate(LocalizedKey.userStatusTitle),
           text: AdminUserStatus()
-              .getDisplayStatus(status: admin.status, context: context),
+              .getDisplayStatus(status: admin.status!, context: context),
         ),
         UserDetailsRow(
           title: AppLocalizations.of(context)
               .translate(LocalizedKey.userLastActionTitle),
           text: DateConvert().toStringFromTimestamp(
-              timestamp: admin.dateUpdated,
+              timestamp: admin.dateUpdated!,
               locale: AppLocalizations.of(context).locale.languageCode,
               isFull: true),
         ),
@@ -234,7 +235,7 @@ class UserDetailsContent extends StatelessWidget {
 class UserDetailsRow extends StatelessWidget {
   final String title;
   final String text;
-  UserDetailsRow({@required this.title, @required this.text});
+  const UserDetailsRow({super.key, required this.title, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -243,7 +244,7 @@ class UserDetailsRow extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Text(
-            title + ":",
+            "$title:",
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
           Container(

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class OrderUpdatedByView extends StatelessWidget {
   final String name;
   final String role;
-  OrderUpdatedByView({this.name, this.role});
+  const OrderUpdatedByView({super.key, required this.name, required this.role});
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +36,7 @@ class OrderUpdatedByView extends StatelessWidget {
           Row(
             children: <Widget>[
               Text(
-                AppLocalizations.of(context).translate(LocalizedKey.name) +
-                    ": ",
+                "${AppLocalizations.of(context).translate(LocalizedKey.name)}: ",
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
               Text(name)
@@ -49,8 +48,7 @@ class OrderUpdatedByView extends StatelessWidget {
           Row(
             children: <Widget>[
               Text(
-                AppLocalizations.of(context).translate(LocalizedKey.role) +
-                    ": ",
+                "${AppLocalizations.of(context).translate(LocalizedKey.role)}: ",
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
               Text(adminRole)

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ReasonLabel extends StatelessWidget {
   final String header;
   final String reason;
-  ReasonLabel({this.header, this.reason});
+  const ReasonLabel({super.key, required this.header, required this.reason});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class ReasonLabel extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Text(
-            header + ": ",
+            "$header: ",
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
           Expanded(

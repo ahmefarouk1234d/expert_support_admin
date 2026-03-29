@@ -16,7 +16,7 @@ class OfferStatus{
   static const String unknownAr = "حالة غير معروفة";
   static const String unknownEn = "Unknow Status";
 
-  String getDisplayStaus({@required String status, @required BuildContext context}) {
+  String getDisplayStaus({required String status, required BuildContext context}) {
     bool isArabic = AppLocalizations.of(context).isArabic();
     switch (status) {
       case active:
@@ -42,7 +42,7 @@ class OfferType {
   static const String unknownAr = "حالة غير معروفة";
   static const String unknownEn = "Unknow Status";
 
-  String getDisplayStaus({@required String status, @required BuildContext context}) {
+  String getDisplayStaus({required String status, required BuildContext context}) {
     bool isArabic = AppLocalizations.of(context).isArabic();
     switch (status) {
       case services:

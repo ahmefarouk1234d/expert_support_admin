@@ -16,13 +16,13 @@ class NavScreen {
   List<NavWidget> navWidget;
   List<String> menuList;
 
-  NavScreen({this.navWidget, this.menuList});
+  NavScreen({required this.navWidget, required this.menuList});
 }
 
 class NavWidget {
   Widget widget;
   String title;
-  NavWidget({@required this.title, @required this.widget});
+  NavWidget({required this.title, required this.widget});
 }
 
 class MenuList {
@@ -43,38 +43,38 @@ class MenuList {
   String ordersHistory = "";
 
   MenuList(this.context) {
-    this.pendingTitle = AppLocalizations.of(context)
+    pendingTitle = AppLocalizations.of(context)
         .translate(LocalizedKey.pendingOrderMenuTitle);
-    this.changeRequestTitle = AppLocalizations.of(context)
+    changeRequestTitle = AppLocalizations.of(context)
         .translate(LocalizedKey.changeRequestOrderMenuTitle);
-    this.changeRequestReplyTitle = AppLocalizations.of(context)
+    changeRequestReplyTitle = AppLocalizations.of(context)
         .translate(LocalizedKey.changeRequestReplyOrderMenuTitle);
-    this.inProcessTitle = AppLocalizations.of(context)
+    inProcessTitle = AppLocalizations.of(context)
         .translate(LocalizedKey.inProcessOrderMenuTitle);
-    this.doneTitle =
+    doneTitle =
         AppLocalizations.of(context).translate(LocalizedKey.doneMenuTitle);
-    this.cancelTitle =
+    cancelTitle =
         AppLocalizations.of(context).translate(LocalizedKey.cancelMeunTitle);
-    this.changePasswordTitle = AppLocalizations.of(context)
+    changePasswordTitle = AppLocalizations.of(context)
         .translate(LocalizedKey.changePasswordMenuTitle);
-    this.offersTitle =
+    offersTitle =
         AppLocalizations.of(context).translate(LocalizedKey.offerMenuTitle);
-    this.usersTitle =
+    usersTitle =
         AppLocalizations.of(context).translate(LocalizedKey.usersMenuTitle);
-    this.ordersTitle =
+    ordersTitle =
         AppLocalizations.of(context).translate(LocalizedKey.ordersMenuTitle);
-    this.signOutTitle =
+    signOutTitle =
         AppLocalizations.of(context).translate(LocalizedKey.signOutMenuTitle);
-    this.discount =
+    discount =
         AppLocalizations.of(context).translate(LocalizedKey.discountMenuTitle);
-    this.generalDetailsTitle =
+    generalDetailsTitle =
         AppLocalizations.of(context).translate(LocalizedKey.generalDetailsMenuTitle);
-    this.ordersHistory =
+    ordersHistory =
         AppLocalizations.of(context).translate(LocalizedKey.orderHistoryMenuTitle);
   }
 
   NavScreen getCustomerServiceList() {
-    NavScreen _navScreenListCustomerService = NavScreen(navWidget: [
+    NavScreen navScreenListCustomerService = NavScreen(navWidget: [
       NavWidget(
           title: pendingTitle,
           widget: OrderInbox(
@@ -86,11 +86,11 @@ class MenuList {
       changePasswordTitle,
       signOutTitle
     ]);
-    return _navScreenListCustomerService;
+    return navScreenListCustomerService;
   }
 
   NavScreen getTechList() {
-    NavScreen _navScreenListTech = NavScreen(navWidget: [
+    NavScreen navScreenListTech = NavScreen(navWidget: [
       NavWidget(
           title: ordersTitle,
           widget: OrderInbox(
@@ -103,11 +103,11 @@ class MenuList {
       changePasswordTitle,
       signOutTitle
     ]);
-    return _navScreenListTech;
+    return navScreenListTech;
   }
 
   NavScreen getAccountantList() {
-    NavScreen _navScreenListAccountant = NavScreen(navWidget: [
+    NavScreen navScreenListAccountant = NavScreen(navWidget: [
       NavWidget(
           title: ordersTitle,
           widget: OrderInbox(
@@ -124,11 +124,11 @@ class MenuList {
       changePasswordTitle,
       signOutTitle
     ]);
-    return _navScreenListAccountant;
+    return navScreenListAccountant;
   }
 
   NavScreen getSuperviorList() {
-    NavScreen _navScreenListSupervior = NavScreen(navWidget: [
+    NavScreen navScreenListSupervior = NavScreen(navWidget: [
       NavWidget(
           title: pendingTitle,
           widget: OrderInbox(
@@ -163,11 +163,11 @@ class MenuList {
       changePasswordTitle,
       signOutTitle
     ]);
-    return _navScreenListSupervior;
+    return navScreenListSupervior;
   }
 
   NavScreen getAdminList() {
-    NavScreen _navScreenListAdmin = NavScreen(navWidget: [
+    NavScreen navScreenListAdmin = NavScreen(navWidget: [
       NavWidget(
           title: ordersTitle,
           widget: OrderInbox(
@@ -190,19 +190,19 @@ class MenuList {
       changePasswordTitle,
       signOutTitle
     ]);
-    return _navScreenListAdmin;
+    return navScreenListAdmin;
   }
 
-  NavScreen _navScreenListNoRole = NavScreen(navWidget: [
+  late final NavScreen _navScreenListNoRole = NavScreen(navWidget: [
     NavWidget(title: TextContent.homeTitle, widget: NoRoleInbox()),
   ], menuList: [
     TextContent.homeMenu,
     TextContent.signOutMenu
   ]);
 
-  NavScreen getMenuList(String role) {
+  NavScreen getMenuList(String? role) {
     if (role != null) {
-      NavScreen menuList;
+      NavScreen? menuList;
       switch (role) {
         case AdminRole.customerService:
           menuList = getCustomerServiceList();
@@ -220,7 +220,7 @@ class MenuList {
           menuList = getAdminList();
           break;
       }
-      return menuList;
+      return menuList ?? _navScreenListNoRole;
     }
     return _navScreenListNoRole;
   }

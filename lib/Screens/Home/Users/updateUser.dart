@@ -15,13 +15,13 @@ class UpdateUser extends StatelessWidget {
   static String route = "/addNewUser";
   final AdminUserInfo admin;
   final UserDetailsBloc userDetailsBloc;
-  UpdateUser({@required this.admin, @required this.userDetailsBloc});
+  const UpdateUser({super.key, required this.admin, required this.userDetailsBloc});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<UserBloc>(
       builder: (context, userBloc) => userBloc ?? UserBloc(),
-      onDispose: (context, userBloc) => userBloc.dispose(),
+      onDispose: (context, userBloc) => userBloc?.dispose(),
       child: Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context).translate(LocalizedKey.userUpdateAppBarNameTitle)),
@@ -36,23 +36,23 @@ class UpdateUser extends StatelessWidget {
 class UpdateUserContent extends StatefulWidget {
   final AdminUserInfo admin;
   final UserDetailsBloc userDetailsBloc;
-  UpdateUserContent({@required this.admin, @required this.userDetailsBloc});
+  const UpdateUserContent({super.key, required this.admin, required this.userDetailsBloc});
   
   @override
   _UpdateUserContentState createState() => _UpdateUserContentState();
 }
 
 class _UpdateUserContentState extends State<UpdateUserContent> {
-  TextEditingController nameController;
-  TextEditingController phoneController;
-  TextEditingController emailController;
-  TextEditingController passwordController;
-  TextEditingController reEnterPasswordController;
-  AdminUserInfo admin;
-  UserBloc _userBloc;
-  String phoneWithNoAreaCode;
-  bool isIntials;
-  String adminRole;
+  TextEditingController? nameController;
+  TextEditingController? phoneController;
+  TextEditingController? emailController;
+  TextEditingController? passwordController;
+  TextEditingController? reEnterPasswordController;
+  late AdminUserInfo admin;
+  late UserBloc _userBloc;
+  String? phoneWithNoAreaCode;
+  late bool isIntials;
+  String? adminRole;
 
   @override
   void initState() {
@@ -61,46 +61,38 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
     super.initState();
   }
 
-  _initialValues(){
-    String name = admin.name;
-    String phone = admin.phone;
-    String email = admin.email;
-    String role = admin.role;
+  void _initialValues(){
+    String name = admin.name ?? '';
+    String phone = admin.phone ?? '';
+    String email = admin.email ?? '';
+    String role = admin.role ?? '';
 
-    if (name != null){
-      nameController = TextEditingController(text: name);
-      _userBloc.nameChange(name);
-    }
-    if (phone != null){
+    nameController = TextEditingController(text: name);
+    _userBloc.nameChange(name);
       phoneWithNoAreaCode = phone.replaceAll('+966', '');
-      phoneController = TextEditingController(text: phoneWithNoAreaCode);
-      _userBloc.phoneChange(phoneWithNoAreaCode);
-    }
-    if (email != null){
+    phoneController = TextEditingController(text: phoneWithNoAreaCode);
+    _userBloc.phoneChange(phoneWithNoAreaCode ?? '');
       emailController = TextEditingController(text: email);
-      _userBloc.emailChange(email);
-    }
-    if (role != null){
+    _userBloc.emailChange(email);
       _userBloc.roleChange(role);
-      adminRole = role;
-    }
-    isIntials = true;
+    adminRole = role;
+      isIntials = true;
   }
 
-  _showConformatiomAlertForUpdate() {
+  void _showConformatiomAlertForUpdate() {
     String message = AppLocalizations.of(context).translate(LocalizedKey.userUpdateAlertMessage);
     Alert().conformation(
         context, AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, () => _updateAdminInfo());
   }
  
-  _updateAdminInfo() async{
+  void _updateAdminInfo() async{
     try {
       Common().loading(context);
-      _userBloc.updateAdminInfo(admin.id);
+      _userBloc.updateAdminInfo(admin.id ?? '');
 
-      admin.name = nameController.text;
-      admin.email = emailController.text;
-      admin.phone =  "+966" + phoneController.text;
+      admin.name = nameController!.text;
+      admin.email = emailController!.text;
+      admin.phone =  "+966${phoneController!.text}";
       admin.role = adminRole;
       admin.dateUpdated = DateTime.now().toUtc().millisecondsSinceEpoch;
       widget.userDetailsBloc.userChange.add(admin);
@@ -108,20 +100,20 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
       Common().dismiss(context);
       _showCompletedAlert(message: AppLocalizations.of(context).translate(LocalizedKey.userUpdateSuccessAlertMessage));
     } on PlatformException catch (e){
-      Alert().error(context, e.message, () => Common().dismiss(context));
+      Alert().error(context, e.message ?? '', () => Common().dismiss(context));
     }
   }
 
-  _showConformatiomAlertForDelete() {
+  void _showConformatiomAlertForDelete() {
     String message = AppLocalizations.of(context).translate(LocalizedKey.userDeleteAlertMessage);
     Alert().conformation(
         context,AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), message, () => _deleteAdminInfo());
   }
 
-  _deleteAdminInfo() async{
+  void _deleteAdminInfo() async{
     try {
       Common().loading(context);
-      _userBloc.deleteAdminInfo(widget.admin.id);
+      _userBloc.deleteAdminInfo(widget.admin.id ?? '');
 
       admin.status = AdminUserStatus.deleted;
       admin.dateUpdated = DateTime.now().toUtc().millisecondsSinceEpoch;
@@ -130,18 +122,18 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
       Common().dismiss(context);
       _showCompletedAlert(message: AppLocalizations.of(context).translate(LocalizedKey.userDeleteSuccessAlertMessage));
     } on PlatformException catch (e){
-      Alert().error(context, e.message, () => Common().dismiss(context));
+      Alert().error(context, e.message ?? '', () => Common().dismiss(context));
     }
   }
 
-  _showCompletedAlert({String message}){
-    Alert().success(context, message, () {
+  void _showCompletedAlert({String? message}){
+    Alert().success(context, message ?? '', () {
       Common().dismiss(context);
       _navigateToUserDetails();
     });
   }
 
-  _navigateToUserDetails(){
+  void _navigateToUserDetails(){
     Common().dismiss(context);
   }
 
@@ -169,8 +161,7 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
               stream: _userBloc.phone,
               builder: (context, snapshot) {
                 return NewUserTextFieldForm(
-                  hint: AppLocalizations.of(context).translate(LocalizedKey.userPhoneTitle) 
-                        + " " + AppLocalizations.of(context).translate(LocalizedKey.userPhoneExample),
+                  hint: "${AppLocalizations.of(context).translate(LocalizedKey.userPhoneTitle)} ${AppLocalizations.of(context).translate(LocalizedKey.userPhoneExample)}",
                   controller: phoneController,
                   onChange: _userBloc.phoneChange,
                   isError: snapshot.hasError,
@@ -183,8 +174,7 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
               stream: _userBloc.email,
               builder: (context, snapshot) {
                 return NewUserTextFieldForm(
-                  hint: AppLocalizations.of(context).translate(LocalizedKey.userEmailTitle) 
-                        + " " + AppLocalizations.of(context).translate(LocalizedKey.userEmailExample),
+                  hint: "${AppLocalizations.of(context).translate(LocalizedKey.userEmailTitle)} ${AppLocalizations.of(context).translate(LocalizedKey.userEmailExample)}",
                   controller: emailController,
                   onChange: _userBloc.emailChange,
                   isError: snapshot.hasError,
@@ -200,7 +190,7 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
                   userRole: snapshot.data,
                   onUserRoleSelect: (value) {
                     adminRole = value;
-                    _userBloc.roleChange(value);
+                    _userBloc.roleChange(value ?? '');
                   },
                 );
               }

@@ -5,7 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class OrderImages extends StatelessWidget {
   final List<String> imageUrls;
-  OrderImages({@required this.imageUrls});
+  const OrderImages({super.key, required this.imageUrls});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class OrderImages extends StatelessWidget {
                 tag: 'imageHero $index',
                 child: CachedNetworkImage(
                   imageUrl: imageUrls[index],
-                  placeholder: (context, url) => Center(child: Container(width: 32, height: 32,child: new CircularProgressIndicator())),
+                  placeholder: (context, url) => Center(child: SizedBox(width: 32, height: 32,child: CircularProgressIndicator())),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
               ),
@@ -43,7 +43,7 @@ class OrderImages extends StatelessWidget {
 
 class ViewImage extends StatelessWidget {
   final String image;
-  ViewImage(this.image);
+  const ViewImage(this.image, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +54,9 @@ class ViewImage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            FlatButton(
+            TextButton(
+              style: TextButton.styleFrom(foregroundColor: Colors.white),
               child: Icon(Icons.cancel),
-              textColor: Colors.white,
               onPressed: () => Navigator.pop(context),
             ),
             Expanded(
@@ -93,7 +93,7 @@ class ViewImage extends StatelessWidget {
 }
 
 class FadeRoute extends PageRouteBuilder {
-  final Widget page;
+  final Widget? page;
   FadeRoute({this.page})
       : super(
           pageBuilder: (
@@ -101,7 +101,7 @@ class FadeRoute extends PageRouteBuilder {
             Animation<double> animation,
             Animation<double> secondaryAnimation,
           ) =>
-              page,
+              page!,
           transitionsBuilder: (
             BuildContext context,
             Animation<double> animation,

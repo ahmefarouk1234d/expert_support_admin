@@ -8,7 +8,7 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
 
 class LoginPasswordTextField extends StatelessWidget {
   final TextEditingController controller;
-  LoginPasswordTextField({this.controller});
+  const LoginPasswordTextField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {

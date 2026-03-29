@@ -28,12 +28,11 @@ class DiscountPageContent extends StatefulWidget {
 }
 
 class _DiscountPageContentState extends State<DiscountPageContent> {
-  AppBloc _appBloc;
-  List<DiscountInfo> _discountList;
+  late AppBloc _appBloc;
+  List<DiscountInfo> _discountList = [];
 
   @override
   void initState() {
-    _discountList = List();
     super.initState();
   }
 
@@ -47,7 +46,7 @@ class _DiscountPageContentState extends State<DiscountPageContent> {
             return Loading();
           }
           _discountList =
-              DiscountInfo.fromMapList(discountDocDataList: snapshot.data.docs);
+              DiscountInfo.fromMapList(discountDocDataList: snapshot.data!.docs);
           return _discountList.isEmpty
               ? NoData()
               : DiscountList(
@@ -58,11 +57,11 @@ class _DiscountPageContentState extends State<DiscountPageContent> {
 }
 
 class DiscountList extends StatelessWidget {
-  DiscountList({Key key, @required this.discountList}) : super(key: key);
+  DiscountList({Key? key, required this.discountList}) : super(key: key);
 
   final List<DiscountInfo> discountList;
 
-  _onTap(BuildContext context, int index) {
+  void _onTap(BuildContext context, int index) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => DiscountDetails(
               discountInfo: discountList[index],
@@ -80,7 +79,7 @@ class DiscountList extends StatelessWidget {
       ),
       itemBuilder: (_, index) {
         DiscountInfo discount = discountList[index];
-        bool isValid = discount.isValid;
+        bool isValid = discount.isValid ?? false;
         IconData icon = AppLocalizations.of(context).isArabic()
             ? Icons.keyboard_arrow_left
             : Icons.keyboard_arrow_right;
@@ -100,11 +99,11 @@ class DiscountList extends StatelessWidget {
             onTap: () => _onTap(context, index),
             title: Row(
               children: <Widget>[
-                Expanded(child: Text(discount.code)),
+                Expanded(child: Text(discount.code ?? '')),
                 Text("${discount.percent}%")
               ],
             ),
-            subtitle: Text(discount.dateUpdate),
+            subtitle: Text(discount.dateUpdate ?? ''),
             trailing: Icon(
               icon,
               color: Colors.black12,
@@ -117,7 +116,7 @@ class DiscountList extends StatelessWidget {
 }
 
 class DiscountDetails extends StatefulWidget {
-  DiscountDetails({Key key, @required this.discountInfo}) : super(key: key);
+  DiscountDetails({Key? key, required this.discountInfo}) : super(key: key);
   final DiscountInfo discountInfo;
 
   @override
@@ -125,21 +124,21 @@ class DiscountDetails extends StatefulWidget {
 }
 
 class _DiscountDetailsState extends State<DiscountDetails> {
-  DiscountInfo _discountInfo;
-  String _buttonTitle;
-  FirebaseManager _firebaseManager;
-  bool _isValid;
-  String _isValidTitle;
+  late DiscountInfo _discountInfo;
+  late String _buttonTitle;
+  late FirebaseManager _firebaseManager;
+  late bool _isValid;
+  late String _isValidTitle;
 
   @override
   void initState() {
     _discountInfo = widget.discountInfo;
-    _isValid = _discountInfo.isValid;
+    _isValid = _discountInfo.isValid ?? false;
     _firebaseManager = FirebaseManager();
     super.initState();
   }
 
-  _showConformatiomAlert() {
+  void _showConformatiomAlert() {
     String message = AppLocalizations.of(context)
         .translate(LocalizedKey.discountCodeDetailsAlertMessage);
     Alert().conformation(
@@ -150,8 +149,8 @@ class _DiscountDetailsState extends State<DiscountDetails> {
         () => _handleChangeStatus());
   }
 
-  _handleChangeStatus() async {
-    final bool isValid = !_discountInfo.isValid;
+  void _handleChangeStatus() async {
+    final bool isValid = !(_discountInfo.isValid ?? false);
     try {
       Common().loading(context);
       DiscountInfo discount =
@@ -166,12 +165,12 @@ class _DiscountDetailsState extends State<DiscountDetails> {
               .translate(LocalizedKey.discountCodeDetailsSuccessMessage));
     } on PlatformException catch (e) {
       Common().dismiss(context);
-      Alert().error(context, e.message, () => Common().dismiss(context));
+      Alert().error(context, e.message ?? '', () => Common().dismiss(context));
     }
   }
 
-  _showCompletedAlert({String message}) {
-    Alert().success(context, message, () {
+  void _showCompletedAlert({String? message}) {
+    Alert().success(context, message ?? '', () {
       Common().dismiss(context);
     });
   }
@@ -202,7 +201,7 @@ class _DiscountDetailsState extends State<DiscountDetails> {
             DiscountDetailsRow(
               title: AppLocalizations.of(context)
                   .translate(LocalizedKey.discountCodeDetailsCodeTitle),
-              value: _discountInfo.code,
+              value: _discountInfo.code ?? '',
             ),
             DiscountDetailsRow(
               title: AppLocalizations.of(context)
@@ -217,12 +216,12 @@ class _DiscountDetailsState extends State<DiscountDetails> {
             DiscountDetailsRow(
               title: AppLocalizations.of(context)
                   .translate(LocalizedKey.discountCodeDetailsDateCreateTitle),
-              value: _discountInfo.dateCreate,
+              value: _discountInfo.dateCreate ?? '',
             ),
             DiscountDetailsRow(
               title: AppLocalizations.of(context)
                   .translate(LocalizedKey.discountCodeDetailsDateUpdateTitle),
-              value: _discountInfo.dateUpdate,
+              value: _discountInfo.dateUpdate ?? '',
             ),
             Container(
               height: 16,
@@ -239,7 +238,7 @@ class _DiscountDetailsState extends State<DiscountDetails> {
 }
 
 class DiscountDetailsRow extends StatelessWidget {
-  DiscountDetailsRow({Key key, this.title, this.value});
+  DiscountDetailsRow({super.key, this.title = "", this.value = ""});
   final String title;
   final String value;
 

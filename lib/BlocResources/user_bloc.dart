@@ -13,7 +13,7 @@ class UserBloc extends Validator {
   final _password = BehaviorSubject<String>();
   final _reEnterPassword = BehaviorSubject<String>();
   final _role = BehaviorSubject<String>();
-  FirebaseManager _firebaseManager = FirebaseManager();
+  final FirebaseManager _firebaseManager = FirebaseManager();
 
   Stream<String> get name => _name.stream.transform(validateUsername);
   Function(String) get nameChange => _name.sink.add;
@@ -41,7 +41,7 @@ class UserBloc extends Validator {
       });
 
   Future<void> signUp(
-      {Function(UserCredential) onSuccess, Function(String) onError}) {
+      {required Function(UserCredential) onSuccess, required Function(String) onError}) {
     return _firebaseManager.signUp(
         email: _email.value,
         password: _password.value,
@@ -50,7 +50,7 @@ class UserBloc extends Validator {
   }
 
   Future<void> saveAdminInfo(String id) {
-    String phoneNumber = "+966" + _phone.value;
+    String phoneNumber = "+966${_phone.value}";
     AdminUserInfo admin = AdminUserInfo(
         id: id,
         name: _name.value,
@@ -65,7 +65,7 @@ class UserBloc extends Validator {
   }
 
   Future<void> updateAdminInfo(String id) {
-    String phoneNumber = "+966" + _phone.value;
+    String phoneNumber = "+966${_phone.value}";
     AdminUserInfo admin = AdminUserInfo(
         id: id,
         name: _name.value,

@@ -15,11 +15,13 @@ import 'package:flutter/services.dart';
 class AddOrderOffer extends StatelessWidget {
   static String route = "/addOrderOffer";
 
+  const AddOrderOffer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<OrderOfferBloc>(
       builder: (context, offerBloc) => offerBloc ?? OrderOfferBloc(),
-      onDispose: (context, offerBloc) => offerBloc.dispose(),
+      onDispose: (context, offerBloc) => offerBloc?.dispose(),
       child: Scaffold(
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)
@@ -32,6 +34,8 @@ class AddOrderOffer extends StatelessWidget {
 }
 
 class AddOrderOfferContent extends StatefulWidget {
+  const AddOrderOfferContent({super.key});
+
   @override
   _AddOrderOfferContentState createState() => _AddOrderOfferContentState();
 }
@@ -44,29 +48,26 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
 
-  List<ServiceCategory> serviceCategoryList;
-  List<ServiceType> serviceTypeList;
-  List<MainService> mainServiceList;
-  List<SubMainService> subMainServiceList;
+  List<ServiceCategory> serviceCategoryList = [];
+  List<ServiceType>? serviceTypeList;
+  List<MainService>? mainServiceList;
+  List<SubMainService>? subMainServiceList;
 
-  bool isLoading;
-  OrderOfferBloc _orderOfferBloc;
-  bool hasSubService;
-  num originalPrice;
+  bool? isLoading;
+  late OrderOfferBloc _orderOfferBloc;
+  bool hasSubService = false;
+  num originalPrice = 0.0;
 
   @override
   void initState() {
-    serviceCategoryList = List();
-    hasSubService = false;
-    originalPrice = 0.0;
     _getServices();
     super.initState();
   }
 
-  _getServices() async {
+  void _getServices() async {
     try {
       QuerySnapshot querySnapshot = await FirebaseManager().getServices();
-      if (querySnapshot.docs.length > 0) {
+      if (querySnapshot.docs.isNotEmpty) {
         setState(() {
           serviceCategoryList =
               ServiceCategory.fromListMap(docList: querySnapshot.docs);
@@ -85,13 +86,13 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
     }
   }
 
-  _handleServiceCategoryChange(ServiceCategory value) {
+  void _handleServiceCategoryChange(ServiceCategory value) {
     setState(() {
-      serviceCategoryList.forEach((servCat) {
+      for (var servCat in serviceCategoryList) {
         if (value.id == servCat.id) {
           serviceTypeList = servCat.serviceTypeList;
         }
-      });
+      }
       _orderOfferBloc.serviceTypeChange(null);
 
       _orderOfferBloc.mainServiceChange(null);
@@ -104,9 +105,9 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
     });
   }
 
-  _handleServiceTypeChange(ServiceType value) {
+  void _handleServiceTypeChange(ServiceType value) {
     setState(() {
-      serviceTypeList.forEach((servType) {
+      serviceTypeList?.forEach((servType) {
         if (value.id == servType.id) {
           mainServiceList = servType.mainServiceList;
           originalPrice = 0.0;
@@ -118,28 +119,28 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
     });
   }
 
-  _handleMainServiceChange(MainService value) {
+  void _handleMainServiceChange(MainService value) {
     setState(() {
-      mainServiceList.forEach((servType) {
+      mainServiceList?.forEach((servType) {
         if (value.id == servType.id) {
           subMainServiceList = servType.subMainServiceList;
-          if (!value.hasSub) {
-            originalPrice = value.price;
+          if (!(value.hasSub ?? false)) {
+            originalPrice = value.price ?? 0;
           }
         }
       });
-      hasSubService = value.hasSub;
+      hasSubService = value.hasSub ?? false;
       _orderOfferBloc.subMainServiceChange(null);
     });
   }
 
-  _handleSubMainServiceChange(SubMainService value) {
+  void _handleSubMainServiceChange(SubMainService value) {
     setState(() {
-      originalPrice = value.price;
+      originalPrice = value.price ?? 0;
     });
   }
 
-  _showConformatiomAlert() {
+  void _showConformatiomAlert() {
     String message = AppLocalizations.of(context)
         .translate(LocalizedKey.addOfferAlertMessage);
     Alert().conformation(
@@ -150,19 +151,19 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
         () => _handleAddingNewOffer());
   }
 
-  _navigateToOfferList() {
+  void _navigateToOfferList() {
     Navigator.of(context).pop();
     Navigator.of(context).pop();
   }
 
-  _showCompletedAlert({String message}) {
-    Alert().success(context, message, () {
+  void _showCompletedAlert({String? message}) {
+    Alert().success(context, message ?? '', () {
       Common().dismiss(context);
       _navigateToOfferList();
     });
   }
 
-  _handleAddingNewOffer() async {
+  void _handleAddingNewOffer() async {
     try {
       Common().loading(context);
       await _orderOfferBloc.saveOrderOfferInfo();
@@ -172,7 +173,7 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
               .translate(LocalizedKey.addOfferSuccessAlertMessage));
     } on PlatformException catch (e) {
       Common().dismiss(context);
-      Alert().error(context, e.message, () => Common().dismiss(context));
+      Alert().error(context, e.message ?? '', () => Common().dismiss(context));
     }
   }
 
@@ -195,7 +196,7 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
                       serviceCategoryList: serviceCategoryList,
                       serviceCategory: snapshot.data,
                       onChanged: (value) {
-                        _handleServiceCategoryChange(value);
+                        _handleServiceCategoryChange(value!);
                         _orderOfferBloc.serviceCategoryChange(value);
                       },
                     ),
@@ -204,7 +205,7 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
             Container(
               height: 16.0,
             ),
-            StreamBuilder<ServiceType>(
+            StreamBuilder<ServiceType?>(
                 stream: _orderOfferBloc.serviceType,
                 builder: (context, snapshot) {
                   return ServiceDropDown(
@@ -212,7 +213,7 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
                       serviceTypeList: serviceTypeList,
                       serviceType: snapshot.data,
                       onChanged: (value) {
-                        _handleServiceTypeChange(value);
+                        _handleServiceTypeChange(value!);
                         _orderOfferBloc.serviceTypeChange(value);
                       },
                     ),
@@ -221,7 +222,7 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
             Container(
               height: 16.0,
             ),
-            StreamBuilder<MainService>(
+            StreamBuilder<MainService?>(
                 stream: _orderOfferBloc.mainService,
                 builder: (context, snapshot) {
                   return ServiceDropDown(
@@ -229,7 +230,7 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
                       mainServiceList: mainServiceList,
                       mainService: snapshot.data,
                       onChanged: (value) {
-                        _handleMainServiceChange(value);
+                        _handleMainServiceChange(value!);
                         _orderOfferBloc.mainServiceChange(value);
                       },
                     ),
@@ -238,7 +239,7 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
             Container(
               height: 16.0,
             ),
-            StreamBuilder<SubMainService>(
+            StreamBuilder<SubMainService?>(
                 stream: _orderOfferBloc.subMainService,
                 builder: (context, snapshot) {
                   return ServiceDropDown(
@@ -246,7 +247,7 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
                       subMainServiceList: subMainServiceList,
                       subMainService: snapshot.data,
                       onChanged: (value) {
-                        _handleSubMainServiceChange(value);
+                        _handleSubMainServiceChange(value!);
                         _orderOfferBloc.subMainServiceChange(value);
                       },
                     ),
@@ -354,17 +355,17 @@ class _AddOrderOfferContentState extends State<AddOrderOfferContent> {
 class OfferTextField extends StatelessWidget {
   final String header;
   final String hint;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final bool isError;
   final Function(String) onChange;
   final TextInputType keyboardType;
-  final List<TextInputFormatter> inputFormatters;
-  OfferTextField(
-      {this.header,
+  final List<TextInputFormatter>? inputFormatters;
+  const OfferTextField(
+      {super.key, this.header = "",
       this.hint = "",
       this.controller,
       this.isError = false,
-      @required this.onChange,
+      required this.onChange,
       this.keyboardType = TextInputType.text,
       this.inputFormatters});
 
@@ -406,15 +407,15 @@ class OfferTextField extends StatelessWidget {
 class OfferMultiLineTextField extends StatelessWidget {
   final String header;
   final String hint;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final bool isError;
   final Function(String) onChange;
-  OfferMultiLineTextField(
-      {this.header,
+  const OfferMultiLineTextField(
+      {super.key, this.header = "",
       this.hint = "",
       this.controller,
       this.isError = false,
-      @required this.onChange});
+      required this.onChange});
 
   @override
   Widget build(BuildContext context) {
@@ -453,7 +454,7 @@ class OfferMultiLineTextField extends StatelessWidget {
 
 class ServiceDropDown extends StatelessWidget {
   final Widget child;
-  ServiceDropDown({@required this.child});
+  const ServiceDropDown({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -470,13 +471,13 @@ class ServiceDropDown extends StatelessWidget {
 }
 
 class ServiceCategoryDropDownButton extends StatelessWidget {
-  final List<ServiceCategory> serviceCategoryList;
-  final ServiceCategory serviceCategory;
-  final Function(ServiceCategory) onChanged;
-  ServiceCategoryDropDownButton(
-      {@required this.serviceCategoryList,
+  final List<ServiceCategory>? serviceCategoryList;
+  final ServiceCategory? serviceCategory;
+  final Function(ServiceCategory?)? onChanged;
+  const ServiceCategoryDropDownButton(
+      {super.key, required this.serviceCategoryList,
       this.serviceCategory,
-      @required this.onChanged});
+      required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -487,12 +488,12 @@ class ServiceCategoryDropDownButton extends StatelessWidget {
       value: serviceCategory,
       isExpanded: true,
       onChanged: onChanged,
-      items: serviceCategoryList == null || serviceCategoryList.isEmpty
+      items: serviceCategoryList == null || serviceCategoryList!.isEmpty
           ? null
-          : serviceCategoryList
+          : serviceCategoryList!
               .map((serv) => DropdownMenuItem(
-                    child: Text(isArabic ? serv.nameAr : serv.nameEn),
                     value: serv,
+                    child: Text(isArabic ? serv.nameAr ?? '' : serv.nameEn ?? ''),
                   ))
               .toList(),
     );
@@ -500,13 +501,13 @@ class ServiceCategoryDropDownButton extends StatelessWidget {
 }
 
 class ServiceTypeDropDownButton extends StatelessWidget {
-  final List<ServiceType> serviceTypeList;
-  final ServiceType serviceType;
-  final Function(ServiceType) onChanged;
-  ServiceTypeDropDownButton(
-      {@required this.serviceTypeList,
+  final List<ServiceType>? serviceTypeList;
+  final ServiceType? serviceType;
+  final Function(ServiceType?)? onChanged;
+  const ServiceTypeDropDownButton(
+      {super.key, required this.serviceTypeList,
       this.serviceType,
-      @required this.onChanged});
+      required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -517,12 +518,12 @@ class ServiceTypeDropDownButton extends StatelessWidget {
       value: serviceType,
       isExpanded: true,
       onChanged: onChanged,
-      items: serviceTypeList == null || serviceTypeList.isEmpty
+      items: serviceTypeList == null || serviceTypeList!.isEmpty
           ? null
-          : serviceTypeList
+          : serviceTypeList!
               .map((serv) => DropdownMenuItem(
-                    child: Text(isArabic ? serv.nameAr : serv.nameEn),
                     value: serv,
+                    child: Text(isArabic ? serv.nameAr ?? '' : serv.nameEn ?? ''),
                   ))
               .toList(),
     );
@@ -530,13 +531,13 @@ class ServiceTypeDropDownButton extends StatelessWidget {
 }
 
 class MainServiceDropDownButton extends StatelessWidget {
-  final List<MainService> mainServiceList;
-  final MainService mainService;
-  final Function(MainService) onChanged;
-  MainServiceDropDownButton(
-      {@required this.mainServiceList,
+  final List<MainService>? mainServiceList;
+  final MainService? mainService;
+  final Function(MainService?)? onChanged;
+  const MainServiceDropDownButton(
+      {super.key, required this.mainServiceList,
       this.mainService,
-      @required this.onChanged});
+      required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -547,12 +548,12 @@ class MainServiceDropDownButton extends StatelessWidget {
       value: mainService,
       isExpanded: true,
       onChanged: onChanged,
-      items: mainServiceList == null || mainServiceList.isEmpty
+      items: mainServiceList == null || mainServiceList!.isEmpty
           ? null
-          : mainServiceList
+          : mainServiceList!
               .map((serv) => DropdownMenuItem(
-                    child: Text(isArabic ? serv.nameAr : serv.nameEn),
                     value: serv,
+                    child: Text(isArabic ? serv.nameAr ?? '' : serv.nameEn ?? ''),
                   ))
               .toList(),
     );
@@ -560,13 +561,13 @@ class MainServiceDropDownButton extends StatelessWidget {
 }
 
 class SubMainServiceDropDownButton extends StatelessWidget {
-  final List<SubMainService> subMainServiceList;
-  final SubMainService subMainService;
-  final Function(SubMainService) onChanged;
-  SubMainServiceDropDownButton(
-      {@required this.subMainServiceList,
+  final List<SubMainService>? subMainServiceList;
+  final SubMainService? subMainService;
+  final Function(SubMainService?)? onChanged;
+  const SubMainServiceDropDownButton(
+      {super.key, required this.subMainServiceList,
       this.subMainService,
-      @required this.onChanged});
+      required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -577,12 +578,12 @@ class SubMainServiceDropDownButton extends StatelessWidget {
       value: subMainService,
       isExpanded: true,
       onChanged: onChanged,
-      items: subMainServiceList == null || subMainServiceList.isEmpty
+      items: subMainServiceList == null || subMainServiceList!.isEmpty
           ? null
-          : subMainServiceList
+          : subMainServiceList!
               .map((serv) => DropdownMenuItem(
-                    child: Text(isArabic ? serv.nameAr : serv.nameEn),
                     value: serv,
+                    child: Text(isArabic ? serv.nameAr ?? '' : serv.nameEn ?? ''),
                   ))
               .toList(),
     );
@@ -590,7 +591,7 @@ class SubMainServiceDropDownButton extends StatelessWidget {
 }
 
 class ServiceOrigianlPrice extends StatelessWidget {
-  ServiceOrigianlPrice({Key key, @required this.price}) : super(key: key);
+  const ServiceOrigianlPrice({super.key, required this.price});
 
   final num price;
 

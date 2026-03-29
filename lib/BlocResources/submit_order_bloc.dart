@@ -20,21 +20,21 @@ class SubmitOrderBloc extends Validator {
   final FirebaseManager _firebaseManager = FirebaseManager();
 
   SubmitOrderBloc({
-    String vatPercentage, 
-    bool isCashEnabled, 
-    bool isPOSEnabled, 
-    String limitRate,
-    String vatPriceNoteAr,
-    String vatPriceNoteEn,
-    bool canShowVatNote,
+    required String vatPercentage,
+    required bool isCashEnabled,
+    required bool isPOSEnabled,
+    required String limitRate,
+    required String vatPriceNoteAr,
+    required String vatPriceNoteEn,
+    required bool canShowVatNote,
   }) {
-    this._vatPercentage.add(vatPercentage);
-    this._isCashEnabled.add(isCashEnabled);
-    this._isPOSEnabled.add(isPOSEnabled);
-    this._limitRate.add(limitRate);
-    this._vatPriceNoteAr.add(vatPriceNoteAr);
-    this._vatPriceNoteEn.add(vatPriceNoteEn);
-    this._canShowVatNote.add(canShowVatNote);
+    _vatPercentage.add(vatPercentage);
+    _isCashEnabled.add(isCashEnabled);
+    _isPOSEnabled.add(isPOSEnabled);
+    _limitRate.add(limitRate);
+    _vatPriceNoteAr.add(vatPriceNoteAr);
+    _vatPriceNoteEn.add(vatPriceNoteEn);
+    _canShowVatNote.add(canShowVatNote);
   }
 
   Stream<String> get vatPercentage => _vatPercentage.stream.transform(validateNumberTextField);
@@ -76,13 +76,13 @@ class SubmitOrderBloc extends Validator {
     AppLocalizations localizations = AppLocalizations.of(context);
     
     if (
-      (_vatPercentage != null && _vatPercentage.value.isNotEmpty)
-      && (_isCashEnabled != null && _isCashEnabled.value != null)
-      && (_isPOSEnabled != null && _isPOSEnabled.value != null)
-      && (_limitRate != null && _limitRate.value.isNotEmpty)
-      && (_vatPriceNoteAr != null && _vatPriceNoteAr.value.isNotEmpty)
-      && (_vatPriceNoteEn != null && _vatPriceNoteEn.value.isNotEmpty)
-      && (_canShowVatNote != null && _canShowVatNote.value != null)
+      (_vatPercentage.value.isNotEmpty)
+      && (_isCashEnabled.value != null)
+      && (_isPOSEnabled.value != null)
+      && (_limitRate.value.isNotEmpty)
+      && (_vatPriceNoteAr.value.isNotEmpty)
+      && (_vatPriceNoteEn.value.isNotEmpty)
+      && (_canShowVatNote.value != null)
     ) {
       if (
         Common().canCastToNum(_vatPercentage.value) 

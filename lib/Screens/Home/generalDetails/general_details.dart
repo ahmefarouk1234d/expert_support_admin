@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 class GeneralDetails extends StatelessWidget {
   static String route = "/GeneralDetails";
 
+  const GeneralDetails({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,22 +26,23 @@ class GeneralDetails extends StatelessWidget {
 }
 
 class GeneralDetailsContent extends StatefulWidget {
+  const GeneralDetailsContent({super.key});
+
   @override
   _GeneralDetailsContentState createState() => _GeneralDetailsContentState();
 }
 
 class _GeneralDetailsContentState extends State<GeneralDetailsContent> {
-  List<GeneralDetailsModel> generalDetailsList;
-  AppBloc _appBloc;
+  List<GeneralDetailsModel> generalDetailsList = [];
+  late AppBloc _appBloc;
 
   @override
   void initState() {
-    generalDetailsList = List();
     super.initState();
   }
 
-  _navigateToSelectedGeneralDetails(GeneralDetailsModel generalDetails) {
-    Widget selectedWidget;
+  void _navigateToSelectedGeneralDetails(GeneralDetailsModel generalDetails) {
+    Widget? selectedWidget;
 
     switch (generalDetails.type) {
       case GeneralDetailsType.contactUs:
@@ -68,7 +71,7 @@ class _GeneralDetailsContentState extends State<GeneralDetailsContent> {
 
     if (selectedWidget != null) {
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => selectedWidget));
+          .push(MaterialPageRoute(builder: (context) => selectedWidget!));
     } else {
       print("No widget available");
     }
@@ -86,7 +89,7 @@ class _GeneralDetailsContentState extends State<GeneralDetailsContent> {
         }
 
         generalDetailsList = GeneralDetailsModel.fromDocumentSnapshotList(
-            docList: snapshot.data.docs);
+            docList: snapshot.data!.docs);
 
         return generalDetailsList.isEmpty
             ? NoData()
@@ -102,10 +105,9 @@ class _GeneralDetailsContentState extends State<GeneralDetailsContent> {
 }
 
 class GeneralGetailsList extends StatelessWidget {
-  GeneralGetailsList({Key key, this.generalDetailsList, this.onTap})
-      : super(key: key);
+  const GeneralGetailsList({super.key, this.generalDetailsList = const [], this.onTap});
   final List<GeneralDetailsModel> generalDetailsList;
-  final Function(GeneralDetailsModel generalDetails) onTap;
+  final Function(GeneralDetailsModel generalDetails)? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -118,14 +120,14 @@ class GeneralGetailsList extends StatelessWidget {
         itemBuilder: (_, index) {
           final generalDetails = generalDetailsList[index];
           final String title =
-              GeneralDetailsModel.getDisplayType(generalDetails.type, context);
+              GeneralDetailsModel.getDisplayType(generalDetails.type!, context);
           IconData icon = AppLocalizations.of(context).isArabic()
               ? Icons.keyboard_arrow_left
               : Icons.keyboard_arrow_right;
 
           return Container(
             child: ListTile(
-              onTap: () => onTap(generalDetails),
+              onTap: () => onTap?.call(generalDetails),
               title: Text(title),
               trailing: Icon(
                 icon,

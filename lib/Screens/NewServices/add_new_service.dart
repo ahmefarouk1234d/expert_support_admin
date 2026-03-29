@@ -15,21 +15,20 @@ class Serv {
   String mainServ;
   List<SubServ> subServices;
 
-  Serv({this.mainServ, this.subServices});
+  Serv({required this.mainServ, required this.subServices});
 }
 
 class SubServ {
   String subServ;
   List<String> subSubServices;
 
-  SubServ({this.subServ, this.subSubServices});
+  SubServ({required this.subServ, required this.subSubServices});
 }
 
 class AddNewService extends StatelessWidget {
-  final OrderBloc orderBloc;
-  final List<OrderService> services;
-  const AddNewService({Key key, this.orderBloc, this.services})
-      : super(key: key);
+  final OrderBloc? orderBloc;
+  final List<OrderService>? services;
+  const AddNewService({super.key, this.orderBloc, this.services});
 
   @override
   Widget build(BuildContext context) {
@@ -48,37 +47,36 @@ class AddNewService extends StatelessWidget {
 }
 
 class AddNewServiceContent extends StatefulWidget {
-  final OrderBloc orderBloc;
-  final List<OrderService> services;
-  const AddNewServiceContent({Key key, this.orderBloc, this.services})
-      : super(key: key);
+  final OrderBloc? orderBloc;
+  final List<OrderService>? services;
+  const AddNewServiceContent({super.key, this.orderBloc, this.services});
 
   @override
   _AddNewServiceContentState createState() => _AddNewServiceContentState();
 }
 
 class _AddNewServiceContentState extends State<AddNewServiceContent> {
-  List<ServiceCategory> serviceCategoryList;
-  ServiceCategory serviceCategory;
+  late List<ServiceCategory> serviceCategoryList;
+  ServiceCategory? serviceCategory;
 
-  List<ServiceType> serviceTypeList;
-  ServiceType serviceType;
+  List<ServiceType>? serviceTypeList;
+  ServiceType? serviceType;
 
-  List<MainService> mainServiceList;
-  MainService mainService;
+  List<MainService>? mainServiceList;
+  MainService? mainService;
 
-  List<SubMainService> subMainServiceList;
-  SubMainService subMainService;
+  List<SubMainService>? subMainServiceList;
+  SubMainService? subMainService;
 
-  List<int> _qaunityList;
-  int qty;
-  bool valueSelected;
-  bool isLoading;
-  num totalPrice;
-  num priceForOne;
-  bool hasSubService;
+  late List<int> _qaunityList;
+  late int qty;
+  late bool valueSelected;
+  late bool isLoading;
+  late num totalPrice;
+  late num priceForOne;
+  late bool hasSubService;
 
-  OrderService addedService;
+  late OrderService addedService;
 
   @override
   void initState() {
@@ -91,7 +89,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
     addedService = OrderService();
     hasSubService = false;
 
-    serviceCategoryList = List();
+    serviceCategoryList = [];
     _getServices();
     super.initState();
   }
@@ -99,7 +97,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
   _getServices() async {
     try {
       QuerySnapshot querySnapshot = await FirebaseManager().getServices();
-      if (querySnapshot.docs.length > 0) {
+      if (querySnapshot.docs.isNotEmpty) {
         setState(() {
           serviceCategoryList =
               ServiceCategory.fromListMap(docList: querySnapshot.docs);
@@ -124,14 +122,14 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
     priceForOne = 0.0;
   }
 
-  _handleMainServiceCategoryChange(ServiceCategory value) {
+  _handleMainServiceCategoryChange(ServiceCategory? value) {
     setState(() {
       serviceCategory = value;
-      serviceCategoryList.forEach((servCat) {
-        if (value.id == servCat.id) {
+      for (var servCat in serviceCategoryList) {
+        if (value!.id == servCat.id) {
           serviceTypeList = servCat.serviceTypeList;
         }
-      });
+      }
       serviceType = null;
 
       mainService = null;
@@ -144,14 +142,14 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
     });
   }
 
-  _handleServiceTypeChange(ServiceType value) {
+  _handleServiceTypeChange(ServiceType? value) {
     setState(() {
       serviceType = value;
-      serviceTypeList.forEach((servType) {
-        if (value.id == servType.id) {
+      for (var servType in serviceTypeList!) {
+        if (value!.id == servType.id) {
           mainServiceList = servType.mainServiceList;
         }
-      });
+      }
       mainService = null;
       subMainService = null;
       subMainServiceList = null;
@@ -160,17 +158,17 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
     });
   }
 
-  _handleMainServiceChange(MainService value) {
+  _handleMainServiceChange(MainService? value) {
     setState(() {
       mainService = value;
-      mainServiceList.forEach((servType) {
-        if (value.id == servType.id) {
+      for (var servType in mainServiceList!) {
+        if (value!.id == servType.id) {
           subMainServiceList = servType.subMainServiceList;
         }
-      });
-      hasSubService = mainService.hasSub;
+      }
+      hasSubService = mainService!.hasSub ?? false;
       subMainService = null;
-      if (!mainService.hasSub) {
+      if (!(mainService!.hasSub ?? false)) {
         _updateTotal();
       } else {
         _resetPrice();
@@ -178,16 +176,16 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
     });
   }
 
-  _handleSubMainServiceChange(SubMainService value) {
+  _handleSubMainServiceChange(SubMainService? value) {
     setState(() {
       subMainService = value;
       _updateTotal();
     });
   }
 
-  _handleQauntityChange(int value) {
+  _handleQauntityChange(int? value) {
     setState(() {
-      qty = value;
+      qty = value!;
       _updateTotal();
     });
   }
@@ -195,12 +193,12 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
   _updateTotal() {
     num price = 0.0;
     if (mainService != null) {
-      if (mainService.hasSub) {
+      if (mainService!.hasSub ?? false) {
         if (subMainService != null) {
-          price = subMainService.price;
+          price = subMainService!.price ?? 0;
         }
       } else {
-        price = mainService.price;
+        price = mainService!.price ?? 0;
       }
     }
     priceForOne = price;
@@ -228,19 +226,19 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
     String nameAr;
     String nameEn;
 
-    if (mainService.hasSub && subMainService != null) {
-      nameAr = mainService.nameAr + " - " + subMainService.nameAr;
-      nameEn = mainService.nameEn + " - " + subMainService.nameEn;
+    if ((mainService!.hasSub ?? false) && subMainService != null) {
+      nameAr = "${mainService!.nameAr!} - ${subMainService!.nameAr!}";
+      nameEn = "${mainService!.nameEn!} - ${subMainService!.nameEn!}";
     } else {
-      nameAr = mainService.nameAr;
-      nameEn = mainService.nameEn;
+      nameAr = mainService!.nameAr!;
+      nameEn = mainService!.nameEn!;
     }
 
     addedService = OrderService(
-        serviceCategoryId: serviceCategory.id,
-        mainServiceId: mainService.id,
-        subMainServiceId: subMainService == null ? "" : subMainService.id,
-        isSubService: mainService.hasSub,
+        serviceCategoryId: serviceCategory!.id,
+        mainServiceId: mainService!.id,
+        subMainServiceId: subMainService == null ? "" : subMainService!.id,
+        isSubService: mainService!.hasSub,
         nameAr: nameAr,
         nameEn: nameEn,
         priceForOnePiece: priceForOne,
@@ -248,9 +246,9 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
         quantity: qty,
         neededParts: valueSelected);
 
-    List<OrderService> orderServices = widget.services;
+    List<OrderService> orderServices = widget.services!;
     orderServices.add(addedService);
-    widget.orderBloc.servicesChange.add(orderServices);
+    widget.orderBloc!.servicesChange.add(orderServices);
     Navigator.of(context).pop();
     Common().dismiss(context);
   }
@@ -277,8 +275,8 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
             onChanged: _handleMainServiceCategoryChange,
             items: serviceCategoryList
                 .map((value) => DropdownMenuItem(
-                      child: Text(isArabic ? value.nameAr : value.nameEn),
                       value: value,
+                      child: Text(isArabic ? value.nameAr! : value.nameEn!),
                     ))
                 .toList(),
           ),
@@ -291,12 +289,12 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
             value: serviceType,
             isExpanded: true,
             onChanged: _handleServiceTypeChange,
-            items: serviceTypeList == null || serviceTypeList.isEmpty
+            items: serviceTypeList == null || serviceTypeList!.isEmpty
                 ? null
-                : serviceTypeList
+                : serviceTypeList!
                     .map((value) => DropdownMenuItem(
-                          child: Text(isArabic ? value.nameAr : value.nameEn),
                           value: value,
+                          child: Text(isArabic ? value.nameAr! : value.nameEn!),
                         ))
                     .toList(),
           ),
@@ -309,12 +307,12 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
             value: mainService,
             isExpanded: true,
             onChanged: _handleMainServiceChange,
-            items: mainServiceList == null || mainServiceList.isEmpty
+            items: mainServiceList == null || mainServiceList!.isEmpty
                 ? null
-                : mainServiceList
+                : mainServiceList!
                     .map((value) => DropdownMenuItem(
-                          child: Text(isArabic ? value.nameAr : value.nameEn),
                           value: value,
+                          child: Text(isArabic ? value.nameAr! : value.nameEn!),
                         ))
                     .toList(),
           ),
@@ -327,12 +325,12 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
             value: subMainService,
             isExpanded: true,
             onChanged: _handleSubMainServiceChange,
-            items: subMainServiceList == null || subMainServiceList.isEmpty
+            items: subMainServiceList == null || subMainServiceList!.isEmpty
                 ? null
-                : subMainServiceList
+                : subMainServiceList!
                     .map((value) => DropdownMenuItem(
-                          child: Text(isArabic ? value.nameAr : value.nameEn),
                           value: value,
+                          child: Text(isArabic ? value.nameAr! : value.nameEn!),
                         ))
                     .toList(),
           ),
@@ -345,7 +343,7 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
                   value: valueSelected,
                   onChanged: (value) {
                     setState(() {
-                      valueSelected = value;
+                      valueSelected = value!;
                     });
                   }),
               Expanded(
@@ -357,8 +355,8 @@ class _AddNewServiceContentState extends State<AddNewServiceContent> {
                   onChanged: _handleQauntityChange,
                   items: _qaunityList
                       .map((q) => DropdownMenuItem(
-                            child: Text("$q"),
                             value: q,
+                            child: Text("$q"),
                           ))
                       .toList())
             ],

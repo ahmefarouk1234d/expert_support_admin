@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expert_support_admin/HelperClass/date_common.dart';
 
 class DiscountInfo {
-  String id;
-  String code;
-  bool isValid;
-  int percent;
-  String dateCreate;
-  num dateCreateTimestamp;
-  String dateUpdate;
-  num dateUpdateTimestamp;
+  String? id;
+  String? code;
+  bool? isValid;
+  int? percent;
+  String? dateCreate;
+  num? dateCreateTimestamp;
+  String? dateUpdate;
+  num? dateUpdateTimestamp;
 
   DiscountInfo(
       {this.id,
@@ -21,33 +21,33 @@ class DiscountInfo {
       this.dateUpdate,
       this.dateUpdateTimestamp});
 
-  _fromMapToObject(DocumentSnapshot offerDocData) {
-    Map<String, dynamic> offerData = offerDocData.data();
+  void _fromMapToObject(DocumentSnapshot offerDocData) {
+    Map<String, dynamic> offerData = offerDocData.data() as Map<String, dynamic>;
     num dateCreate = offerData["date_create"];
     num dateUpdate = offerData["date_update"];
 
-    this.id = offerDocData.id;
-    this.code = offerData["code"];
-    this.isValid = offerData["is_valid"];
-    this.percent = offerData["percent"];
+    id = offerDocData.id;
+    code = offerData["code"];
+    isValid = offerData["is_valid"];
+    percent = offerData["percent"];
     this.dateCreate = DateConvert()
-        .toStringFromTimestamp(timestamp: dateCreate, isFull: true);
-    this.dateCreateTimestamp = dateCreate;
+        .toStringFromTimestamp(timestamp: dateCreate.toInt(), isFull: true);
+    dateCreateTimestamp = dateCreate;
     this.dateUpdate = DateConvert()
-        .toStringFromTimestamp(timestamp: dateUpdate, isFull: true);
-    this.dateUpdateTimestamp = dateUpdate;
+        .toStringFromTimestamp(timestamp: dateUpdate.toInt(), isFull: true);
+    dateUpdateTimestamp = dateUpdate;
   }
 
   DiscountInfo.fromMap(DocumentSnapshot discountDocData) {
-    this._fromMapToObject(discountDocData);
+    _fromMapToObject(discountDocData);
   }
 
   static List<DiscountInfo> fromMapList(
-      {List<DocumentSnapshot> discountDocDataList}) {
-    List<DiscountInfo> discountList = List();
-    discountDocDataList.forEach((discountDocData) {
+      {required List<DocumentSnapshot> discountDocDataList}) {
+    List<DiscountInfo> discountList = <DiscountInfo>[];
+    for (var discountDocData in discountDocDataList) {
       discountList.add(DiscountInfo().._fromMapToObject(discountDocData));
-    });
+    }
     return discountList;
   }
 

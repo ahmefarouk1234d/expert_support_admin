@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 class OfferTypeScreen extends StatelessWidget {
   static String route = "/offerType";
 
-  _onOffersOnServiceTapped(BuildContext context) {
+  void _onOffersOnServiceTapped(BuildContext context) {
     Navigator.of(context).pushNamed(AddOrderOffer.route);
   }
 
-  _onPackagesTapped(BuildContext context) {
+  void _onPackagesTapped(BuildContext context) {
     Navigator.of(context).pushNamed(AddPackages.route);
   }
 
@@ -56,16 +56,16 @@ class OfferTypeScreen extends StatelessWidget {
 }
 
 class OfferTypeListTile extends StatelessWidget {
-  OfferTypeListTile({Key key, this.title, this.onTap});
+  OfferTypeListTile({super.key, this.title = "", this.onTap});
 
   final String title;
-  final Function() onTap;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: ListTile(
-        onTap: () { onTap(); },
+        onTap: () { onTap!(); },
         title: Container(
           padding: EdgeInsets.all(16),
           alignment: FractionalOffset.center,

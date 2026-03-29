@@ -12,11 +12,13 @@ import 'package:flutter/services.dart';
 class AddPackages extends StatelessWidget {
   static String route = "/addPackages";
 
+  const AddPackages({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<OrderOfferBloc>(
       builder: (context, offerBloc) => offerBloc ?? OrderOfferBloc(),
-      onDispose: (context, offerBloc) => offerBloc.dispose(),
+      onDispose: (context, offerBloc) => offerBloc?.dispose(),
       child: Scaffold(
           appBar: AppBar(
             title: Text(
@@ -34,6 +36,8 @@ class AddPackages extends StatelessWidget {
 }
 
 class AddPackagesContent extends StatefulWidget {
+  const AddPackagesContent({super.key});
+
   @override
   _AddPackagesContentState createState() => _AddPackagesContentState();
 }
@@ -47,9 +51,9 @@ class _AddPackagesContentState extends State<AddPackagesContent> {
   final TextEditingController serviceDetailsEnController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
 
-  OrderOfferBloc _orderOfferBloc;
+  late OrderOfferBloc _orderOfferBloc;
 
-  _showConformatiomAlert() {
+  void _showConformatiomAlert() {
     String message = AppLocalizations
       .of(context)
       .translate(LocalizedKey.addOfferOnPackagesAlertMessage);
@@ -64,7 +68,7 @@ class _AddPackagesContentState extends State<AddPackagesContent> {
     );
   }
 
-  _handleAddingNewOffer() async {
+  void _handleAddingNewOffer() async {
     try {
       Common().loading(context);
       await _orderOfferBloc.savePackagesOfferInfo();
@@ -76,18 +80,18 @@ class _AddPackagesContentState extends State<AddPackagesContent> {
       );
     } on PlatformException catch (e) {
       Common().dismiss(context);
-      Alert().error(context, e.message, () => Common().dismiss(context));
+      Alert().error(context, e.message ?? '', () => Common().dismiss(context));
     }
   }
 
-  _showCompletedAlert({String message}) {
-    Alert().success(context, message, () {
+  void _showCompletedAlert({String? message}) {
+    Alert().success(context, message ?? '', () {
       Common().dismiss(context);
       _navigateToOfferList();
     });
   }
 
-  _navigateToOfferList() {
+  void _navigateToOfferList() {
     Navigator.of(context).pop();
     Navigator.of(context).pop();
   }
@@ -241,18 +245,18 @@ class _AddPackagesContentState extends State<AddPackagesContent> {
 class OfferTypeTextField extends StatelessWidget {
   final String header;
   final String hint;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final bool isError;
   final Function(String) onChange;
   final TextInputType keyboardType;
   final bool isMultipleLine;
-  final List<TextInputFormatter> inputFormatters;
-  OfferTypeTextField(
-      {this.header,
+  final List<TextInputFormatter>? inputFormatters;
+  const OfferTypeTextField(
+      {super.key, this.header = "",
       this.hint = "",
       this.controller,
       this.isError = false,
-      @required this.onChange,
+      required this.onChange,
       this.keyboardType = TextInputType.text,
       this.isMultipleLine = false,
       this.inputFormatters,});
@@ -296,15 +300,15 @@ class OfferTypeTextField extends StatelessWidget {
 class OfferTypeMultiLineTextField extends StatelessWidget {
   final String header;
   final String hint;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final bool isError;
   final Function(String) onChange;
-  OfferTypeMultiLineTextField(
-      {this.header,
+  const OfferTypeMultiLineTextField(
+      {super.key, this.header = "",
       this.hint = "",
       this.controller,
       this.isError = false,
-      @required this.onChange});
+      required this.onChange});
 
   @override
   Widget build(BuildContext context) {

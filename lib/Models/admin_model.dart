@@ -20,7 +20,7 @@ class AdminUserStatus {
   static const String unknownAr = "حالة غير معروفة";
 
   String getDisplayStatus(
-      {@required String status, @required BuildContext context}) {
+      {required String status, required BuildContext context}) {
     bool isArabic = AppLocalizations.of(context).isArabic();
     switch (status) {
       case active:
@@ -36,15 +36,15 @@ class AdminUserStatus {
 }
 
 class AdminUserInfo {
-  String id;
-  String name;
-  String phone;
-  String email;
-  String role;
-  String fcmToken;
-  String status;
-  int dateCreated;
-  int dateUpdated;
+  String? id;
+  String? name;
+  String? phone;
+  String? email;
+  String? role;
+  String? fcmToken;
+  String? status;
+  int? dateCreated;
+  int? dateUpdated;
 
   AdminUserInfo(
       {this.id,
@@ -57,29 +57,29 @@ class AdminUserInfo {
       this.dateUpdated,
       this.status});
 
-  _userMapToList(DocumentSnapshot adminDocData) {
-    Map<String, dynamic> adminData = adminDocData.data();
-    this.id = adminDocData.id;
-    this.email = adminData["email"];
-    this.role = adminData["role"];
-    this.fcmToken = adminData["fcm_token"];
-    this.name = adminData["name"];
-    this.phone = adminData["phone"];
-    this.status = adminData["status"];
-    this.dateCreated = adminData["date_created"];
-    this.dateUpdated = adminData["date_updated"];
+  void _userMapToList(DocumentSnapshot adminDocData) {
+    Map<String, dynamic> adminData = adminDocData.data() as Map<String, dynamic>;
+    id = adminDocData.id;
+    email = adminData["email"];
+    role = adminData["role"];
+    fcmToken = adminData["fcm_token"];
+    name = adminData["name"];
+    phone = adminData["phone"];
+    status = adminData["status"];
+    dateCreated = adminData["date_created"];
+    dateUpdated = adminData["date_updated"];
   }
 
   AdminUserInfo.fromMap(DocumentSnapshot adminDocData) {
-    this._userMapToList(adminDocData);
+    _userMapToList(adminDocData);
   }
 
   static List<AdminUserInfo> fromMapList(
-      {List<DocumentSnapshot> adminDocDataList}) {
-    List<AdminUserInfo> aminList = List();
-    adminDocDataList.forEach((adminDocData) {
+      {required List<DocumentSnapshot> adminDocDataList}) {
+    List<AdminUserInfo> aminList = <AdminUserInfo>[];
+    for (var adminDocData in adminDocDataList) {
       aminList.add(AdminUserInfo().._userMapToList(adminDocData));
-    });
+    }
     return aminList;
   }
 
@@ -113,16 +113,16 @@ class AdminUserInfo {
     };
   }
 
-  update(AdminUserInfo admin) {
-    this.id = admin.id;
-    this.email = admin.email;
-    this.role = admin.role;
-    this.fcmToken = admin.fcmToken;
-    this.name = admin.name;
-    this.phone = admin.phone;
-    this.status = admin.status;
-    this.dateCreated = admin.dateCreated;
-    this.dateUpdated = admin.dateUpdated;
+  void update(AdminUserInfo admin) {
+    id = admin.id;
+    email = admin.email;
+    role = admin.role;
+    fcmToken = admin.fcmToken;
+    name = admin.name;
+    phone = admin.phone;
+    status = admin.status;
+    dateCreated = admin.dateCreated;
+    dateUpdated = admin.dateUpdated;
   }
 }
 

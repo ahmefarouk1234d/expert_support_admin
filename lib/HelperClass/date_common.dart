@@ -1,13 +1,12 @@
 import 'package:expert_support_admin/HelperClass/app_localizations.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DateConvert{
-  String _fullDateFormula = 'EEEE dd MMM, yyyy';
-  String _dateFormula = 'dd/MM/yyyy';
+  final String _fullDateFormula = 'EEEE dd MMM, yyyy';
+  final String _dateFormula = 'dd/MM/yyyy';
 
-  String toStringFromTimestamp({@required int timestamp, String locale, bool isFull = false}){
+  String toStringFromTimestamp({required int timestamp, String? locale, bool isFull = false}){
     String formula = isFull ? _fullDateFormula : _dateFormula;
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
     final dateFormat = DateFormat(formula, locale).format(date);
@@ -15,7 +14,7 @@ class DateConvert{
     return dateFormat;
   }
 
-  String toStringFromDate({@required DateTime date, String locale, bool isFull = false}){
+  String toStringFromDate({required DateTime date, String? locale, bool isFull = false}){
     String formula = isFull ? _fullDateFormula : _dateFormula;
     return DateFormat(formula, locale).format(date);
   }
@@ -23,9 +22,7 @@ class DateConvert{
   String timeToString(TimeOfDay timeOfDay, BuildContext context){
     bool isArabic = AppLocalizations.of(context).isArabic();
     String time = 
-          timeOfDay.hourOfPeriod.toString() 
-          + ":" + timeOfDay.minute.toString() 
-          + " " + _getCurrentPeriod(timeOfDay.period, isArabic);
+          "${timeOfDay.hourOfPeriod}:${timeOfDay.minute} ${_getCurrentPeriod(timeOfDay.period, isArabic)}";
     return time;
   }
 
@@ -36,11 +33,11 @@ class DateConvert{
     return isArabic ? "مساءاً" : "PM";
   }
   
-  int getTimestamp({@required DateTime date}) {
+  int getTimestamp({required DateTime date}) {
     return _normalizeDate(date).millisecondsSinceEpoch;
   }
 
-  DateTime getDate({@required int timestamp}) {
+  DateTime getDate({required int timestamp}) {
     return DateTime.fromMillisecondsSinceEpoch(timestamp);
   }
 

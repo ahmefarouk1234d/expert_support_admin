@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LoginServicesBloc extends Validator {
-  BehaviorSubject<String> _email = BehaviorSubject<String>();
-  FirebaseManager _firebaseManager = FirebaseManager();
+  final BehaviorSubject<String> _email = BehaviorSubject<String>();
+  final FirebaseManager _firebaseManager = FirebaseManager();
 
   Stream<String> get email => _email.stream.transform(validateEmail);
   Function(String) get emailChange => _email.sink.add;

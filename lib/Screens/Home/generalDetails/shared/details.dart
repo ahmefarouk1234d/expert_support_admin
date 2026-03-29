@@ -11,18 +11,18 @@ import 'package:expert_support_admin/SharedWidget/commom_button.dart';
 import 'package:flutter/material.dart';
 
 class SharedGeneralDetails extends StatelessWidget {
-  SharedGeneralDetails({Key key, this.shared});
+  SharedGeneralDetails({super.key, this.shared});
   
-  final Shared shared;
+  final Shared? shared;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SharedBloc>(
       builder: (context, sharedBloc) => SharedBloc(
-        ios: shared.link,
-        android: shared.linkAndroid
+        ios: shared!.link ?? '',
+        android: shared!.linkAndroid ?? ''
       ),
-      onDispose: (context, sharedBloc) => sharedBloc.dispose(),
+      onDispose: (context, sharedBloc) => sharedBloc?.dispose(),
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -37,9 +37,9 @@ class SharedGeneralDetails extends StatelessWidget {
 }
 
 class SharedGeneralDetailsContent extends StatefulWidget {
-  SharedGeneralDetailsContent({Key key, this.shared});
+  SharedGeneralDetailsContent({super.key, this.shared});
   
-  final Shared shared;
+  final Shared? shared;
 
   @override
   _SharedGeneralDetailsContentState createState() => _SharedGeneralDetailsContentState();
@@ -47,24 +47,24 @@ class SharedGeneralDetailsContent extends StatefulWidget {
 
 class _SharedGeneralDetailsContentState extends State<SharedGeneralDetailsContent> {
 
-  Shared shared;
+  late Shared shared;
 
-  TextEditingController _iosLinkController;
-  TextEditingController _androidLinkController;
+  late TextEditingController _iosLinkController;
+  late TextEditingController _androidLinkController;
 
-  SharedBloc _sharedBloc;
-  AppLocalizations _localizations;
+  late SharedBloc _sharedBloc;
+  late AppLocalizations _localizations;
 
   @override
   void initState() {
-    shared = widget.shared;
+    shared = widget.shared!;
     _iosLinkController = TextEditingController(text: shared.link);
     _androidLinkController = TextEditingController(text: shared.linkAndroid);
 
     super.initState();
   }
 
-  _showConformation() {
+  void _showConformation() {
     FocusScope.of(context).unfocus();
     Alert().conformation(
       context, 

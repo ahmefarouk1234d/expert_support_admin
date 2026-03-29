@@ -16,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class OrderOffer extends StatelessWidget {
+  const OrderOffer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,21 +29,22 @@ class OrderOffer extends StatelessWidget {
 }
 
 class OrderOfferContent extends StatefulWidget {
+  const OrderOfferContent({super.key});
+
   @override
   _OrderOfferContentState createState() => _OrderOfferContentState();
 }
 
 class _OrderOfferContentState extends State<OrderOfferContent> {
-  List<OrderOfferInfo> offerList;
-  AppBloc _appBloc;
+  List<OrderOfferInfo> offerList = [];
+  late AppBloc _appBloc;
 
   @override
   void initState() {
-    offerList = List();
     super.initState();
   }
 
-  _navigateToOfferDetails(OrderOfferInfo offer, int index) {
+  void _navigateToOfferDetails(OrderOfferInfo offer, int index) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => OrderOfferDetails(
               offerInfo: offer,
@@ -58,7 +61,7 @@ class _OrderOfferContentState extends State<OrderOfferContent> {
             return Loading();
           }
           offerList =
-              OrderOfferInfo.fromMapList(offerDocDataList: snapshot.data.docs);
+              OrderOfferInfo.fromMapList(offerDocDataList: snapshot.data!.docs);
           return offerList.isEmpty
               ? NoData()
               : OrderOfferList(
@@ -71,8 +74,8 @@ class _OrderOfferContentState extends State<OrderOfferContent> {
 
 class OrderOfferList extends StatelessWidget {
   final List<OrderOfferInfo> offerList;
-  final Function(OrderOfferInfo offer, int index) onTap;
-  OrderOfferList({this.offerList, this.onTap});
+  final Function(OrderOfferInfo offer, int index)? onTap;
+  const OrderOfferList({super.key, this.offerList = const [], this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +96,7 @@ class OrderOfferList extends StatelessWidget {
             String dateUpdate = offer.dateUpdateTimestamp == null
                 ? ""
                 : DateConvert().toStringFromTimestamp(
-                    timestamp: offer.dateUpdateTimestamp,
+                    timestamp: offer.dateUpdateTimestamp?.toInt() ?? 0,
                     locale: AppLocalizations.of(context).locale.languageCode,
                     isFull: true);
             IconData icon = AppLocalizations.of(context).isArabic()
@@ -112,7 +115,7 @@ class OrderOfferList extends StatelessWidget {
                 border: border,
               ),
               child: ListTile(
-                onTap: () => onTap(offer, index),
+                onTap: () => onTap!(offer, index),
                 title: Text(offerTitle),
                 subtitle: Text(dateUpdate),
                 trailing: Icon(
@@ -128,32 +131,32 @@ class OrderOfferList extends StatelessWidget {
 
 class OrderOfferDetails extends StatefulWidget {
   final OrderOfferInfo offerInfo;
-  OrderOfferDetails({this.offerInfo});
+  const OrderOfferDetails({super.key, required this.offerInfo});
 
   @override
   _OrderOfferDetailsState createState() => _OrderOfferDetailsState();
 }
 
 class _OrderOfferDetailsState extends State<OrderOfferDetails> {
-  OrderOfferInfo _info;
-  String _offerStatus;
-  String _buttonTitle;
-  FirebaseManager _firebaseManager = FirebaseManager();
-  bool isInitial;
-  bool isActive;
-  bool isButtonsEnable;
+  late OrderOfferInfo _info;
+  late String _offerStatus;
+  late String _buttonTitle;
+  final FirebaseManager _firebaseManager = FirebaseManager();
+  late bool isInitial;
+  late bool isActive;
+  late bool isButtonsEnable;
 
   @override
   void initState() {
     _info = widget.offerInfo;
-    _offerStatus = _info.status;
+    _offerStatus = _info.status ?? '';
     isInitial = true;
     isActive = _info.status == OfferStatus.active;
     isButtonsEnable = _info.status != OfferStatus.deleted;
     super.initState();
   }
 
-  _showConformatiomAlert(String status) {
+  void _showConformatiomAlert(String status) {
     String message = status != OfferStatus.deleted
         ? AppLocalizations.of(context)
             .translate(LocalizedKey.offerStatusChangeAlertMessage)
@@ -168,13 +171,13 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
         () => _handleChangeStatus(status));
   }
 
-  _showCompletedAlert({String message}) {
-    Alert().success(context, message, () {
+  void _showCompletedAlert({String? message}) {
+    Alert().success(context, message ?? '', () {
       Common().dismiss(context);
     });
   }
 
-  _handleChangeStatus(String status) async {
+  void _handleChangeStatus(String status) async {
     try {
       Common().loading(context);
       OrderOfferInfo offerInfo = OrderOfferInfo(id: _info.id, status: status);
@@ -197,7 +200,7 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
                   LocalizedKey.offerStatusDeleteSuccessAlertMessage));
     } on PlatformException catch (e) {
       Common().dismiss(context);
-      Alert().error(context, e.message, () => Common().dismiss(context));
+      Alert().error(context, e.message ?? '', () => Common().dismiss(context));
     }
   }
 
@@ -223,23 +226,23 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
               title: AppLocalizations.of(context)
                   .translate(LocalizedKey.offerTitle),
               value: AppLocalizations.of(context).isArabic()
-                  ? _info.titleAr
-                  : _info.titleEn,
+                  ? _info.titleAr ?? ''
+                  : _info.titleEn ?? '',
             ),
             OrderOfferDetailsRow(
               title: AppLocalizations.of(context)
                   .translate(LocalizedKey.offerDescTitle),
               value: AppLocalizations.of(context).isArabic()
-                  ? _info.descAr
-                  : _info.descEn,
+                  ? _info.descAr ?? ''
+                  : _info.descEn ?? '',
             ),
             _info.offerType == OfferType.packages
                 ? OrderOfferDetailsRow(
                     title: AppLocalizations.of(context)
                         .translate(LocalizedKey.offerServiceDetailsTitle),
                     value: AppLocalizations.of(context).isArabic()
-                        ? _info.serviceDetailsAr
-                        : _info.serviceDetailsEn,
+                        ? _info.serviceDetailsAr ?? ''
+                        : _info.serviceDetailsEn ?? '',
                   )
                 : Container(),
             _info.offerType == OfferType.services
@@ -302,7 +305,7 @@ class _OrderOfferDetailsState extends State<OrderOfferDetails> {
 class OrderOfferDetailsRow extends StatelessWidget {
   final String title;
   final String value;
-  OrderOfferDetailsRow({this.title, this.value});
+  const OrderOfferDetailsRow({super.key, this.title = "", this.value = ""});
 
   @override
   Widget build(BuildContext context) {
@@ -311,7 +314,7 @@ class OrderOfferDetailsRow extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Text(
-            title + ":",
+            "$title:",
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
           Container(

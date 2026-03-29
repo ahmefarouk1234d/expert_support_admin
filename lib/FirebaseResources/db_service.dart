@@ -57,7 +57,7 @@ class DataBase {
     return adminUserCollection.doc(admin.id).update(adminUserMap);
   }
 
-  Stream<QuerySnapshot> getPendingOrders(int fromDate, int toDate) {
+  Stream<QuerySnapshot> getPendingOrders(int? fromDate, int? toDate) {
     CollectionReference collectionReference =
         isTestMode ? ordersTestCollectoion : ordersCollection;
     Query orderQuery = collectionReference.where("workflow_status",
@@ -84,7 +84,7 @@ class DataBase {
     return orders;
   }
 
-  Stream<QuerySnapshot> getInProcessOrders(int fromDate, int toDate) {
+  Stream<QuerySnapshot> getInProcessOrders(int? fromDate, int? toDate) {
     CollectionReference collectionReference =
         isTestMode ? ordersTestCollectoion : ordersCollection;
     Query orderQuery = collectionReference.where("workflow_status", whereIn: [
@@ -115,7 +115,7 @@ class DataBase {
     return orders;
   }
 
-  Stream<QuerySnapshot> getDoneOrders(int fromDate, int toDate) {
+  Stream<QuerySnapshot> getDoneOrders(int? fromDate, int? toDate) {
     CollectionReference collectionReference =
         isTestMode ? ordersTestCollectoion : ordersCollection;
     Query orderQuery = collectionReference.where("workflow_status",
@@ -142,7 +142,7 @@ class DataBase {
     return orders;
   }
 
-  Stream<QuerySnapshot> getCanceledOrders(int fromDate, int toDate) {
+  Stream<QuerySnapshot> getCanceledOrders(int? fromDate, int? toDate) {
     CollectionReference collectionReference =
         isTestMode ? ordersTestCollectoion : ordersCollection;
     Query orderQuery = collectionReference.where("workflow_status",
@@ -169,7 +169,7 @@ class DataBase {
     return orders;
   }
 
-  Stream<QuerySnapshot> getOrders(int fromDate, int toDate) {
+  Stream<QuerySnapshot> getOrders(int? fromDate, int? toDate) {
     CollectionReference collectionReference =
         isTestMode ? ordersTestCollectoion : ordersCollection;
     Query orderQuery = collectionReference.where("workflow_status", whereIn: [
@@ -205,7 +205,7 @@ class DataBase {
   }
 
   Future<void> updateOrderStatus(OrderInfo order, AdminUserInfo admin,
-      {String cancelReason, String changeRequestDetails}) async {
+      {String? cancelReason, String? changeRequestDetails}) async {
     WriteBatch batch = FirebaseFirestore.instance.batch();
 
     CollectionReference collectionReference =
@@ -252,11 +252,11 @@ class DataBase {
       if (dateLogQuesryForSelectedTimestamp.docs.isNotEmpty) {
         final DocumentReference dateAvailabilityDoc =
             dateLogCollectionReference.doc("${order.visiteDateTimestamp}");
-        order.orderService.forEach((s) {
+        for (var s in order.orderService!) {
           batch.update(dateAvailabilityDoc, <String, dynamic>{
-            s.serviceCategoryId: FieldValue.arrayRemove([order.documentID])
+            s.serviceCategoryId!: FieldValue.arrayRemove([order.documentID])
           });
-        });
+        }
       }
     }
 
@@ -264,11 +264,11 @@ class DataBase {
   }
 
   Future<void> updateServices(OrderInfo order, String docId) {
-    Map<String, dynamic> updatedOrderMap = Map();
-    List<Map<String, dynamic>> servicesMap = List();
+    Map<String, dynamic> updatedOrderMap = {};
+    List<Map<String, dynamic>> servicesMap = [];
 
-    order.orderService.forEach((s) {
-      Map<String, dynamic> serv = Map();
+    for (var s in order.orderService!) {
+      Map<String, dynamic> serv = {};
       serv = {
         "needed_parts": s.neededParts,
         "quantity": s.quantity,
@@ -282,7 +282,7 @@ class DataBase {
         "total_price": s.total
       };
       servicesMap.add(serv);
-    });
+    }
 
     updatedOrderMap = {
       "order_services": servicesMap,
@@ -317,11 +317,11 @@ class DataBase {
   }
 
   Future<void> updateTimeDate(OrderInfo order, String docId) {
-    Map<String, dynamic> updatedOrderMap = Map();
+    Map<String, dynamic> updatedOrderMap = {};
     updatedOrderMap = {
-      "visit_date": order.visitDate.millisecondsSinceEpoch,
+      "visit_date": order.visitDate!.millisecondsSinceEpoch,
       "visit_time": order.visitTime,
-      "visit_date_and_time": order.visitDateAndTime.millisecondsSinceEpoch
+      "visit_date_and_time": order.visitDateAndTime!.millisecondsSinceEpoch
     };
 
     CollectionReference collectionReference =

@@ -18,29 +18,30 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
 
 class OrderDetails extends StatefulWidget {
   static String route = "/OrderDetails";
-  final int index;
-  final OrderInfo order;
-  final OrderToDisplay orderToDisplay;
-  OrderDetails({this.order, this.index, this.orderToDisplay});
+  final int? index;
+  final OrderInfo? order;
+  final OrderToDisplay? orderToDisplay;
+  const OrderDetails({super.key, this.order, this.index, this.orderToDisplay});
 
   @override
   _OrderDetailsState createState() => _OrderDetailsState();
 }
 
 class _OrderDetailsState extends State<OrderDetails> {
-  AppBloc _appBloc;
-  AppLocalizations _localizations;
-  OrderInfo _order;
-  bool _hasAdminDiscount;
-  FirebaseManager _firebaseManager = FirebaseManager();
+  late AppBloc _appBloc;
+  late AppLocalizations _localizations;
+  late OrderInfo _order;
+  late bool _hasAdminDiscount;
+  final FirebaseManager _firebaseManager = FirebaseManager();
 
-  initState() {
-    _order = widget.order;
+  @override
+  void initState() {
+    _order = widget.order!;
     _hasAdminDiscount = _order.adminDiscount != null;
     super.initState();
   }
 
-  _onAppBarActionButtonTapped(AdminUserInfo admin) {
+  void _onAppBarActionButtonTapped(AdminUserInfo admin) {
     if (_hasAdminDiscount) {
       _onDeleteDiscount(admin);
     } else {
@@ -48,7 +49,7 @@ class _OrderDetailsState extends State<OrderDetails> {
     }
   }
 
-  _onAddDiscount(AdminUserInfo admin) {
+  void _onAddDiscount(AdminUserInfo admin) {
     showDialog(
       context: context,
       builder: (_) {
@@ -65,7 +66,7 @@ class _OrderDetailsState extends State<OrderDetails> {
     );
   }
   
-  _onDeleteDiscount(AdminUserInfo admin) {
+  void _onDeleteDiscount(AdminUserInfo admin) {
     Alert().conformation(
       context, 
       _localizations.translate(LocalizedKey.conformationAlertTitle), 
@@ -73,11 +74,11 @@ class _OrderDetailsState extends State<OrderDetails> {
       () { _updateTotalPrice(admin: admin); });
   }
 
-  _updateTotalPrice({AdminUserInfo admin, num discount}) async {
+  void _updateTotalPrice({AdminUserInfo? admin, num? discount}) async {
     Common().loading(context);
 
     _changeOrderTotalPrice(discount: discount);
-    await _firebaseManager.updateOrderAdminDiscount(_order, admin);
+    await _firebaseManager.updateOrderAdminDiscount(_order, admin!);
 
     setState(() {
       _hasAdminDiscount = discount != null;
@@ -86,27 +87,27 @@ class _OrderDetailsState extends State<OrderDetails> {
     Common().dismiss(context);
   }
 
-  _changeOrderTotalPrice({num discount}) {
+  void _changeOrderTotalPrice({num? discount}) {
     bool isDelete = discount == null;
     double vatPercentage = _order.vatPercentage != null 
-      ? (_order.vatPercentage / 100) 
+      ? (_order.vatPercentage! / 100) 
       : 0.05;
     num totalPrice = _getTotalPrice(isDelete);
 
     _order.adminDiscount = discount;
     //_order.totalPriceAfterDiscount = isDelete ? (totalPrice) : (totalPrice - discount);
-    _order.vatTotal = _order.totalPriceAfterDiscount * vatPercentage;
-    _order.totalPriceWithVAT = (isDelete ? (totalPrice) : (totalPrice - discount)) + _order.vatTotal;
+    _order.vatTotal = _order.totalPriceAfterDiscount! * vatPercentage;
+    _order.totalPriceWithVAT = (isDelete ? (totalPrice) : (totalPrice - discount)) + _order.vatTotal!;
     _order.oldTotalPriceBeforeAdminDiscount = isDelete ? null : totalPrice;
   }
 
   num _getTotalPrice(bool isOnDeleting) {
     if (isOnDeleting) {
-      return _order.oldTotalPriceBeforeAdminDiscount;
+      return _order.oldTotalPriceBeforeAdminDiscount!;
     } else {
       return _order.totalPriceAfterDiscount != 0.0
-        ? _order.totalPriceAfterDiscount
-        : _order.totalPriceBeforeDiscount;
+        ? _order.totalPriceAfterDiscount!
+        : _order.totalPriceBeforeDiscount!;
     }
   }
 
@@ -129,7 +130,7 @@ class _OrderDetailsState extends State<OrderDetails> {
   }
 
   bool _isSupervior(AsyncSnapshot<AdminUserInfo> snapshot) {
-    return snapshot.hasData && snapshot.data.role == AdminRole.supervisor;
+    return snapshot.hasData && snapshot.data!.role == AdminRole.supervisor;
   }
 
   bool get _canAddDiscount {
@@ -152,20 +153,20 @@ class _OrderDetailsState extends State<OrderDetails> {
         builder: (context, snapshot) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(_order.id),
+              title: Text(_order.id!),
               elevation: 0.0,
               actions: <Widget>[
                 _isSupervior(snapshot) && _canAddDiscount
                   ? AppBarActionButton(
                       title: _actionButtonTitle,
-                      onPressed: () { _onAppBarActionButtonTapped(snapshot.data); },
+                      onPressed: () { _onAppBarActionButtonTapped(snapshot.data!); },
                     )
                   : Container()
               ],
             ),
             body: BlocProvider<OrderBloc>(
-              builder: (context, _orderBloc) => _orderBloc ?? OrderBloc(),
-              onDispose: (context, _orderBloc) => _orderBloc.dispose(),
+              builder: (context, orderBloc) => orderBloc ?? OrderBloc(),
+              onDispose: (context, orderBloc) => orderBloc?.dispose(),
               child: Container(
                 child: OrderDetailsContent(
                   order: _order,
@@ -179,18 +180,18 @@ class _OrderDetailsState extends State<OrderDetails> {
 }
 
 class AddDiscountDialog extends StatelessWidget {
-  AddDiscountDialog({Key key, this.onSave}): super(key: key);
+  AddDiscountDialog({super.key, this.onSave});
 
-  final Function(num) onSave;
+  final Function(num)? onSave;
 
   final TextEditingController dicountAmountControl = TextEditingController();
 
-  _onSave(BuildContext context) {
+  void _onSave(BuildContext context) {
     String discountString = dicountAmountControl.text;
     if (discountString.isNotEmpty && Common().canCastToNum(discountString)) {
       num discount = double.parse(discountString);
       Common().dismiss(context);
-      onSave(discount);
+      onSave?.call(discount);
     }
   }
 
@@ -215,14 +216,14 @@ class AddDiscountDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                OutlineButton(
+                OutlinedButton(
                   child: Text(localizations.translate(LocalizedKey.saveButtonTitle)),
                   onPressed: () { 
                     Common().removeFocus(context);
                     _onSave(context); 
                   }
                 ),
-                OutlineButton(
+                OutlinedButton(
                   child: Text(localizations.translate(LocalizedKey.cancelButtonTitle)),
                   onPressed: () { 
                     Common().removeFocus(context);

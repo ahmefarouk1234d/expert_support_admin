@@ -8,6 +8,8 @@ import 'package:expert_support_admin/SharedWidget/commom_button.dart';
 import 'package:flutter/material.dart';
 
 class ChangePassword extends StatelessWidget {
+  const ChangePassword({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +20,15 @@ class ChangePassword extends StatelessWidget {
 }
 
 class ChangePasswordContent extends StatefulWidget {
+  const ChangePasswordContent({super.key});
+
   @override
   _ChangePasswordContentState createState() => _ChangePasswordContentState();
 }
 
 class _ChangePasswordContentState extends State<ChangePasswordContent> {
   TextEditingController newPasswordController = TextEditingController();
-  ChangePasswordBloc _changePasswordBloc;
+  late ChangePasswordBloc _changePasswordBloc;
 
   @override
   void initState() {
@@ -32,17 +36,17 @@ class _ChangePasswordContentState extends State<ChangePasswordContent> {
     super.initState();
   }
 
-  _showCompletedAlert(){
+  void _showCompletedAlert(){
     Alert().success(context, 
     AppLocalizations.of(context).translate(LocalizedKey.changePasswordSuccessAlertMessage), 
     () {
       Common().dismiss(context);
       newPasswordController.clear();
-      _changePasswordBloc.newPasswordChange(null);
+      _changePasswordBloc.newPasswordChange('');
     });
   }
 
-  _handleChangePassword() async{
+  void _handleChangePassword() async{
     Common().loading(context);
     _changePasswordBloc.changePassword(
       (){
@@ -55,7 +59,7 @@ class _ChangePasswordContentState extends State<ChangePasswordContent> {
       });
   }
 
-  _showConformatiomAlert() {
+  void _showConformatiomAlert() {
     String message = AppLocalizations.of(context).translate(LocalizedKey.changePasswordAlertMessage);
     Alert().conformation(
         context, "Conformation", message, () => _handleChangePassword());
@@ -102,11 +106,11 @@ class _ChangePasswordContentState extends State<ChangePasswordContent> {
 }
 
 class ChangePasswordTextField extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final bool isError;
-  final Function(String) onChange;
+  final Function(String)? onChange;
   final String hint;
-  ChangePasswordTextField({this.onChange, this.isError = false, this.controller, this.hint});
+  const ChangePasswordTextField({super.key, this.onChange, this.isError = false, this.controller, this.hint = ""});
 
 
   @override

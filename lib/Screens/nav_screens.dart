@@ -18,16 +18,16 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
 class NavigatorScreens extends StatefulWidget {
   static String route = "/NavigatorScreens";
   final VoidCallback onSignedOut;
-  NavigatorScreens({@required this.onSignedOut});
+  const NavigatorScreens({super.key, required this.onSignedOut});
 
   @override
   _NavigatorScreensState createState() => _NavigatorScreensState();
 }
 
 class _NavigatorScreensState extends State<NavigatorScreens> {
-  NavScreen _navScreenList;
-  int _selectedScreen;
-  AppBloc _appBloc;
+  late NavScreen _navScreenList;
+  late int _selectedScreen;
+  late AppBloc _appBloc;
   final FirebaseManager _firebaseManager = FirebaseManager();
 
   @override
@@ -75,7 +75,7 @@ class _NavigatorScreensState extends State<NavigatorScreens> {
         stream: _appBloc.admin,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            _navScreenList = MenuList(context).getMenuList(snapshot.data.role);
+            _navScreenList = MenuList(context).getMenuList(snapshot.data!.role);
             return Scaffold(
                 appBar: AppBar(
                   title: Text(_navScreenList.navWidget[_selectedScreen].title),
@@ -103,7 +103,7 @@ class _NavigatorScreensState extends State<NavigatorScreens> {
 
 class ActionsAppBar extends StatelessWidget {
   final String title;
-  ActionsAppBar({@required this.title});
+  const ActionsAppBar({super.key, required this.title});
 
   _handleAddingNewUser(BuildContext context) {
     Navigator.of(context).pushNamed(AddNewUser.route);
@@ -143,15 +143,16 @@ class ActionsAppBar extends StatelessWidget {
 
 class AddButtonBar extends StatelessWidget {
   final VoidCallback onPressed;
-  AddButtonBar({@required this.onPressed});
+  const AddButtonBar({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return TextButton(
+        style: TextButton.styleFrom(foregroundColor: Colors.white),
+        onPressed: onPressed,
         child: Icon(
           Icons.add,
           color: Colors.white,
-        ),
-        onPressed: onPressed);
+        ));
   }
 }

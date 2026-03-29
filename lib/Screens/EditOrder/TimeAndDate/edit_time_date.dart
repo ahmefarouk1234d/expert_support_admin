@@ -12,38 +12,38 @@ import 'package:expert_support_admin/SharedWidget/commom_button.dart';
 import 'package:flutter/material.dart';
 
 class EditTimeDate extends StatefulWidget {
-  final OrderInfo order;
-  final OrderBloc orderBloc;
-  final String orderDocID;
-  EditTimeDate({this.order, this.orderBloc, this.orderDocID});
+  final OrderInfo? order;
+  final OrderBloc? orderBloc;
+  final String? orderDocID;
+  const EditTimeDate({super.key, this.order, this.orderBloc, this.orderDocID});
 
   @override
   _EditTimeDateState createState() => _EditTimeDateState();
 }
 
 class _EditTimeDateState extends State<EditTimeDate> {
-  String _time;
-  TimeOfDay _timeOfDayDB;
-  DateTime _actualDate;
-  DateTime _completeDateAndTime;
-  TimeOfDay _timeOfDay;
-  FirebaseManager _firebaseManager;
-  OrderBloc _orderBloc;
-  OrderInfo _orderInfo;
+  late String _time;
+  TimeOfDay? _timeOfDayDB;
+  late DateTime _actualDate;
+  DateTime? _completeDateAndTime;
+  TimeOfDay? _timeOfDay;
+  late FirebaseManager _firebaseManager;
+  late OrderBloc _orderBloc;
+  late OrderInfo _orderInfo;
 
   @override
   void initState() {
-    _time = widget.order.visitTime;
-    _actualDate = widget.order.visitDate;
-    if (widget.order.visitDateAndTime != null){
+    _time = widget.order!.visitTime!;
+    _actualDate = widget.order!.visitDate!;
+    if (widget.order!.visitDateAndTime != null){
       _timeOfDayDB = TimeOfDay(
-        hour: widget.order.visitDateAndTime.hour,
-        minute: widget.order.visitDateAndTime.minute
+        hour: widget.order!.visitDateAndTime!.hour,
+        minute: widget.order!.visitDateAndTime!.minute
       );
     }
     _firebaseManager = FirebaseManager();
-    _orderBloc = widget.orderBloc;
-    _orderInfo = widget.order;
+    _orderBloc = widget.orderBloc!;
+    _orderInfo = widget.order!;
     super.initState();
   }
 
@@ -55,14 +55,14 @@ class _EditTimeDateState extends State<EditTimeDate> {
     if (_timeOfDay != null){
       setState(() {
         _timeOfDayDB = _timeOfDay;
-        _time = DayTime().getTimeOfDayDB(period: _timeOfDay.period);
-        _completeDateAndTime = DateTime(_actualDate.year, _actualDate.month, _actualDate.day, _timeOfDay.hour, _timeOfDay.minute);
+        _time = DayTime().getTimeOfDayDB(period: _timeOfDay!.period);
+        _completeDateAndTime = DateTime(_actualDate.year, _actualDate.month, _actualDate.day, _timeOfDay!.hour, _timeOfDay!.minute);
       });
-    } 
+    }
   }
 
   Future<void> _handleDate() async{
-    DateTime dateSelected = await showDatePicker(
+    DateTime? dateSelected = await showDatePicker(
       context: context,
       initialDate: _actualDate,
       firstDate: DateTime(2010),
@@ -71,7 +71,7 @@ class _EditTimeDateState extends State<EditTimeDate> {
     if (dateSelected != null){
       setState(() {
         _actualDate = dateSelected;
-        _completeDateAndTime = DateTime(_actualDate.year, _actualDate.month, _actualDate.day, _timeOfDayDB.hour, _timeOfDayDB.minute);
+        _completeDateAndTime = DateTime(_actualDate.year, _actualDate.month, _actualDate.day, _timeOfDayDB!.hour, _timeOfDayDB!.minute);
       });
     }
   }
@@ -90,7 +90,7 @@ class _EditTimeDateState extends State<EditTimeDate> {
       _orderInfo.visitDate = _actualDate;
       _orderInfo.visitTime = _time;
       _orderInfo.visitDateAndTime = _completeDateAndTime;
-      await _firebaseManager.updateTimeDate(_orderInfo, widget.orderDocID);
+      await _firebaseManager.updateTimeDate(_orderInfo, widget.orderDocID!);
       _orderBloc.ordersChange.add(_orderInfo);
       Common().dismiss(context);
       Navigator.of(context).pop();
@@ -114,8 +114,8 @@ class _EditTimeDateState extends State<EditTimeDate> {
             DateTimeInfoRow(
               title: AppLocalizations.of(context).translate(LocalizedKey.editDateTimeTitle), 
               value: 
-                _timeOfDayDB != null 
-                ? _timeOfDayDB.format(context)
+                _timeOfDayDB != null
+                ? _timeOfDayDB!.format(context)
                 : DayTime().getDisplayStatus(dayTime: _time, context: context),),
             Container(height: 8,),
             DateTimeInfoRow(
@@ -149,14 +149,14 @@ class _EditTimeDateState extends State<EditTimeDate> {
 class DateTimeInfoRow extends StatelessWidget {
   final String title;
   final String value;
-  DateTimeInfoRow({this.title, this.value});
+  const DateTimeInfoRow({super.key, required this.title, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text(title + ": ", style: TextStyle(fontWeight: FontWeight.w700, fontSize: Screen.fontSize(size: 18)),),
+        Text("$title: ", style: TextStyle(fontWeight: FontWeight.w700, fontSize: Screen.fontSize(size: 18)),),
         Text(value, style: TextStyle(fontSize: Screen.fontSize(size: 18)))
       ],
     );

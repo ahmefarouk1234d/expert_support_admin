@@ -8,7 +8,7 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
 class MainDrawer extends StatelessWidget {
   final Function(int) onTap;
   final List<String> mainMenu;
-  MainDrawer({@required this.onTap, @required this.mainMenu});
+  const MainDrawer({super.key, required this.onTap, required this.mainMenu});
 
   // final List<String> mainMenu = [
   //   TextContent.homeMenu, 
@@ -19,16 +19,16 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppBloc _appBloc = Provider.of<AppBloc>(context);
+    AppBloc appBloc = Provider.of<AppBloc>(context);
     return Drawer(
       child: Container(
         color: Theme.of(context).primaryColor,
         child: StreamBuilder<AdminUserInfo>(
-          stream: _appBloc.admin,
+          stream: appBloc.admin,
           builder: (context, snapshot) {
             return Column(
               children: <Widget>[
-                MenuHeader(adminName: snapshot.hasData && snapshot != null ? snapshot.data.name : "",),
+                MenuHeader(adminName: snapshot.hasData ? (snapshot.data!.name ?? "") : "",),
                 Expanded(
                   child: ListView.separated(
                     padding: EdgeInsets.all(8),
@@ -49,7 +49,7 @@ class MainDrawer extends StatelessWidget {
 
 class MenuHeader extends StatelessWidget {
   final String adminName;
-  MenuHeader({this.adminName});
+  const MenuHeader({super.key, this.adminName = ""});
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +63,9 @@ class MainDrawerRow extends StatelessWidget {
   final int index;
   final String title;
   final Function(int) onTap;
-  MainDrawerRow(this.index, this.title, this.onTap);
+  const MainDrawerRow(this.index, this.title, this.onTap, {super.key});
 
-  _handleMuneAction(BuildContext context){
+  void _handleMuneAction(BuildContext context){
     Navigator.of(context).pop();
     onTap(index);
     // Navigator.of(context).pop(); 

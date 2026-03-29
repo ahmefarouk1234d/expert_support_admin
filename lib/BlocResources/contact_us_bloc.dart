@@ -21,23 +21,23 @@ class ContactUsBloc extends Validator {
   final FirebaseManager _firebaseManager = FirebaseManager();
 
   ContactUsBloc({
-    String aboutUsAr,
-    String aboutUsEn,
-    String headerAr,
-    String headerEn,
-    String phone,
-    String twitter,
-    String instagram,
-    String facebook
+    required String aboutUsAr,
+    required String aboutUsEn,
+    required String headerAr,
+    required String headerEn,
+    required String phone,
+    required String twitter,
+    required String instagram,
+    required String facebook
   }) {
-    this._aboutUsAr.add(aboutUsAr);
-    this._aboutUsEn.add(aboutUsEn);
-    this._headerAr.add(headerAr);
-    this._headerEn.add(headerEn);
-    this._phone.add(phone);
-    this._twitter.add(twitter);
-    this._instagram.add(instagram);
-    this._facebook.add(facebook);
+    _aboutUsAr.add(aboutUsAr);
+    _aboutUsEn.add(aboutUsEn);
+    _headerAr.add(headerAr);
+    _headerEn.add(headerEn);
+    _phone.add(phone);
+    _twitter.add(twitter);
+    _instagram.add(instagram);
+    _facebook.add(facebook);
   }
 
   Stream<String> get aboutUsAr => _aboutUsAr.stream.transform(validateTextField);
@@ -82,19 +82,19 @@ class ContactUsBloc extends Validator {
     AppLocalizations localizations = AppLocalizations.of(context);
 
     if (
-      (_aboutUsAr != null && _aboutUsAr.value.isNotEmpty)
-      && (_aboutUsEn != null && _aboutUsEn.value.isNotEmpty)
-      && (_headerAr != null && _headerAr.value.isNotEmpty)
-      && (_headerEn != null && _headerEn.value.isNotEmpty)
-      && (_phone != null && _phone.value.isNotEmpty)
-      && (_twitter != null && _twitter.value.isNotEmpty)
-      && (_instagram != null && _instagram.value.isNotEmpty)
-      && (_facebook != null && _facebook.value.isNotEmpty)
+      (_aboutUsAr.value.isNotEmpty)
+      && (_aboutUsEn.value.isNotEmpty)
+      && (_headerAr.value.isNotEmpty)
+      && (_headerEn.value.isNotEmpty)
+      && (_phone.value.isNotEmpty)
+      && (_twitter.value.isNotEmpty)
+      && (_instagram.value.isNotEmpty)
+      && (_facebook.value.isNotEmpty)
     ) {
 
       Common().loading(context);
       
-      String formattedPhone = "+966" + _phone.value;
+      String formattedPhone = "+966${_phone.value}";
 
       AboutUs aboutUs = AboutUs();
       aboutUs.aboutUsAr = _aboutUsAr.value;

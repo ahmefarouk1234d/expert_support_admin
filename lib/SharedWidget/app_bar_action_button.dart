@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 class AppBarActionButton extends StatelessWidget {
-  AppBarActionButton({Key key, this.title, this.onPressed}): super(key: key);
+  const AppBarActionButton({super.key, this.title, this.onPressed});
 
-  final String title;
-  final Function() onPressed;
+  final String? title;
+  final Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: FlatButton(
+      child: TextButton(
         onPressed: onPressed,
         child: Text(
-          title,
+          title ?? '',
           style: TextStyle(color: Colors.white),
         )
       ),

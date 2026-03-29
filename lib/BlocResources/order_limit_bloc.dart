@@ -16,10 +16,10 @@ class OrderLimitBloc extends Validator {
 
   final FirebaseManager _firebaseManager = FirebaseManager();
 
-  OrderLimitBloc({String perDay, DateTime startDate, DateTime endDate}) {
-    this._perDay.add(perDay);
-    this._unavailableEndDate.add(endDate);
-    this._unavailableStartDate.add(startDate);
+  OrderLimitBloc({required String perDay, required DateTime startDate, required DateTime endDate}) {
+    _perDay.add(perDay);
+    _unavailableEndDate.add(endDate);
+    _unavailableStartDate.add(startDate);
   }
 
   Stream<String> get perDay => _perDay.stream.transform(validateNumberTextField);
@@ -44,9 +44,9 @@ class OrderLimitBloc extends Validator {
     AppLocalizations localizations = AppLocalizations.of(context);
 
     if (
-      (_perDay != null && _perDay.value.isNotEmpty)
-      && (_unavailableStartDate != null && _unavailableStartDate.value != null)
-      && (_unavailableEndDate != null && _unavailableEndDate.value != null)
+      (_perDay.value.isNotEmpty)
+      && (_unavailableStartDate.value != null)
+      && (_unavailableEndDate.value != null)
     ) {
       if (Common().canCastToInt(_perDay.value)) {
 

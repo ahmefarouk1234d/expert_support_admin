@@ -11,23 +11,23 @@ import 'package:expert_support_admin/SharedWidget/commom_button.dart';
 import 'package:flutter/material.dart';
 
 class SubmitOrderGeneralDetails extends StatelessWidget {
-  SubmitOrderGeneralDetails({Key key, this.submitOrder});
+  SubmitOrderGeneralDetails({super.key, this.submitOrder});
   
-  final SubmitOrder submitOrder;
+  final SubmitOrder? submitOrder;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SubmitOrderBloc>(
       builder: (context, submitOrderBloc) => SubmitOrderBloc(
-        vatPercentage: submitOrder.vatPercentage.toString(),
-        isCashEnabled: submitOrder.isCashEnabled,
-        isPOSEnabled: submitOrder.isPOSEnabled,
-        limitRate: submitOrder.limitRate.toString(),
-        canShowVatNote: submitOrder.canShowVatNote,
-        vatPriceNoteAr: submitOrder.vatPriceNoteAr,
-        vatPriceNoteEn: submitOrder.vatPriceNoteEn
+        vatPercentage: submitOrder!.vatPercentage.toString(),
+        isCashEnabled: submitOrder!.isCashEnabled ?? false,
+        isPOSEnabled: submitOrder!.isPOSEnabled ?? false,
+        limitRate: submitOrder!.limitRate.toString(),
+        canShowVatNote: submitOrder!.canShowVatNote ?? false,
+        vatPriceNoteAr: submitOrder!.vatPriceNoteAr ?? '',
+        vatPriceNoteEn: submitOrder!.vatPriceNoteEn ?? ''
       ),
-      onDispose: (context, submitOrderBloc) => submitOrderBloc.dispose(),
+      onDispose: (context, submitOrderBloc) => submitOrderBloc?.dispose(),
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -42,9 +42,9 @@ class SubmitOrderGeneralDetails extends StatelessWidget {
 }
 
 class SubmitOrderGeneralDetailsContent extends StatefulWidget {
-  SubmitOrderGeneralDetailsContent({Key key, this.submitOrder});
+  SubmitOrderGeneralDetailsContent({super.key, this.submitOrder});
   
-  final SubmitOrder submitOrder;
+  final SubmitOrder? submitOrder;
 
   @override
   _SubmitOrderGeneralDetailsContentState createState() => _SubmitOrderGeneralDetailsContentState();
@@ -52,19 +52,19 @@ class SubmitOrderGeneralDetailsContent extends StatefulWidget {
 
 class _SubmitOrderGeneralDetailsContentState extends State<SubmitOrderGeneralDetailsContent> {
 
-  SubmitOrder submitOrder;
+  late SubmitOrder submitOrder;
 
-  TextEditingController _vatPrecentageController;
-  TextEditingController _limitRateController;
-  TextEditingController _vatNoteArController;
-  TextEditingController _vatNoteEnController;
+  late TextEditingController _vatPrecentageController;
+  late TextEditingController _limitRateController;
+  late TextEditingController _vatNoteArController;
+  late TextEditingController _vatNoteEnController;
 
-  SubmitOrderBloc _submitOrderBloc;
-  AppLocalizations _localizations;
+  late SubmitOrderBloc _submitOrderBloc;
+  late AppLocalizations _localizations;
 
   @override
   void initState() {
-    submitOrder = widget.submitOrder;
+    submitOrder = widget.submitOrder!;
     _vatPrecentageController = TextEditingController(text: submitOrder.vatPercentage.toString());
     _limitRateController = TextEditingController(text: submitOrder.limitRate.toString());
     _vatNoteArController = TextEditingController(text: submitOrder.vatPriceNoteAr.toString());
@@ -73,7 +73,7 @@ class _SubmitOrderGeneralDetailsContentState extends State<SubmitOrderGeneralDet
     super.initState();
   }
 
-  _showConformation() {
+  void _showConformation() {
     FocusScope.of(context).unfocus();
     Alert().conformation(
       context, 
@@ -120,8 +120,8 @@ class _SubmitOrderGeneralDetailsContentState extends State<SubmitOrderGeneralDet
                       )
                     ),
                     Switch(
-                      value: snapshot.data, 
-                      onChanged: _submitOrderBloc.isCashEnabledChange,
+                      value: snapshot.data ?? false,
+                      onChanged: (val) => _submitOrderBloc.isCashEnabledChange(val),
                     ),
                   ],
                 );
@@ -139,8 +139,8 @@ class _SubmitOrderGeneralDetailsContentState extends State<SubmitOrderGeneralDet
                       )
                     ),
                     Switch(
-                      value: snapshot.data, 
-                      onChanged: _submitOrderBloc.isPOSEnabledChange,
+                      value: snapshot.data ?? false,
+                      onChanged: (val) => _submitOrderBloc.isPOSEnabledChange(val),
                     ),
                   ],
                 );
@@ -172,8 +172,8 @@ class _SubmitOrderGeneralDetailsContentState extends State<SubmitOrderGeneralDet
                       )
                     ),
                     Switch(
-                      value: snapshot.data, 
-                      onChanged: _submitOrderBloc.canShowVatNoteChange,
+                      value: snapshot.data ?? false,
+                      onChanged: (val) => _submitOrderBloc.canShowVatNoteChange(val),
                     ),
                   ],
                 );

@@ -6,10 +6,10 @@ class Provider<B> extends InheritedWidget {
   final B bloc;
 
   const Provider({
-    Key key,
-    this.bloc,
-    Widget child,
-  }) : super(key: key, child: child);
+    super.key,
+    required this.bloc,
+    required super.child,
+  });
 
   @override
   bool updateShouldNotify(Provider<B> oldWidget) {
@@ -20,51 +20,47 @@ class Provider<B> extends InheritedWidget {
     // final type = _getType<Provider<B>>();
     // final Provider<B> provider = context.inheritFromWidgetOfExactType(type);
 
-    final Provider<B> provider = context.dependOnInheritedWidgetOfExactType<Provider<B>>();
+    final Provider<B>? provider = context.dependOnInheritedWidgetOfExactType<Provider<B>>();
 
-    return provider.bloc;
+    return provider!.bloc;
   }
 }
 
 class BlocProvider<B> extends StatefulWidget {
-  final void Function(BuildContext context, B bloc) onDispose;
-  final B Function(BuildContext context, B bloc) builder;
+  final void Function(BuildContext context, B? bloc) onDispose;
+  final B Function(BuildContext context, B? bloc) builder;
   final Widget child;
 
-  BlocProvider({
-    Key key,
-    @required this.child,
-    @required this.builder,
-    @required this.onDispose,
-  }) : super(key: key);
+  const BlocProvider({
+    super.key,
+    required this.child,
+    required this.builder,
+    required this.onDispose,
+  });
 
   @override
   _BlocProviderState<B> createState() => _BlocProviderState<B>();
 }
 
 class _BlocProviderState<B> extends State<BlocProvider<B>> {
-  B bloc;
+  B? bloc;
 
   @override
   void initState() {
     super.initState();
-    if (widget.builder != null) {
-      bloc = widget.builder(context, bloc);
+    bloc = widget.builder(context, bloc);
     }
-  }
 
   @override
   void dispose() {
-    if (widget.onDispose != null) {
-      widget.onDispose(context, bloc);
-    }
-    super.dispose();
+    widget.onDispose(context, bloc);
+      super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Provider(
-      bloc: bloc,
+      bloc: bloc as B,
       child: widget.child,
     );
   }

@@ -23,23 +23,23 @@ class InProcessActionButtons extends StatefulWidget {
   final TextEditingController totalPartsPriceController;
   final TextEditingController partsFeesController;
 
-  InProcessActionButtons(this.order, this.reasonController, this.totalMoneyReceivedController, this.totalPartsPriceController, this.partsFeesController);
+  const InProcessActionButtons(this.order, this.reasonController, this.totalMoneyReceivedController, this.totalPartsPriceController, this.partsFeesController, {super.key});
 
   @override
   _InProcessActionButtonsState createState() => _InProcessActionButtonsState();
 }
 
 class _InProcessActionButtonsState extends State<InProcessActionButtons> {
-  FirebaseManager _firebaseManager = FirebaseManager();
-  bool _isEnabled;
-  bool _isViewImageEnabled;
-  OrderInfo _order;
-  OrderBloc _orderBloc;
-  AppBloc _appBloc;
-  Color _reasonBorderColor;
-  Color _moneyReceivedBorderColor;
-  Color _partsTotalBorderColor;
-  Color _partsFeesBorderColor;
+  final FirebaseManager _firebaseManager = FirebaseManager();
+  late bool _isEnabled;
+  late bool _isViewImageEnabled;
+  late OrderInfo _order;
+  late OrderBloc _orderBloc;
+  late AppBloc _appBloc;
+  late Color _reasonBorderColor;
+  late Color _moneyReceivedBorderColor;
+  late Color _partsTotalBorderColor;
+  late Color _partsFeesBorderColor;
   double _partsFees = 0.0;
   double _partsTotal = 0.0;
 
@@ -56,7 +56,7 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
       || (_order.workflowStatus == WorkflowStatus.requestChangeReply)
       || (_order.workflowStatus == WorkflowStatus.onTheWay)
       || (_order.workflowStatus == WorkflowStatus.arrived);
-    _isViewImageEnabled = _order.imagesUrl.isNotEmpty;
+    _isViewImageEnabled = _order.imagesUrl!.isNotEmpty;
     _reasonBorderColor = Colors.black;
     _moneyReceivedBorderColor = Colors.black;
     _partsTotalBorderColor = Colors.black;
@@ -164,14 +164,14 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
   }
 
   bool _isValidFinishOrderPrice() {
-    List<OrderService> serviceWithNeededParts = _order.orderService.where((s) => s.neededParts == true).toList();
+    List<OrderService> serviceWithNeededParts = _order.orderService!.where((s) => s.neededParts == true).toList();
     
     bool isInvalidMoneyReceived = !isValidText(widget.totalMoneyReceivedController.text);
     bool isInvalidPartsPrice = 
-      serviceWithNeededParts.length > 0 && 
+      serviceWithNeededParts.isNotEmpty && 
       !isValidText(widget.totalPartsPriceController.text);
     bool isInvalidPartsFees = 
-      serviceWithNeededParts.length > 0 && 
+      serviceWithNeededParts.isNotEmpty && 
       !isValidText(widget.partsFeesController.text);
 
     setState(() {
@@ -204,8 +204,8 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
           _showConformatiomAlert(
             orderStatus: _newOrderStatus, 
             workflowStatus: _newWorkflowStatus,
-            message: AppLocalizations.of(context).translate(LocalizedKey.doneAlertMessage), 
-            admin: snapshot.data);
+            message: AppLocalizations.of(context).translate(LocalizedKey.doneAlertMessage),
+            admin: snapshot.data!);
         }
     }
   }
@@ -217,19 +217,19 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
       });
       if (snapshot.hasData){
         _showConformatiomAlert(
-          orderStatus: _order.orderStatus,
-          workflowStatus: WorkflowStatus.requestChange, 
-          message: AppLocalizations.of(context).translate(LocalizedKey.requestChangeAlertMessage), 
-          admin: snapshot.data);
+          orderStatus: _order.orderStatus!,
+          workflowStatus: WorkflowStatus.requestChange,
+          message: AppLocalizations.of(context).translate(LocalizedKey.requestChangeAlertMessage),
+          admin: snapshot.data!);
       }
     }
   }
 
   _showConformatiomAlert({
-    @required String orderStatus, 
-    @required String workflowStatus, 
-    @required String message, 
-    @required AdminUserInfo admin}){
+    required String orderStatus, 
+    required String workflowStatus, 
+    required String message, 
+    required AdminUserInfo admin}){
     Alert().conformation(
       context, 
       AppLocalizations.of(context).translate(LocalizedKey.conformationAlertTitle), 
@@ -239,13 +239,13 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
 
   _handleViewImages() async{
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => OrderImages(imageUrls: _order.imagesUrl,)));
+      MaterialPageRoute(builder: (context) => OrderImages(imageUrls: _order.imagesUrl!,)));
   }
 
   _handleAction({
-    @required String orderStatus, 
-    @required String workflowStatus, 
-    @required AdminUserInfo admin}) async{
+    required String orderStatus, 
+    required String workflowStatus, 
+    required AdminUserInfo admin}) async{
       String partTotals = widget.totalPartsPriceController.text;
       String partFees = widget.partsFeesController.text;
       String moneyReceived = widget.totalMoneyReceivedController.text;
@@ -265,8 +265,8 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
 
     String changeRequestDeatils = 
       widget.reasonController.text.isNotEmpty || workflowStatus == WorkflowStatus.requestChange
-      ? widget.reasonController.text 
-      : null;
+      ? widget.reasonController.text
+      : "";
     await _firebaseManager.updateOrderStatus(_order, admin, changeRequestDetails: changeRequestDeatils);
     
     Common().dismiss(context);
@@ -308,7 +308,7 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
                       Container(height: 16),
                       PriceRow(
                         title: AppLocalizations.of(context).translate(LocalizedKey.customerShouldPay), 
-                        price: (widget.order.totalPriceWithVAT + _partsTotal + _partsFees),),
+                        price: (widget.order.totalPriceWithVAT! + _partsTotal + _partsFees),),
                       Container(height: 8),
                       InProcessFinishOrderPriceTextField(
                         title: AppLocalizations.of(context).translate(LocalizedKey.moneyReceivedTitle), 

@@ -5,36 +5,36 @@ import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:flutter/material.dart';
 
 class GeneralDetailsModel {
-  GeneralDetailsType type;
-  AboutUs aboutUs;
-  Shared shared;
-  SubmitOrder submitOrder;
-  OrderLimit orderLimit;
+  GeneralDetailsType? type;
+  AboutUs? aboutUs;
+  Shared? shared;
+  SubmitOrder? submitOrder;
+  OrderLimit? orderLimit;
 
   GeneralDetailsModel();
 
-  _fromDocumentSnapshotToObject(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data();
+  void _fromDocumentSnapshotToObject(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
     switch (doc.id) {
       case "ContactUs":
-        this.aboutUs = AboutUs.fromMap(data);
-        this.type = GeneralDetailsType.contactUs;
+        aboutUs = AboutUs.fromMap(data);
+        type = GeneralDetailsType.contactUs;
         break;
 
       case "Shared":
-        this.shared = Shared.fromMap(data);
-        this.type = GeneralDetailsType.shared;
+        shared = Shared.fromMap(data);
+        type = GeneralDetailsType.shared;
         break;
 
       case "SubmitOrder":
-        this.submitOrder = SubmitOrder.fromMap(data);
-        this.type = GeneralDetailsType.submitOrder;
+        submitOrder = SubmitOrder.fromMap(data);
+        type = GeneralDetailsType.submitOrder;
         break;
 
       case "orderLimit":
-        this.orderLimit = OrderLimit.fromMap(data);
-        this.type = GeneralDetailsType.orderLimit;
+        orderLimit = OrderLimit.fromMap(data);
+        type = GeneralDetailsType.orderLimit;
         break;
 
       default:
@@ -43,15 +43,15 @@ class GeneralDetailsModel {
   }
 
   GeneralDetailsModel.fromDocumentSnapshot(DocumentSnapshot doc) {
-    this._fromDocumentSnapshotToObject(doc);
+    _fromDocumentSnapshotToObject(doc);
   }
 
   static List<GeneralDetailsModel> fromDocumentSnapshotList(
-      {@required List<DocumentSnapshot> docList}) {
-    List<GeneralDetailsModel> detailList = List();
-    docList.forEach((doc) {
+      {required List<DocumentSnapshot> docList}) {
+    List<GeneralDetailsModel> detailList = <GeneralDetailsModel>[];
+    for (var doc in docList) {
       detailList.add(GeneralDetailsModel().._fromDocumentSnapshotToObject(doc));
-    });
+    }
     return detailList;
   }
 
@@ -82,35 +82,37 @@ class GeneralDetailsModel {
 }
 
 class AboutUs {
-  String headerAr;
-  String headerEn;
-  String aboutUsAr;
-  String aboutUsEn;
-  String phone;
-  String twitter;
-  String instagram;
-  String facebook;
+  String? headerAr;
+  String? headerEn;
+  String? aboutUsAr;
+  String? aboutUsEn;
+  String? phone;
+  String? twitter;
+  String? instagram;
+  String? facebook;
 
   AboutUs();
 
-  _fromMapToObject(Map<dynamic, dynamic> data) {
-    this.headerAr = data["header_ar"];
-    this.headerEn = data["header_en"];
-    this.aboutUsAr = data["about_us_ar"];
-    this.aboutUsEn = data["about_us_en"];
-    this.phone = data["phone"];
-    this.twitter = data["twitter"];
-    this.instagram = data["instagram"];
-    this.facebook = data["facebook"];
+  void _fromMapToObject(Map<String, dynamic> data) {
+    headerAr = data["header_ar"];
+    headerEn = data["header_en"];
+    aboutUsAr = data["about_us_ar"];
+    aboutUsEn = data["about_us_en"];
+    phone = data["phone"];
+    twitter = data["twitter"];
+    instagram = data["instagram"];
+    facebook = data["facebook"];
   }
 
-  AboutUs.fromMap(Map<dynamic, dynamic> data) {
-    this._fromMapToObject(data);
+  AboutUs.fromMap(Map<String, dynamic> data) {
+    _fromMapToObject(data);
   }
 
-  static List<AboutUs> fromMapList({@required List<dynamic> dataList}) {
-    List<AboutUs> list = List();
-    dataList.forEach((data) => list.add(AboutUs().._fromMapToObject(data)));
+  static List<AboutUs> fromMapList({required List<dynamic> dataList}) {
+    List<AboutUs> list = <AboutUs>[];
+    for (var data in dataList) {
+      list.add(AboutUs().._fromMapToObject(data));
+    }
     return list;
   }
 
@@ -129,23 +131,25 @@ class AboutUs {
 }
 
 class Shared {
-  String link;
-  String linkAndroid;
+  String? link;
+  String? linkAndroid;
 
   Shared();
 
-  _fromMapToObject(Map<dynamic, dynamic> data) {
-    this.link = data["link"];
-    this.linkAndroid = data["link_android"];
+  void _fromMapToObject(Map<String, dynamic> data) {
+    link = data["link"];
+    linkAndroid = data["link_android"];
   }
 
-  Shared.fromMap(Map<dynamic, dynamic> data) {
-    this._fromMapToObject(data);
+  Shared.fromMap(Map<String, dynamic> data) {
+    _fromMapToObject(data);
   }
 
-  static List<Shared> fromMapList({@required List<dynamic> dataList}) {
-    List<Shared> list = List();
-    dataList.forEach((data) => list.add(Shared().._fromMapToObject(data)));
+  static List<Shared> fromMapList({required List<dynamic> dataList}) {
+    List<Shared> list = <Shared>[];
+    for (var data in dataList) {
+      list.add(Shared().._fromMapToObject(data));
+    }
     return list;
   }
 
@@ -155,53 +159,55 @@ class Shared {
 }
 
 class SubmitOrder {
-  List<TermsAndConditions> termsAndConditions;
-  num limitRate;
-  bool isCashEnabled;
-  bool isPOSEnabled;
-  num vatPercentage;
-  String vatPriceNoteAr;
-  String vatPriceNoteEn;
-  bool canShowVatNote;
+  List<TermsAndConditions>? termsAndConditions;
+  num? limitRate;
+  bool? isCashEnabled;
+  bool? isPOSEnabled;
+  num? vatPercentage;
+  String? vatPriceNoteAr;
+  String? vatPriceNoteEn;
+  bool? canShowVatNote;
 
   SubmitOrder();
 
-  _fromDocumentSnapshotToObject(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data();
-    this.termsAndConditions =
+  void _fromDocumentSnapshotToObject(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    termsAndConditions =
         TermsAndConditions.fromMapList(dataList: data["TermsConditions"]);
-    this.limitRate = data["limit_rate"];
-    this.isCashEnabled = data["is_cash_enabled"];
-    this.isPOSEnabled = data["is_pos_enabled"];
-    this.vatPercentage = data["VAT_percentage"];
-    this.vatPriceNoteAr = data["vat_price_note_ar"];
-    this.vatPriceNoteEn = data["vat_price_note_en"];
-    this.canShowVatNote = data["can_show_vat_note"];
+    limitRate = data["limit_rate"];
+    isCashEnabled = data["is_cash_enabled"];
+    isPOSEnabled = data["is_pos_enabled"];
+    vatPercentage = data["VAT_percentage"];
+    vatPriceNoteAr = data["vat_price_note_ar"];
+    vatPriceNoteEn = data["vat_price_note_en"];
+    canShowVatNote = data["can_show_vat_note"];
   }
 
   SubmitOrder.fromDocumentSnapshot(DocumentSnapshot doc) {
-    this._fromDocumentSnapshotToObject(doc);
+    _fromDocumentSnapshotToObject(doc);
   }
 
-  _fromMapToObject(Map<dynamic, dynamic> data) {
-    this.termsAndConditions =
+  void _fromMapToObject(Map<String, dynamic> data) {
+    termsAndConditions =
         TermsAndConditions.fromMapList(dataList: data["TermsConditions"]);
-    this.limitRate = data["limit_rate"];
-    this.isCashEnabled = data["is_cash_enabled"];
-    this.isPOSEnabled = data["is_pos_enabled"];
-    this.vatPercentage = data["VAT_percentage"];
-    this.vatPriceNoteAr = data["vat_price_note_ar"];
-    this.vatPriceNoteEn = data["vat_price_note_en"];
-    this.canShowVatNote = data["can_show_vat_note"];
+    limitRate = data["limit_rate"];
+    isCashEnabled = data["is_cash_enabled"];
+    isPOSEnabled = data["is_pos_enabled"];
+    vatPercentage = data["VAT_percentage"];
+    vatPriceNoteAr = data["vat_price_note_ar"];
+    vatPriceNoteEn = data["vat_price_note_en"];
+    canShowVatNote = data["can_show_vat_note"];
   }
 
-  SubmitOrder.fromMap(Map<dynamic, dynamic> data) {
-    this._fromMapToObject(data);
+  SubmitOrder.fromMap(Map<String, dynamic> data) {
+    _fromMapToObject(data);
   }
 
-  static List<SubmitOrder> fromMapList({@required List<dynamic> dataList}) {
-    List<SubmitOrder> list = List();
-    dataList.forEach((data) => list.add(SubmitOrder().._fromMapToObject(data)));
+  static List<SubmitOrder> fromMapList({required List<dynamic> dataList}) {
+    List<SubmitOrder> list = <SubmitOrder>[];
+    for (var data in dataList) {
+      list.add(SubmitOrder().._fromMapToObject(data));
+    }
     return list;
   }
 
@@ -219,49 +225,52 @@ class SubmitOrder {
 }
 
 class TermsAndConditions {
-  String textAr;
-  String textEn;
+  String? textAr;
+  String? textEn;
 
   TermsAndConditions();
 
-  _fromMapToObject(Map<dynamic, dynamic> data) {
-    this.textAr = data["text_ar"];
-    this.textEn = data["text_en"];
+  void _fromMapToObject(Map<String, dynamic> data) {
+    textAr = data["text_ar"];
+    textEn = data["text_en"];
   }
 
-  TermsAndConditions.fromMap(Map<dynamic, dynamic> data) {
-    this._fromMapToObject(data);
+  TermsAndConditions.fromMap(Map<String, dynamic> data) {
+    _fromMapToObject(data);
   }
 
   static List<TermsAndConditions> fromMapList(
-      {@required List<dynamic> dataList}) {
-    List<TermsAndConditions> list = List();
-    dataList.forEach(
-        (data) => list.add(TermsAndConditions().._fromMapToObject(data)));
+      {required List<dynamic> dataList}) {
+    List<TermsAndConditions> list = <TermsAndConditions>[];
+    for (var data in dataList) {
+      list.add(TermsAndConditions().._fromMapToObject(data));
+    }
     return list;
   }
 }
 
 class OrderLimit {
-  int perDay;
-  int unavaliableStartDateTimestamp;
-  int unavaliableEndDateTimestamp;
+  int? perDay;
+  int? unavaliableStartDateTimestamp;
+  int? unavaliableEndDateTimestamp;
 
   OrderLimit();
 
-  _fromMapToObject(Map<dynamic, dynamic> data) {
-    this.perDay = data["per_day"];
-    this.unavaliableStartDateTimestamp = data["unavailable_start_date"];
-    this.unavaliableEndDateTimestamp = data["unavailable_end_date"];
+  void _fromMapToObject(Map<String, dynamic> data) {
+    perDay = data["per_day"];
+    unavaliableStartDateTimestamp = data["unavailable_start_date"];
+    unavaliableEndDateTimestamp = data["unavailable_end_date"];
   }
 
-  OrderLimit.fromMap(Map<dynamic, dynamic> data) {
-    this._fromMapToObject(data);
+  OrderLimit.fromMap(Map<String, dynamic> data) {
+    _fromMapToObject(data);
   }
 
-  static List<OrderLimit> fromMapList({@required List<dynamic> dataList}) {
-    List<OrderLimit> list = List();
-    dataList.forEach((data) => list.add(OrderLimit().._fromMapToObject(data)));
+  static List<OrderLimit> fromMapList({required List<dynamic> dataList}) {
+    List<OrderLimit> list = <OrderLimit>[];
+    for (var data in dataList) {
+      list.add(OrderLimit().._fromMapToObject(data));
+    }
     return list;
   }
 

@@ -6,11 +6,10 @@ import 'package:flutter/material.dart';
 
 class ServicesList extends StatelessWidget {
   final OrderInfo order;
-  ServicesList(this.order);
+  const ServicesList(this.order, {super.key});
 
   bool _isPackagesOffer(OrderService service) {
-    return service.isPackageOffer != null && 
-      service.isPackageOffer;
+    return service.isPackageOffer ?? false;
   }
 
   String _getServiceName(OrderService service, bool isArabic) {
@@ -21,7 +20,7 @@ class ServicesList extends StatelessWidget {
 
   String _getServiceDetails(OrderService service, bool isArabic) {
     return _isPackagesOffer(service)
-      ? (isArabic ? service.offerServiceDetailsAr : service.offerServiceDetailsEn)
+      ? (isArabic ? service.offerServiceDetailsAr ?? "" : service.offerServiceDetailsEn ?? "")
       : "" ;
   }
 
@@ -31,11 +30,11 @@ class ServicesList extends StatelessWidget {
       padding: EdgeInsets.all(0),
       physics: ClampingScrollPhysics(),
       shrinkWrap: true,
-      itemCount: order.orderService.length,
+      itemCount: order.orderService!.length,
       itemBuilder: (context, index) {
-        OrderService service = order.orderService[index];
+        OrderService service = order.orderService![index];
         bool isArabic = AppLocalizations.of(context).isArabic();
-        String neededParts = service.neededParts 
+        String neededParts = (service.neededParts ?? false) 
           ? AppLocalizations.of(context).translate(LocalizedKey.yesFirstCapital) 
           : AppLocalizations.of(context).translate(LocalizedKey.noFirstCapital);
 
@@ -60,8 +59,7 @@ class ServicesList extends StatelessWidget {
                       : Container(),
                     Container(height: 8,),
                     Text(
-                       AppLocalizations.of(context).translate(LocalizedKey.neededPartsTitle) 
-                        + ": $neededParts", 
+                       "${AppLocalizations.of(context).translate(LocalizedKey.neededPartsTitle)}: $neededParts", 
                        style: TextStyle(color: Colors.grey),)
                   ],
                 ),

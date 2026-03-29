@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'service_row_to_edit.dart';
 
 class ServiceListToEdit extends StatelessWidget {
-  final List<OrderService> services;
-  ServiceListToEdit({this.services});
+  final List<OrderService>? services;
+  const ServiceListToEdit({super.key, this.services});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
         physics: ClampingScrollPhysics(),
         shrinkWrap: true,
-        itemCount: services.length,
+        itemCount: services!.length,
         itemBuilder: (context, index) {
-          return ServiceRowToEdit(services: services, index: index,);
+          return ServiceRowToEdit(services: services!, index: index,);
         });
   }
 }

@@ -13,12 +13,12 @@ import 'package:expert_support_admin/SharedWidget/phone_bordered_textfield.dart'
 import 'package:flutter/material.dart';
 
 class ContactUsGeneralDetails extends StatelessWidget {
-  ContactUsGeneralDetails({Key key, this.aboutUs});
+  ContactUsGeneralDetails({super.key, this.aboutUs});
   
-  final AboutUs aboutUs;
+  final AboutUs? aboutUs;
 
   String _getPhoneWithoutAreaCode(){
-    String phone = aboutUs.phone;
+    String phone = aboutUs!.phone ?? '';
 
     return phone.replaceAll('+966', '');
   }
@@ -27,16 +27,16 @@ class ContactUsGeneralDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<ContactUsBloc>(
       builder: (context, contactUsBloc) => ContactUsBloc(
-        aboutUsAr: aboutUs.aboutUsAr,
-        aboutUsEn: aboutUs.aboutUsEn,
-        headerAr: aboutUs.headerAr,
-        headerEn: aboutUs.headerEn,
+        aboutUsAr: aboutUs!.aboutUsAr ?? '',
+        aboutUsEn: aboutUs!.aboutUsEn ?? '',
+        headerAr: aboutUs!.headerAr ?? '',
+        headerEn: aboutUs!.headerEn ?? '',
         phone: _getPhoneWithoutAreaCode(),
-        twitter: aboutUs.twitter,
-        instagram: aboutUs.instagram,
-        facebook: aboutUs.facebook
+        twitter: aboutUs!.twitter ?? '',
+        instagram: aboutUs!.instagram ?? '',
+        facebook: aboutUs!.facebook ?? ''
       ),
-      onDispose: (context, contactUsBloc) => contactUsBloc.dispose(),
+      onDispose: (context, contactUsBloc) => contactUsBloc?.dispose(),
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -51,9 +51,9 @@ class ContactUsGeneralDetails extends StatelessWidget {
 }
 
 class ContactUsGeneralDetailsContent extends StatefulWidget {
-  ContactUsGeneralDetailsContent({Key key, this.aboutUs});
+  ContactUsGeneralDetailsContent({super.key, this.aboutUs});
   
-  final AboutUs aboutUs;
+  final AboutUs? aboutUs;
 
   @override
   _ContactUsGeneralDetailsContentState createState() => _ContactUsGeneralDetailsContentState();
@@ -61,23 +61,23 @@ class ContactUsGeneralDetailsContent extends StatefulWidget {
 
 class _ContactUsGeneralDetailsContentState extends State<ContactUsGeneralDetailsContent> {
 
-  AboutUs aboutUs;
+  late AboutUs aboutUs;
 
-  TextEditingController _aboutUsArController;
-  TextEditingController _aboutUsEnController;
-  TextEditingController _headerArController;
-  TextEditingController _headerEnController;
-  TextEditingController _phoneController;
-  TextEditingController _twitterController;
-  TextEditingController _instagramController;
-  TextEditingController _facebookController;
+  late TextEditingController _aboutUsArController;
+  late TextEditingController _aboutUsEnController;
+  late TextEditingController _headerArController;
+  late TextEditingController _headerEnController;
+  late TextEditingController _phoneController;
+  late TextEditingController _twitterController;
+  late TextEditingController _instagramController;
+  late TextEditingController _facebookController;
 
-  ContactUsBloc _contactUsBloc;
-  AppLocalizations _localizations;
+  late ContactUsBloc _contactUsBloc;
+  late AppLocalizations _localizations;
 
   @override
   void initState() {
-    aboutUs = widget.aboutUs;
+    aboutUs = widget.aboutUs!;
     _aboutUsArController = TextEditingController(text: aboutUs.aboutUsAr);
     _aboutUsEnController = TextEditingController(text: aboutUs.aboutUsEn);
     _headerArController = TextEditingController(text: aboutUs.headerAr);
@@ -91,12 +91,12 @@ class _ContactUsGeneralDetailsContentState extends State<ContactUsGeneralDetails
   }
 
   String _getPhoneWithoutAreaCode(){
-    String phone = aboutUs.phone;
+    String phone = aboutUs.phone ?? '';
 
     return phone.replaceAll('+966', '');
   }
 
-  _showConformation() {
+  void _showConformation() {
     FocusScope.of(context).unfocus();
     Alert().conformation(
       context, 

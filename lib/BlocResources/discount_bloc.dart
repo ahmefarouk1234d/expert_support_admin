@@ -6,7 +6,7 @@ import 'package:rxdart/rxdart.dart';
 class DiscountBloc extends Validator{
   final _code = BehaviorSubject<String>();
   final _percent = BehaviorSubject<String>();
-  FirebaseManager _firebaseManager = FirebaseManager();
+  final FirebaseManager _firebaseManager = FirebaseManager();
 
   Stream<String> get code => _code.stream.transform(validateDiscountCode);
   Function(String) get codeChange => _code.sink.add;

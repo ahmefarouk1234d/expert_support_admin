@@ -7,34 +7,34 @@ import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:flutter/material.dart';
 
 class FliterOrder extends StatelessWidget {
-  FliterOrder({
-    Key key, 
-    this.onFromDateTap, 
+  const FliterOrder({
+    super.key,
+    this.onFromDateTap,
     this.onToDateTap,
     this.onSearchTap,
-    this.onClearTap}): super(key: key);
+    this.onClearTap});
 
-  final Function(DateTime) onFromDateTap;
-  final Function(DateTime) onToDateTap;
-  final Function() onSearchTap;
-  final Function() onClearTap;
+  final Function(DateTime)? onFromDateTap;
+  final Function(DateTime)? onToDateTap;
+  final Function()? onSearchTap;
+  final Function()? onClearTap;
 
-  _handleFromDate(DateTime date, BuildContext context) async {
-    DateTime dateSelected = await _showDate(date, context);
+  _handleFromDate(DateTime? date, BuildContext context) async {
+    DateTime? dateSelected = await _showDate(date, context);
     if (dateSelected != null) {
-      onFromDateTap(dateSelected);
+      onFromDateTap!(dateSelected);
     }
   }
 
-  _handleToDate(DateTime date, BuildContext context) async {
-    DateTime dateSelected = await _showDate(date, context);
+  _handleToDate(DateTime? date, BuildContext context) async {
+    DateTime? dateSelected = await _showDate(date, context);
     if (dateSelected != null) {
-      onToDateTap(dateSelected);
+      onToDateTap!(dateSelected);
     }
   }
 
-  Future<DateTime> _showDate(DateTime date, BuildContext context) {
-    DateTime initDate = date == null ? DateTime.now() : date;
+  Future<DateTime?> _showDate(DateTime? date, BuildContext context) {
+    DateTime initDate = date ?? DateTime.now();
     return showDatePicker(
       context: context,
       initialDate: initDate,
@@ -53,7 +53,7 @@ class FliterOrder extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: StreamBuilder<DateTime>(
+            child: StreamBuilder<DateTime?>(
               stream: appBloc.fromDate,
               builder: (context, snapshot){
                 return GestureDetector(
@@ -68,7 +68,7 @@ class FliterOrder extends StatelessWidget {
           ),
           Container(width: 16),
           Expanded(
-            child: StreamBuilder<Object>(
+            child: StreamBuilder<DateTime?>(
               stream: appBloc.toDate,
               builder: (context, snapshot) {
                 return GestureDetector(
@@ -103,17 +103,17 @@ class FliterOrder extends StatelessWidget {
 }
 
 class DateDisplayVirtucallyWithBroderContainer extends StatelessWidget {
-  DateDisplayVirtucallyWithBroderContainer({
-    Key key, 
-    this.title = "", 
-    @required this.date,
-    this.isError = false,}): super(key: key);
+  const DateDisplayVirtucallyWithBroderContainer({
+    super.key,
+    this.title = "",
+    required this.date,
+    this.isError = false,});
 
   final String title;
-  final DateTime date;
+  final DateTime? date;
   final bool isError;
 
-  String _getStringDate(DateTime date, BuildContext context) {
+  String _getStringDate(DateTime? date, BuildContext context) {
     if (date == null) return "";
 
     return DateConvert().toStringFromDate(

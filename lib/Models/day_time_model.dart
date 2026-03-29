@@ -15,7 +15,7 @@ class DayTime{
   static const String morning = "Morning";
   static const String unknown = "unknow";
 
-  String getDisplayStatus({@required String dayTime, @required BuildContext context}) {
+  String getDisplayStatus({required String dayTime, required BuildContext context}) {
     bool isArabic = AppLocalizations.of(context).isArabic();
     switch (dayTime) {
       case evening:
@@ -27,7 +27,7 @@ class DayTime{
     }
   }
 
-  String getTimeOfDayDB({@required DayPeriod period}) {
+  String getTimeOfDayDB({required DayPeriod period}) {
     switch (period) {
       case DayPeriod.am:
         return morning;

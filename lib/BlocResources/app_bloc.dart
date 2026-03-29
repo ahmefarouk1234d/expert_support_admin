@@ -7,18 +7,18 @@ import 'package:rxdart/rxdart.dart';
 
 class AppBloc{
   final _admin = BehaviorSubject<AdminUserInfo>();
-  final _fromDate = BehaviorSubject<DateTime>();
-  final _toDate = BehaviorSubject<DateTime>();
+  final _fromDate = BehaviorSubject<DateTime?>();
+  final _toDate = BehaviorSubject<DateTime?>();
   FirebaseManager _firebaseManager = FirebaseManager();
   
   Stream<AdminUserInfo> get admin => _admin.stream;
   Sink<AdminUserInfo> get adminChange => _admin.sink;
 
-  Stream<DateTime> get fromDate => _fromDate.stream;
-  Sink<DateTime> get fromDateChange => _fromDate.sink;
+  Stream<DateTime?> get fromDate => _fromDate.stream;
+  Sink<DateTime?> get fromDateChange => _fromDate.sink;
 
-  Stream<DateTime> get toDate => _toDate.stream;
-  Sink<DateTime> get toDateChange => _toDate.sink;
+  Stream<DateTime?> get toDate => _toDate.stream;
+  Sink<DateTime?> get toDateChange => _toDate.sink;
 
   Stream<QuerySnapshot> get pendingOrderDocument { 
     return _firebaseManager.getPendingOrders(_getFromDateTimeStamp(), _getToDateTimeStamp()); 
@@ -43,15 +43,15 @@ class AppBloc{
   Stream<QuerySnapshot> get generalDetailsListDocument => _firebaseManager.getGeneralDetails();
 
 
-  int _getFromDateTimeStamp(){
-    DateTime selectedFromDate = _fromDate != null ? _fromDate.value : null;
+  int? _getFromDateTimeStamp(){
+    DateTime? selectedFromDate = _fromDate.valueOrNull;
 
     if (selectedFromDate == null) return null;
     return DateConvert().getTimestamp(date: selectedFromDate);
   }
 
-  int _getToDateTimeStamp() {
-    DateTime selectedToDate = _toDate != null ? _toDate.value : null;
+  int? _getToDateTimeStamp() {
+    DateTime? selectedToDate = _toDate.valueOrNull;
 
     if (selectedToDate == null) return null;
     return DateConvert().getTimestamp(date: selectedToDate);

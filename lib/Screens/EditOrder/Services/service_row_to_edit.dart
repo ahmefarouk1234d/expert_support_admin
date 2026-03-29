@@ -7,16 +7,16 @@ import 'package:flutter/material.dart';
 class ServiceRowToEdit extends StatefulWidget {
   final List<OrderService> services;
   final int index;
-  ServiceRowToEdit({this.services, this.index});
+  const ServiceRowToEdit({super.key, required this.services, required this.index});
 
   @override
   _ServiceRowToEditState createState() => _ServiceRowToEditState();
 }
 
 class _ServiceRowToEditState extends State<ServiceRowToEdit> {
-  OrderService service;
-  List<int> _qaunityList;
-  TextEditingController priceController;
+  late OrderService service;
+  late List<int> _qaunityList;
+  late TextEditingController priceController;
 
   @override
   void initState() {
@@ -30,24 +30,24 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
     try{
       service.priceForOnePiece = double.parse(value);
       setState(() {
-        service.total = service.priceForOnePiece * service.quantity;
+        service.total = service.priceForOnePiece! * service.quantity!;
       });
     } catch (e){
       print(e.toString());
     }
   }
 
-  _handlePartsChange(bool value){
+  _handlePartsChange(bool? value){
     setState(() {
-      service.neededParts = value;
+      service.neededParts = value ?? false;
     });
   }
 
-  _updateQuantityAndPrice(dynamic value){
-    int selectedQuantity = value;
+  _updateQuantityAndPrice(num? value){
+    int selectedQuantity = (value ?? 0).toInt();
     setState(() {
       service.quantity = selectedQuantity;
-      service.total = service.priceForOnePiece * selectedQuantity;
+      service.total = service.priceForOnePiece! * selectedQuantity;
     });
   }
 
@@ -120,8 +120,8 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
                                   onChanged: _updateQuantityAndPrice,
                                   items: _qaunityList
                                       .map((q) => DropdownMenuItem(
-                                            child: Text("$q"),
                                             value: q,
+                                            child: Text("$q"),
                                           ))
                                       .toList())
                             ],
@@ -143,9 +143,9 @@ class _ServiceRowToEditState extends State<ServiceRowToEdit> {
               service.isDeleted ? Container()
                 : SizedBox(
                   width: Screen.screenWidth * 0.1,
-                  child: FlatButton(
-                    child: Text("x"),
+                  child: TextButton(
                     onPressed: _handleDeleteService,
+                    child: Text("x"),
                   ),
                 )
             ],

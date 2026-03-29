@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CommonData {
-  static const Map<int, Color> color = const {
+  static const Map<int, Color> color = {
     50: Color.fromRGBO(136, 14, 79, .1),
     100: Color.fromRGBO(136, 14, 79, .2),
     200: Color.fromRGBO(136, 14, 79, .3),
@@ -22,13 +21,13 @@ class Screen {
   //screen deminisions
   static Screen instance = Screen();
 
-  static MediaQueryData _mediaQueryData;
-  static double _screenWidth;
-  static double _screenHeight;
-  static double _pixelRatio;
-  static double _statusBarHeight;
-  static double _bottomBarHeight;
-  static double _textScaleFactor;
+  static late MediaQueryData _mediaQueryData;
+  static late double _screenWidth;
+  static late double _screenHeight;
+  static late double _pixelRatio;
+  static late double _statusBarHeight;
+  static late double _bottomBarHeight;
+  static late double _textScaleFactor;
 
   static Screen getInstance() {
     return instance;
@@ -56,6 +55,6 @@ class Screen {
   static double get statusBarHeightPR => _statusBarHeight * _pixelRatio;
   static double get bottomBarHeight => _bottomBarHeight * _pixelRatio;
 
-  static double fontSize({@required double size}) =>
+  static double fontSize({required double size}) =>
       (size * _screenWidth) / 414;
 }

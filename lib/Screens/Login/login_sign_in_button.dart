@@ -14,13 +14,13 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
 
 class LoginButton extends StatelessWidget {
   final VoidCallback onSignedIn;
-  LoginButton({@required this.onSignedIn});
+  const LoginButton({super.key, required this.onSignedIn});
 
   _updateAdminInfo(
       BuildContext context, AuthBloc bloc, AppBloc appBloc, User admin) async {
     try {
-      AdminUserInfo _adminInfo = await bloc.reteiveAdminInfo(admin.uid);
-      appBloc.adminChange.add(_adminInfo);
+      AdminUserInfo adminInfo = await bloc.reteiveAdminInfo(admin.uid);
+      appBloc.adminChange.add(adminInfo);
     } catch (error) {
       String alertMessage = TextContent.requestCompleteError;
       Alert().error(context, alertMessage, () {
@@ -45,8 +45,8 @@ class LoginButton extends StatelessWidget {
       //   });
       // }
 
-      await bloc.updateFcmToken(admin.user.uid);
-      _updateAdminInfo(context, bloc, appBloc, admin.user);
+      await bloc.updateFcmToken(admin.user!.uid);
+      _updateAdminInfo(context, bloc, appBloc, admin.user!);
       Common().dismiss(context);
       onSignedIn();
     }, onError: (error) {
@@ -67,17 +67,19 @@ class LoginButton extends StatelessWidget {
       child: StreamBuilder<bool>(
           stream: bloc.isValidSignUpFields,
           builder: (context, snapshot) {
-            return RaisedButton(
+            return ElevatedButton(
               onPressed: snapshot.hasData
                   ? () => _handleLogin(context, bloc, appBloc)
                   : null,
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Theme.of(context).primaryColor,
+              ),
               child: Text(
                 AppLocalizations.of(context)
                     .translate(LocalizedKey.loginButtontitle),
                 style: TextStyle(fontSize: Screen.fontSize(size: 20)),
               ),
-              textColor: Colors.white,
-              color: Theme.of(context).primaryColor,
             );
           }),
     );

@@ -14,11 +14,13 @@ import 'package:flutter/services.dart';
 class AddNewUser extends StatelessWidget {
   static String route = "/addNewUser";
 
+  const AddNewUser({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<UserBloc>(
       builder: (context, userBloc) => userBloc ?? UserBloc(),
-      onDispose: (context, userBloc) => userBloc.dispose(),
+      onDispose: (context, userBloc) => userBloc?.dispose(),
       child: Scaffold(
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)
@@ -31,6 +33,8 @@ class AddNewUser extends StatelessWidget {
 }
 
 class AddNewUserContent extends StatefulWidget {
+  const AddNewUserContent({super.key});
+
   @override
   _AddNewUserContentState createState() => _AddNewUserContentState();
 }
@@ -41,9 +45,9 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController reEnterPasswordController = TextEditingController();
-  UserBloc _userBloc;
+  late UserBloc _userBloc;
 
-  _showConformatiomAlert() {
+  void _showConformatiomAlert() {
     String message = AppLocalizations.of(context)
         .translate(LocalizedKey.userAddAlertMessage);
     Alert().conformation(
@@ -54,15 +58,15 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
         () => _handleAddingNewUser());
   }
 
-  _saveAdminInfo(String id) async {
+  Future<void> _saveAdminInfo(String id) async {
     try {
-      _userBloc.saveAdminInfo(id);
+      await _userBloc.saveAdminInfo(id);
     } on PlatformException catch (e) {
-      Alert().error(context, e.message, () => Common().dismiss(context));
+      Alert().error(context, e.message ?? '', () => Common().dismiss(context));
     }
   }
 
-  _sendEmailVerification(User firebaseUser) async {
+  void _sendEmailVerification(User firebaseUser) async {
     try {
       await firebaseUser.sendEmailVerification();
     } on PlatformException catch (e) {
@@ -75,23 +79,24 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
     }
   }
 
-  _showCompletedAlert({String message}) {
-    Alert().success(context, message, () {
+  void _showCompletedAlert({String? message}) {
+    Alert().success(context, message ?? '', () {
       Common().dismiss(context);
       _navigateToUsers();
     });
   }
 
-  _navigateToUsers() {
+  void _navigateToUsers() {
     Common().dismiss(context);
   }
 
-  _handleAddingNewUser() async {
+  void _handleAddingNewUser() async {
     try {
       Common().loading(context);
       await _userBloc.signUp(onSuccess: (firebaseUser) async {
-        await _saveAdminInfo(firebaseUser.user.uid);
-        _sendEmailVerification(firebaseUser.user);
+        User user = firebaseUser.user!;
+        await _saveAdminInfo(user.uid);
+        _sendEmailVerification(user);
         Common().dismiss(context);
         _showCompletedAlert(
             message: AppLocalizations.of(context)
@@ -129,11 +134,9 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
                 stream: _userBloc.phone,
                 builder: (context, snapshot) {
                   return NewUserTextFieldForm(
-                    hint: AppLocalizations.of(context)
-                            .translate(LocalizedKey.userPhoneTitle) +
-                        " " +
-                        AppLocalizations.of(context)
-                            .translate(LocalizedKey.userPhoneExample),
+                    hint: "${AppLocalizations.of(context)
+                            .translate(LocalizedKey.userPhoneTitle)} ${AppLocalizations.of(context)
+                            .translate(LocalizedKey.userPhoneExample)}",
                     controller: phoneController,
                     onChange: _userBloc.phoneChange,
                     isError: snapshot.hasError,
@@ -145,11 +148,9 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
                 stream: _userBloc.email,
                 builder: (context, snapshot) {
                   return NewUserTextFieldForm(
-                    hint: AppLocalizations.of(context)
-                            .translate(LocalizedKey.userEmailTitle) +
-                        " " +
-                        AppLocalizations.of(context)
-                            .translate(LocalizedKey.userEmailExample),
+                    hint: "${AppLocalizations.of(context)
+                            .translate(LocalizedKey.userEmailTitle)} ${AppLocalizations.of(context)
+                            .translate(LocalizedKey.userEmailExample)}",
                     controller: emailController,
                     onChange: _userBloc.emailChange,
                     isError: snapshot.hasError,
@@ -185,7 +186,7 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
                 builder: (context, snapshot) {
                   return UserTypeDropDown(
                     userRole: snapshot.data,
-                    onUserRoleSelect: _userBloc.roleChange,
+                    onUserRoleSelect: (role) => _userBloc.roleChange(role ?? ''),
                   );
                 }),
             Container(
@@ -211,18 +212,18 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
 
 class NewUserTextFieldForm extends StatelessWidget {
   final String hint;
-  final Function(String) onChange;
-  final TextEditingController controller;
+  final Function(String)? onChange;
+  final TextEditingController? controller;
   final bool isError;
   final TextInputType keyboardType;
   final bool isPassword;
   final bool isPhoneNumber;
   final bool isEnabled;
-  NewUserTextFieldForm(
-      {@required this.hint,
-      @required this.controller,
+  const NewUserTextFieldForm(
+      {super.key, required this.hint,
+      required this.controller,
       this.onChange,
-      @required this.isError,
+      required this.isError,
       this.keyboardType = TextInputType.text,
       this.isPassword = false,
       this.isPhoneNumber = false,
@@ -268,9 +269,9 @@ class NewUserTextFieldForm extends StatelessWidget {
 }
 
 class UserTypeDropDown extends StatelessWidget {
-  final String userRole;
-  final Function(String) onUserRoleSelect;
-  UserTypeDropDown({@required this.userRole, @required this.onUserRoleSelect});
+  final String? userRole;
+  final Function(String?)? onUserRoleSelect;
+  UserTypeDropDown({super.key, required this.userRole, required this.onUserRoleSelect});
 
   final List<String> userRoleList = [
     AdminRole.customerService,
@@ -298,11 +299,11 @@ class UserTypeDropDown extends StatelessWidget {
             onChanged: onUserRoleSelect,
             items: userRoleList
                 .map((role) => DropdownMenuItem(
+                      value: role,
                       child: Container(
                         child: Text(AdminRole()
                             .getDisplayRole(role: role, context: context)),
                       ),
-                      value: role,
                     ))
                 .toList(),
           ),

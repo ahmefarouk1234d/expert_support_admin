@@ -12,11 +12,13 @@ import 'package:flutter/services.dart';
 class AddDiscount extends StatelessWidget {
   static String route = "/addDiscount";
 
+  const AddDiscount({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DiscountBloc>(
       builder: (context, offerBloc) => offerBloc ?? DiscountBloc(),
-      onDispose: (context, offerBloc) => offerBloc.dispose(),
+      onDispose: (context, offerBloc) => offerBloc?.dispose(),
       child: Scaffold(
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)
@@ -29,6 +31,8 @@ class AddDiscount extends StatelessWidget {
 }
 
 class AddDiscountContent extends StatefulWidget {
+  const AddDiscountContent({super.key});
+
 
   @override
   _AddDiscountContentState createState() => _AddDiscountContentState();
@@ -37,7 +41,7 @@ class AddDiscountContent extends StatefulWidget {
 class _AddDiscountContentState extends State<AddDiscountContent> {
   final TextEditingController codeController = TextEditingController();
   final TextEditingController percentController = TextEditingController();
-  DiscountBloc _discountBloc;
+  late DiscountBloc _discountBloc;
 
   @override
   void initState() {
@@ -45,7 +49,7 @@ class _AddDiscountContentState extends State<AddDiscountContent> {
     super.initState();
   }
 
-  _showConformatiomAlert() {
+  void _showConformatiomAlert() {
     String message = AppLocalizations.of(context)
         .translate(LocalizedKey.addDiscountAlertMessage);
     Alert().conformation(
@@ -56,7 +60,7 @@ class _AddDiscountContentState extends State<AddDiscountContent> {
         () => _handleAddingNewDiscount());
   }
 
-  _handleAddingNewDiscount() async {
+  void _handleAddingNewDiscount() async {
     try {
       Common().loading(context);
       await _discountBloc.saveDiscountInfo();
@@ -66,18 +70,18 @@ class _AddDiscountContentState extends State<AddDiscountContent> {
               .translate(LocalizedKey.addDiscountSuccessAlertMessage));
     } on PlatformException catch (e) {
       Common().dismiss(context);
-      Alert().error(context, e.message, () => Common().dismiss(context));
+      Alert().error(context, e.message ?? '', () => Common().dismiss(context));
     }
   }
 
-  _showCompletedAlert({String message}) {
-    Alert().success(context, message, () {
+  void _showCompletedAlert({String? message}) {
+    Alert().success(context, message ?? '', () {
       Common().dismiss(context);
       _navigateToDicountList();
     });
   }
 
-  _navigateToDicountList() {
+  void _navigateToDicountList() {
     Navigator.of(context).pop();
   }
 
@@ -141,16 +145,16 @@ class _AddDiscountContentState extends State<AddDiscountContent> {
 class DiscountTextField extends StatelessWidget {
   final String header;
   final String hint;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final bool isError;
   final Function(String) onChange;
   final TextInputType keyboardType;
-  DiscountTextField(
-      {this.header,
+  const DiscountTextField(
+      {super.key, this.header = "",
       this.hint = "",
       this.controller,
       this.isError = false,
-      @required this.onChange,
+      required this.onChange,
       this.keyboardType = TextInputType.text});
 
   @override

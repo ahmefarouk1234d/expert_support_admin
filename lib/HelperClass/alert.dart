@@ -17,23 +17,24 @@ class Alert{
     );
   }
 
-  List<Widget> _iOSAlertOkAction(Function okAction, BuildContext context){
+  List<Widget> _iOSAlertOkAction(VoidCallback okAction, BuildContext context){
     return <Widget>[
       CupertinoDialogAction(
+        onPressed: okAction,
         child: Text(
           AppLocalizations.of(context).translate(LocalizedKey.okButtonTitle)
-          ), 
-        onPressed: okAction,)
+          ),)
     ];
   }
 
-  List<Widget> _iOSAlertTwoAction(Function okAction, Function cancelAction, BuildContext context){
+  List<Widget> _iOSAlertTwoAction(VoidCallback okAction, VoidCallback cancelAction, BuildContext context){
     return <Widget>[
       CupertinoDialogAction(
-        child: Text(AppLocalizations.of(context).translate(LocalizedKey.okButtonTitle)), 
-        onPressed: okAction,),
+        onPressed: okAction,
+        child: Text(AppLocalizations.of(context).translate(LocalizedKey.okButtonTitle)),),
       CupertinoDialogAction(
-        child: Text(AppLocalizations.of(context).translate(LocalizedKey.cancelButtonTitle)), onPressed: cancelAction,)
+        onPressed: cancelAction,
+        child: Text(AppLocalizations.of(context).translate(LocalizedKey.cancelButtonTitle)),)
     ];
   }
   // ---------------------- End iOS Part --------------------------
@@ -47,63 +48,63 @@ class Alert{
     );
   }
 
-  List<Widget> _androidAlertOkAction(Function okAction, BuildContext context){
+  List<Widget> _androidAlertOkAction(VoidCallback okAction, BuildContext context){
     return <Widget>[
-      FlatButton(
-        child: Text(AppLocalizations.of(context).translate(LocalizedKey.okButtonTitle)), 
-        onPressed: okAction,)
+      TextButton(
+        onPressed: okAction,
+        child: Text(AppLocalizations.of(context).translate(LocalizedKey.okButtonTitle)),)
     ];
   }
 
-  List<Widget> _androidAlertTwoAction(Function okAction, Function cancelAction, BuildContext context){
+  List<Widget> _androidAlertTwoAction(VoidCallback okAction, VoidCallback cancelAction, BuildContext context){
     return <Widget>[
-      FlatButton(
-        child: Text(AppLocalizations.of(context).translate(LocalizedKey.okButtonTitle)), 
-        onPressed: okAction,),
-      FlatButton(
-        child: Text(AppLocalizations.of(context).translate(LocalizedKey.cancelButtonTitle)), 
-        onPressed: cancelAction,)
+      TextButton(
+        onPressed: okAction,
+        child: Text(AppLocalizations.of(context).translate(LocalizedKey.okButtonTitle)),),
+      TextButton(
+        onPressed: cancelAction,
+        child: Text(AppLocalizations.of(context).translate(LocalizedKey.cancelButtonTitle)),)
     ];
   }
   // ---------------------- End Android Part --------------------------
 
-  void warning(BuildContext context, String message, Function okAction) {
-    String _title = AppLocalizations.of(context).translate(LocalizedKey.warningAlertTitle);
+  void warning(BuildContext context, String message, VoidCallback okAction) {
+    String title = AppLocalizations.of(context).translate(LocalizedKey.warningAlertTitle);
     showDialog(
         context: context,
         builder: (BuildContext context2){
           if (Platform.isIOS) {
-            return _iOSAlert(_title, message, _iOSAlertOkAction(okAction, context));
+            return _iOSAlert(title, message, _iOSAlertOkAction(okAction, context));
           }
-          return _androidAlert(_title, message, _androidAlertOkAction(okAction, context));
+          return _androidAlert(title, message, _androidAlertOkAction(okAction, context));
         });
   }
 
-  void success(BuildContext context, String message, Function okAction) {
-    String _title = AppLocalizations.of(context).translate(LocalizedKey.successAlertTitle);
+  void success(BuildContext context, String message, VoidCallback okAction) {
+    String title = AppLocalizations.of(context).translate(LocalizedKey.successAlertTitle);
     showDialog(
         context: context,
         builder: (BuildContext context2){
           if (Platform.isIOS) {
-            return _iOSAlert(_title, message, _iOSAlertOkAction(okAction, context));
+            return _iOSAlert(title, message, _iOSAlertOkAction(okAction, context));
           }
-          return _androidAlert(_title, message, _androidAlertOkAction(okAction, context));
+          return _androidAlert(title, message, _androidAlertOkAction(okAction, context));
         });
   }
 
-  void error(BuildContext context, String message, Function okAction) {
-    String _title = AppLocalizations.of(context).translate(LocalizedKey.errorAlertTitle);
+  void error(BuildContext context, String message, VoidCallback okAction) {
+    String title = AppLocalizations.of(context).translate(LocalizedKey.errorAlertTitle);
     showDialog(
         context: context,
         builder: (BuildContext context2){
           if (Platform.isIOS) {
-            return _iOSAlert(_title, message, _iOSAlertOkAction(okAction, context));
+            return _iOSAlert(title, message, _iOSAlertOkAction(okAction, context));
           }
-          return _androidAlert(_title, message, _androidAlertOkAction(okAction, context));
+          return _androidAlert(title, message, _androidAlertOkAction(okAction, context));
         });
   }
 
-  void conformation(BuildContext context, String title, String message, Function okAction) {
+  void conformation(BuildContext context, String title, String message, VoidCallback okAction) {
     showDialog(
       context: context,
       builder: (BuildContext context2){

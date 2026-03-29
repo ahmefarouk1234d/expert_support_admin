@@ -20,21 +20,21 @@ import 'package:expert_support_admin/BlocResources/base_provider.dart';
 class PendingOrderActionButtons extends StatefulWidget {
   final OrderInfo order;
   final TextEditingController controller;
-  PendingOrderActionButtons(this.order, this.controller);
+  const PendingOrderActionButtons(this.order, this.controller, {super.key});
 
   @override
   _PendingOrderActionButtonsState createState() => _PendingOrderActionButtonsState();
 }
 
 class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
-  FirebaseManager _firebaseManager = FirebaseManager();
-  bool _isEnabled;
-  bool _isViewImageEnabled;
-  OrderInfo _order;
-  OrderBloc _orderBloc;
-  AppBloc _appBloc;
-  Color _borderColor;
-  String actionWorkflowState;
+  final FirebaseManager _firebaseManager = FirebaseManager();
+  late bool _isEnabled;
+  late bool _isViewImageEnabled;
+  late OrderInfo _order;
+  late OrderBloc _orderBloc;
+  late AppBloc _appBloc;
+  late Color _borderColor;
+  late String actionWorkflowState;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
     _isEnabled = 
       (_order.workflowStatus == WorkflowStatus.pending) || 
       (_order.workflowStatus == WorkflowStatus.requestChange);
-    _isViewImageEnabled = _order.imagesUrl.isNotEmpty;
+    _isViewImageEnabled = _order.imagesUrl!.isNotEmpty;
     _borderColor = Colors.black;
 
     actionWorkflowState = _order.workflowStatus == WorkflowStatus.requestChange 
@@ -69,7 +69,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
     _order.workflowStatus = workflowStatus;
     _orderBloc.ordersChange.add(_order);
 
-    String cancelReason = widget.controller.text.isNotEmpty ? widget.controller.text : null;
+    String? cancelReason = widget.controller.text.isNotEmpty ? widget.controller.text : null;
     await _firebaseManager.updateOrderStatus(_order, admin, cancelReason: cancelReason);
 
     Common().dismiss(context);
@@ -80,12 +80,14 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
 
   _navigateToViewImage(){
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => OrderImages(imageUrls: _order.imagesUrl,)));
+      MaterialPageRoute(builder: (context) => OrderImages(imageUrls: _order.imagesUrl!,)));
   }
 
   _navigateToEditOrder(AdminUserInfo admin){
-    List<OrderService> services = List();
-    _order.orderService.forEach((serv) => services.add(OrderService()..update(serv)));
+    List<OrderService> services = [];
+    for (var serv in _order.orderService!) {
+      services.add(OrderService()..update(serv));
+    }
     OrderInfo orderToEdit = OrderInfo()..update(_order);
 
     Navigator.of(context).push(
@@ -134,7 +136,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
                 title: AppLocalizations.of(context).translate(LocalizedKey.editServButtonTitle),
                 onPressed: _isEnabled ? () {
                   if (snapshot.hasData){
-                    _navigateToEditOrder(snapshot.data);
+                    _navigateToEditOrder(snapshot.data!);
                   }
                 }
                 : null,
@@ -144,7 +146,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
                 title: AppLocalizations.of(context).translate(LocalizedKey.editTimeAndDateButtonTitle),
                 onPressed: _isEnabled ? () {
                   if (snapshot.hasData){
-                    _navigateToEditTimeDate(snapshot.data);
+                    _navigateToEditTimeDate(snapshot.data!);
                   }
                 }
                 : null,
@@ -155,10 +157,10 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
                 onPressed: _isEnabled ? () {
                   if (snapshot.hasData){
                     _showConformatiomAlert(
-                      _order.orderStatus == OrderStatus.pending ? OrderStatus.inProcess : _order.orderStatus, 
+                      _order.orderStatus == OrderStatus.pending ? OrderStatus.inProcess : _order.orderStatus!, 
                       actionWorkflowState,
                       AppLocalizations.of(context).translate(LocalizedKey.acceptAlertMessage), 
-                      snapshot.data);
+                      snapshot.data!);
                   }
                 }
                 : null,
@@ -188,7 +190,7 @@ class _PendingOrderActionButtonsState extends State<PendingOrderActionButtons> {
                         OrderStatus.canceled, 
                         WorkflowStatus.canceled,
                         AppLocalizations.of(context).translate(LocalizedKey.cancelAlertMessage), 
-                        snapshot.data);
+                        snapshot.data!);
                     }
                   }
                 }
