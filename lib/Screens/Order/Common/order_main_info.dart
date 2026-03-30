@@ -16,16 +16,24 @@ class OrderMainInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     String phone = order.userPhone == null ? '' : order.userPhone!.replaceAll("+966", '0');
     String localCode = AppLocalizations.of(context).locale.languageCode;
-    String visitDate = DateConvert().toStringFromDate(date: order.visitDate!, locale: localCode, isFull: true);
+    String visitDate = order.visitDate != null
+      ? DateConvert().toStringFromDate(date: order.visitDate!, locale: localCode, isFull: true)
+      : '-';
     AppLocalizations localizations = AppLocalizations.of(context);
-    String workflowStatus = WorkflowStatus().getDisplayStatus(status: order.workflowStatus!, context: context);
-    String visitTime = 
+    String workflowStatus = order.workflowStatus != null
+      ? WorkflowStatus().getDisplayStatus(status: order.workflowStatus!, context: context)
+      : '-';
+    String visitTime =
       order.visitDateAndTime != null
       ? TimeOfDay(
-        hour: order.visitDateAndTime!.hour, 
+        hour: order.visitDateAndTime!.hour,
         minute: order.visitDateAndTime!.minute).format(context)
-      : DayTime().getDisplayStatus(dayTime: order.visitTime!, context: context);
-    String payment = Payment().getDisplayStatus(status: order.paymentMethod!, context: context);
+      : (order.visitTime != null
+        ? DayTime().getDisplayStatus(dayTime: order.visitTime!, context: context)
+        : '-');
+    String payment = order.paymentMethod != null
+      ? Payment().getDisplayStatus(status: order.paymentMethod!, context: context)
+      : '-';
     
     bool hasReminder = (order.reminderOnDay ?? false) || (order.reminderOneHour ?? false);
     return Container(
@@ -46,10 +54,14 @@ class OrderMainInfo extends StatelessWidget {
               OrderInfoRow(
                 title: localizations.translate(LocalizedKey.timeTitle), 
                 value: visitTime,),
-              OrderInfoMapRow(
-                title: localizations.translate(LocalizedKey.locationTitle), 
-                latitude: order.coordinate!.latitude!, 
-                logntitude: order.coordinate!.logntitude!,),
+              order.coordinate != null && order.coordinate!.latitude != null && order.coordinate!.logntitude != null
+                ? OrderInfoMapRow(
+                    title: localizations.translate(LocalizedKey.locationTitle),
+                    latitude: order.coordinate!.latitude!,
+                    logntitude: order.coordinate!.logntitude!,)
+                : OrderInfoRow(
+                    title: localizations.translate(LocalizedKey.locationTitle),
+                    value: '-',),
               OrderInfoRow(
                 title: localizations.translate(LocalizedKey.otherDetailsTitle), 
                 value: "${order.comment}",),

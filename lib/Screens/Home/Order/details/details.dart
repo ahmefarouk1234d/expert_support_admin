@@ -153,7 +153,7 @@ class _OrderDetailsState extends State<OrderDetails> {
         builder: (context, snapshot) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(_order.id!),
+              title: Text(_order.id ?? ''),
               elevation: 0.0,
               actions: <Widget>[
                 _isSupervior(snapshot) && _canAddDiscount

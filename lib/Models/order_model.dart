@@ -102,9 +102,9 @@ class OrderInfo {
     userPhone = orderData["user_phone"] ?? orderData["userPhone"];
     orderStatus = orderData["order_status"];
     workflowStatus = orderData["workflow_status"];
-    this.dateCreated = DateTime.fromMillisecondsSinceEpoch(dateCreated!);
-    this.dateUpdate = DateTime.fromMillisecondsSinceEpoch(dateUpdate!);
-    visitDate = DateTime.fromMillisecondsSinceEpoch(visitedDate!);
+    this.dateCreated = dateCreated != null ? DateTime.fromMillisecondsSinceEpoch(dateCreated) : null;
+    this.dateUpdate = dateUpdate != null ? DateTime.fromMillisecondsSinceEpoch(dateUpdate) : null;
+    visitDate = visitedDate != null ? DateTime.fromMillisecondsSinceEpoch(visitedDate) : null;
     visiteDateTimestamp = visitedDate;
     visitTime = orderData["visit_time"];
     this.visitDateAndTime = visitDateAndTime;
@@ -116,7 +116,9 @@ class OrderInfo {
         orderData["total_order_price_after_discount"];
     vatTotal = orderData["VAT_total"];
     totalPriceWithVAT = orderData["total_price_with_VAT"];
-    coordinate = Coordinate.fromMap(orderData["visit_location"]);
+    coordinate = orderData["visit_location"] != null
+        ? Coordinate.fromMap(orderData["visit_location"])
+        : null;
     adminID = orderData["admin_id"];
     adminName = orderData["admin_name"];
     adminRole = orderData["admin_role"];

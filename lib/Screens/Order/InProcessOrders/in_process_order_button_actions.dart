@@ -56,7 +56,7 @@ class _InProcessActionButtonsState extends State<InProcessActionButtons> {
       || (_order.workflowStatus == WorkflowStatus.requestChangeReply)
       || (_order.workflowStatus == WorkflowStatus.onTheWay)
       || (_order.workflowStatus == WorkflowStatus.arrived);
-    _isViewImageEnabled = _order.imagesUrl!.isNotEmpty;
+    _isViewImageEnabled = _order.imagesUrl != null && _order.imagesUrl!.isNotEmpty;
     _reasonBorderColor = Colors.black;
     _moneyReceivedBorderColor = Colors.black;
     _partsTotalBorderColor = Colors.black;
