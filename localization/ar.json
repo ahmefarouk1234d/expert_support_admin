@@ -229,5 +229,10 @@
     "start_working_button_title": "بداء العمل",
     "can_show_vat_note_title": "عرض الملاحظات في صفحة الخدمات الرئيسية؟",
     "vat_note_ar_title": "الملاحظات في صفحة الخدمات الرئيسية يالعربي",
-    "vat_note_en_title": "الملاحظات في صفحة الخدمات الرئيسية بالانجليزي"
+    "vat_note_en_title": "الملاحظات في صفحة الخدمات الرئيسية بالانجليزي",
+    "services_menu_title": "إدارة الخدمات",
+    "service_status_change_alert_message": "هل أنت متأكد من تغيير حالة الخدمة؟",
+    "service_status_change_success_message": "تم تحديث حالة الخدمة بنجاح",
+    "service_active_text": "مفعّل",
+    "service_coming_soon_text": "قريبًا"
 }

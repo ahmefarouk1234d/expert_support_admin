@@ -229,4 +229,9 @@ class LocalizedKey{
   static const String canShowVatNoteTitle = "can_show_vat_note_title";
   static const String vatNoteArTitle = "vat_note_ar_title";
   static const String vatNoteEnTitle = "vat_note_en_title";
+  static const String servicesMenuTitle = "services_menu_title";
+  static const String serviceStatusChangeAlertMessage = "service_status_change_alert_message";
+  static const String serviceStatusChangeSuccessMessage = "service_status_change_success_message";
+  static const String serviceActiveText = "service_active_text";
+  static const String serviceComingSoonText = "service_coming_soon_text";
 }

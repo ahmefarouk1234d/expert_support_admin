@@ -335,6 +335,18 @@ class DataBase {
     return collectionReference.orderBy("Order").get();
   }
 
+  Stream<QuerySnapshot> getServicesStream() {
+    CollectionReference collectionReference =
+        isTestMode ? servicesTestCollectoion : servicesCollection;
+    return collectionReference.orderBy("Order").snapshots();
+  }
+
+  Future<void> updateServiceActiveStatus(String docId, bool isActive) {
+    CollectionReference collectionReference =
+        isTestMode ? servicesTestCollectoion : servicesCollection;
+    return collectionReference.doc(docId).update({"IsActive": isActive});
+  }
+
   Future<DocumentSnapshot> getAdminInfo(String adminID) {
     return adminUserCollection.doc(adminID).get();
   }

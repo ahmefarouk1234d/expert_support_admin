@@ -111,6 +111,14 @@ class FirebaseManager {
     return _db.getServices();
   }
 
+  Stream<QuerySnapshot> getServicesStream() {
+    return _db.getServicesStream();
+  }
+
+  Future<void> updateServiceActiveStatus(String docId, bool isActive) {
+    return _db.updateServiceActiveStatus(docId, isActive);
+  }
+
   Future<DocumentSnapshot> getAdminInfo(String adminID) {
     return _db.getAdminInfo(adminID);
   }

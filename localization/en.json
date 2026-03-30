@@ -227,5 +227,10 @@
     "start_working_button_title": "START WORKING",
     "can_show_vat_note_title": "Can show note in Main Service Screen?",
     "vat_note_ar_title": "Note in Main Service Sreen Ar",
-    "vat_note_en_title": "Note in Main Service Sreen En"
+    "vat_note_en_title": "Note in Main Service Sreen En",
+    "services_menu_title": "Services",
+    "service_status_change_alert_message": "Are you sure you want to change service status?",
+    "service_status_change_success_message": "Service status has been updated successfully",
+    "service_active_text": "Active",
+    "service_coming_soon_text": "Coming Soon"
 }

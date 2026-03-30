@@ -8,6 +8,7 @@ import 'package:expert_support_admin/Screens/Home/Offers/order_offers.dart';
 import 'package:expert_support_admin/Screens/Home/Order/inbox.dart';
 import 'package:expert_support_admin/Screens/Home/Password/change_password.dart';
 import 'package:expert_support_admin/Screens/Home/Users/users.dart';
+import 'package:expert_support_admin/Screens/Home/Services/service_management.dart';
 import 'package:expert_support_admin/Screens/Home/generalDetails/general_details.dart';
 import 'package:expert_support_admin/Screens/Home/no_role_inbox.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class MenuList {
   String discount = "";
   String generalDetailsTitle = "";
   String ordersHistory = "";
+  String servicesTitle = "";
 
   MenuList(this.context) {
     pendingTitle = AppLocalizations.of(context)
@@ -71,6 +73,8 @@ class MenuList {
         AppLocalizations.of(context).translate(LocalizedKey.generalDetailsMenuTitle);
     ordersHistory =
         AppLocalizations.of(context).translate(LocalizedKey.orderHistoryMenuTitle);
+    servicesTitle =
+        AppLocalizations.of(context).translate(LocalizedKey.servicesMenuTitle);
   }
 
   NavScreen getCustomerServiceList() {
@@ -177,6 +181,7 @@ class MenuList {
       NavWidget(title: discount, widget: DiscountPage()),
       NavWidget(title: usersTitle, widget: Users()),
       NavWidget(title: generalDetailsTitle, widget: GeneralDetails()),
+      NavWidget(title: servicesTitle, widget: ServiceManagement()),
       //NavWidget(title: ordersHistory, widget: Users()),
       NavWidget(
           title: changePasswordTitle, widget: ChangePassword()),
@@ -186,6 +191,7 @@ class MenuList {
       discount,
       usersTitle,
       generalDetailsTitle,
+      servicesTitle,
       //ordersHistory,
       changePasswordTitle,
       signOutTitle
