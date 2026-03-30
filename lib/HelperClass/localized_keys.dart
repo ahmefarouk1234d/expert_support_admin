@@ -234,4 +234,13 @@ class LocalizedKey{
   static const String serviceStatusChangeSuccessMessage = "service_status_change_success_message";
   static const String serviceActiveText = "service_active_text";
   static const String serviceComingSoonText = "service_coming_soon_text";
+  static const String notificationsMenuTitle = "notifications_menu_title";
+  static const String notificationTitleArLabel = "notification_title_ar_label";
+  static const String notificationTitleEnLabel = "notification_title_en_label";
+  static const String notificationBodyArLabel = "notification_body_ar_label";
+  static const String notificationBodyEnLabel = "notification_body_en_label";
+  static const String notificationSendButtonTitle = "notification_send_button_title";
+  static const String notificationSendAlertMessage = "notification_send_alert_message";
+  static const String notificationSendSuccessMessage = "notification_send_success_message";
+  static const String notificationFieldsRequiredMessage = "notification_fields_required_message";
 }

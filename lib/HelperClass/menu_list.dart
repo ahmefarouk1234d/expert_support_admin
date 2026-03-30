@@ -8,6 +8,7 @@ import 'package:expert_support_admin/Screens/Home/Offers/order_offers.dart';
 import 'package:expert_support_admin/Screens/Home/Order/inbox.dart';
 import 'package:expert_support_admin/Screens/Home/Password/change_password.dart';
 import 'package:expert_support_admin/Screens/Home/Users/users.dart';
+import 'package:expert_support_admin/Screens/Home/Notifications/send_notification.dart';
 import 'package:expert_support_admin/Screens/Home/Services/service_management.dart';
 import 'package:expert_support_admin/Screens/Home/generalDetails/general_details.dart';
 import 'package:expert_support_admin/Screens/Home/no_role_inbox.dart';
@@ -43,6 +44,7 @@ class MenuList {
   String generalDetailsTitle = "";
   String ordersHistory = "";
   String servicesTitle = "";
+  String notificationsTitle = "";
 
   MenuList(this.context) {
     pendingTitle = AppLocalizations.of(context)
@@ -75,6 +77,8 @@ class MenuList {
         AppLocalizations.of(context).translate(LocalizedKey.orderHistoryMenuTitle);
     servicesTitle =
         AppLocalizations.of(context).translate(LocalizedKey.servicesMenuTitle);
+    notificationsTitle =
+        AppLocalizations.of(context).translate(LocalizedKey.notificationsMenuTitle);
   }
 
   NavScreen getCustomerServiceList() {
@@ -182,6 +186,7 @@ class MenuList {
       NavWidget(title: usersTitle, widget: Users()),
       NavWidget(title: generalDetailsTitle, widget: GeneralDetails()),
       NavWidget(title: servicesTitle, widget: ServiceManagement()),
+      NavWidget(title: notificationsTitle, widget: SendNotification()),
       //NavWidget(title: ordersHistory, widget: Users()),
       NavWidget(
           title: changePasswordTitle, widget: ChangePassword()),
@@ -192,6 +197,7 @@ class MenuList {
       usersTitle,
       generalDetailsTitle,
       servicesTitle,
+      notificationsTitle,
       //ordersHistory,
       changePasswordTitle,
       signOutTitle

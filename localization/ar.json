@@ -234,5 +234,14 @@
     "service_status_change_alert_message": "هل أنت متأكد من تغيير حالة الخدمة؟",
     "service_status_change_success_message": "تم تحديث حالة الخدمة بنجاح",
     "service_active_text": "مفعّل",
-    "service_coming_soon_text": "قريبًا"
+    "service_coming_soon_text": "قريبًا",
+    "notifications_menu_title": "إرسال إشعار",
+    "notification_title_ar_label": "عنوان الإشعار بالعربي",
+    "notification_title_en_label": "عنوان الإشعار بالإنجليزي",
+    "notification_body_ar_label": "نص الإشعار بالعربي",
+    "notification_body_en_label": "نص الإشعار بالإنجليزي",
+    "notification_send_button_title": "إرسال الإشعار",
+    "notification_send_alert_message": "هل أنت متأكد من إرسال الإشعار لجميع العملاء؟",
+    "notification_send_success_message": "تم إرسال الإشعار بنجاح",
+    "notification_fields_required_message": "يرجى تعبئة العنوان والنص بالعربي على الأقل"
 }
