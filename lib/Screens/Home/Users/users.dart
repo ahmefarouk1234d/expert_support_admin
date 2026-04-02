@@ -55,6 +55,14 @@ class _UsersContentState extends State<UsersContent> {
     return StreamBuilder<QuerySnapshot>(
         stream: _appBloc.adminListDocument,
         builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                'Error loading users: ${snapshot.error}',
+                style: TextStyle(color: Colors.red),
+              ),
+            );
+          }
           if (!snapshot.hasData) {
             return Loading();
           }

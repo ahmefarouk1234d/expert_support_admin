@@ -13,6 +13,7 @@ class AppBloc{
   
   Stream<AdminUserInfo> get admin => _admin.stream;
   Sink<AdminUserInfo> get adminChange => _admin.sink;
+  AdminUserInfo? get currentAdmin => _admin.valueOrNull;
 
   Stream<DateTime?> get fromDate => _fromDate.stream;
   Sink<DateTime?> get fromDateChange => _fromDate.sink;

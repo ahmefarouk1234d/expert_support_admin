@@ -139,19 +139,37 @@ class _MainState extends State<Main> {
   }
 
   void _checkSignIn(AppBloc appBloc) async {
-    User? user = await _firebaseManager.getUser();
-    if (user == null) {
+    try {
+      User? user = await _firebaseManager.getUser();
+      if (user == null) {
+        setState(() {
+          _authStatus = AuthStatus.notSingedIn;
+        });
+      } else {
+        DocumentSnapshot adminDoc =
+            await _firebaseManager.getAdminInfo(user.uid);
+        if (!adminDoc.exists) {
+          // The cached Firebase user has no matching admin record in Firestore.
+          // This can happen if createUserWithEmailAndPassword cached a newly
+          // created user. Sign out and show the login screen.
+          await _firebaseManager.signOut();
+          setState(() {
+            _authStatus = AuthStatus.notSingedIn;
+          });
+          return;
+        }
+        AdminUserInfo adminInfo = AdminUserInfo.fromMap(adminDoc)
+          ..id = user.uid;
+        appBloc.adminChange.add(adminInfo);
+        setState(() {
+          _authStatus = AuthStatus.signedIn;
+        });
+      }
+    } catch (e) {
+      // If Firestore fetch fails, fall back to login screen instead of
+      // freezing on the loading spinner forever.
       setState(() {
         _authStatus = AuthStatus.notSingedIn;
-      });
-    } else {
-      DocumentSnapshot adminDoc =
-          await _firebaseManager.getAdminInfo(user.uid);
-      AdminUserInfo adminInfo = AdminUserInfo.fromMap(adminDoc)
-        ..id = user.uid;
-      appBloc.adminChange.add(adminInfo);
-      setState(() {
-        _authStatus = AuthStatus.signedIn;
       });
     }
   }

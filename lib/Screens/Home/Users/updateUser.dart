@@ -88,7 +88,7 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
   void _updateAdminInfo() async{
     try {
       Common().loading(context);
-      _userBloc.updateAdminInfo(admin.id ?? '');
+      await _userBloc.updateAdminInfo(admin.id ?? '');
 
       admin.name = nameController!.text;
       admin.email = emailController!.text;
@@ -99,8 +99,9 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
 
       Common().dismiss(context);
       _showCompletedAlert(message: AppLocalizations.of(context).translate(LocalizedKey.userUpdateSuccessAlertMessage));
-    } on PlatformException catch (e){
-      Alert().error(context, e.message ?? '', () => Common().dismiss(context));
+    } catch (e){
+      Common().dismiss(context);
+      Alert().error(context, e.toString(), () => Common().dismiss(context));
     }
   }
 
@@ -113,7 +114,7 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
   void _deleteAdminInfo() async{
     try {
       Common().loading(context);
-      _userBloc.deleteAdminInfo(widget.admin.id ?? '');
+      await _userBloc.deleteAdminInfo(widget.admin.id ?? '');
 
       admin.status = AdminUserStatus.deleted;
       admin.dateUpdated = DateTime.now().toUtc().millisecondsSinceEpoch;
@@ -121,8 +122,9 @@ class _UpdateUserContentState extends State<UpdateUserContent> {
 
       Common().dismiss(context);
       _showCompletedAlert(message: AppLocalizations.of(context).translate(LocalizedKey.userDeleteSuccessAlertMessage));
-    } on PlatformException catch (e){
-      Alert().error(context, e.message ?? '', () => Common().dismiss(context));
+    } catch (e){
+      Common().dismiss(context);
+      Alert().error(context, e.toString(), () => Common().dismiss(context));
     }
   }
 

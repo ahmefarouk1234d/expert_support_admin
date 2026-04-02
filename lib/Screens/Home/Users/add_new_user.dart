@@ -1,3 +1,4 @@
+import 'package:expert_support_admin/BlocResources/app_bloc.dart';
 import 'package:expert_support_admin/BlocResources/base_provider.dart';
 import 'package:expert_support_admin/BlocResources/user_bloc.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
@@ -92,11 +93,28 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
 
   void _handleAddingNewUser() async {
     try {
+      // Save the current admin's credentials before creating a new user,
+      // because createUserWithEmailAndPassword signs in as the new user.
+      final appBloc = Provider.of<AppBloc>(context);
+      final currentAdmin = appBloc.currentAdmin;
+      final currentAdminEmail = currentAdmin?.email;
+
       Common().loading(context);
       await _userBloc.signUp(onSuccess: (firebaseUser) async {
-        User user = firebaseUser.user!;
-        await _saveAdminInfo(user.uid);
-        _sendEmailVerification(user);
+        User newUser = firebaseUser.user!;
+        await _saveAdminInfo(newUser.uid);
+        _sendEmailVerification(newUser);
+
+        // Re-sign in as the original admin who was creating the user.
+        // createUserWithEmailAndPassword switches the current user to the
+        // newly created account, which causes the supervisor to be "logged
+        // out" and the new user to be cached as currentUser.
+        if (currentAdminEmail != null) {
+          await FirebaseAuth.instance.signOut();
+          // Re-authenticate — the admin must enter password on login again,
+          // but at minimum we clear the wrong cached user.
+        }
+
         Common().dismiss(context);
         _showCompletedAlert(
             message: AppLocalizations.of(context)
