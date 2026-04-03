@@ -1,4 +1,3 @@
-import 'package:expert_support_admin/BlocResources/app_bloc.dart';
 import 'package:expert_support_admin/BlocResources/base_provider.dart';
 import 'package:expert_support_admin/BlocResources/user_bloc.dart';
 import 'package:expert_support_admin/HelperClass/alert.dart';
@@ -8,9 +7,7 @@ import 'package:expert_support_admin/HelperClass/localized_keys.dart';
 import 'package:expert_support_admin/HelperClass/ui.dart';
 import 'package:expert_support_admin/Models/admin_role.dart';
 import 'package:expert_support_admin/SharedWidget/commom_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class AddNewUser extends StatelessWidget {
   static String route = "/addNewUser";
@@ -59,27 +56,6 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
         () => _handleAddingNewUser());
   }
 
-  Future<void> _saveAdminInfo(String id) async {
-    try {
-      await _userBloc.saveAdminInfo(id);
-    } on PlatformException catch (e) {
-      Alert().error(context, e.message ?? '', () => Common().dismiss(context));
-    }
-  }
-
-  void _sendEmailVerification(User firebaseUser) async {
-    try {
-      await firebaseUser.sendEmailVerification();
-    } on PlatformException catch (e) {
-      print(e.message);
-      String alertMessage = AppLocalizations.of(context)
-          .translate(LocalizedKey.userEmailErrorAlertMessage);
-      Alert().error(context, alertMessage, () {
-        Common().dismiss(context);
-      });
-    }
-  }
-
   void _showCompletedAlert({String? message}) {
     Alert().success(context, message ?? '', () {
       Common().dismiss(context);
@@ -93,39 +69,15 @@ class _AddNewUserContentState extends State<AddNewUserContent> {
 
   void _handleAddingNewUser() async {
     try {
-      // Save the current admin's credentials before creating a new user,
-      // because createUserWithEmailAndPassword signs in as the new user.
-      final appBloc = Provider.of<AppBloc>(context);
-      final currentAdmin = appBloc.currentAdmin;
-      final currentAdminEmail = currentAdmin?.email;
-
       Common().loading(context);
-      await _userBloc.signUp(onSuccess: (firebaseUser) async {
-        User newUser = firebaseUser.user!;
-        await _saveAdminInfo(newUser.uid);
-        _sendEmailVerification(newUser);
-
-        // Re-sign in as the original admin who was creating the user.
-        // createUserWithEmailAndPassword switches the current user to the
-        // newly created account, which causes the supervisor to be "logged
-        // out" and the new user to be cached as currentUser.
-        if (currentAdminEmail != null) {
-          await FirebaseAuth.instance.signOut();
-          // Re-authenticate — the admin must enter password on login again,
-          // but at minimum we clear the wrong cached user.
-        }
-
-        Common().dismiss(context);
-        _showCompletedAlert(
-            message: AppLocalizations.of(context)
-                .translate(LocalizedKey.userAddSuccessAlertMessage));
-      }, onError: (error) {
-        Common().dismiss(context);
-        Alert().error(context, error, () => Common().dismiss(context));
-      });
+      await _userBloc.createAdminUser();
+      Common().dismiss(context);
+      _showCompletedAlert(
+          message: AppLocalizations.of(context)
+              .translate(LocalizedKey.userAddSuccessAlertMessage));
     } catch (e) {
       Common().dismiss(context);
-      print(e.toString());
+      Alert().error(context, e.toString(), () => Common().dismiss(context));
     }
   }
 

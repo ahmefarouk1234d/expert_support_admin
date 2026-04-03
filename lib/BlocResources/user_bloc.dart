@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:expert_support_admin/FirebaseResources/firebase_manager.dart';
 import 'package:expert_support_admin/HelperClass/validator.dart';
 import 'package:expert_support_admin/Models/admin_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 import 'package:rxdart/rxdart.dart';
 
 class UserBloc extends Validator {
@@ -40,28 +42,39 @@ class UserBloc extends Validator {
         return true;
       });
 
-  Future<void> signUp(
-      {required Function(UserCredential) onSuccess, required Function(String) onError}) {
-    return _firebaseManager.signUp(
-        email: _email.value,
-        password: _password.value,
-        onSuccess: onSuccess,
-        onError: onError);
-  }
+  static const String _createAdminUserUrl =
+      'https://us-central1-expert-support.cloudfunctions.net/createAdminUser';
 
-  Future<void> saveAdminInfo(String id) {
-    String phoneNumber = "+966${_phone.value}";
-    AdminUserInfo admin = AdminUserInfo(
-        id: id,
-        name: _name.value,
-        email: _email.value,
-        phone: phoneNumber,
-        role: _role.value,
-        fcmToken: "",
-        status: AdminUserStatus.active,
-        dateCreated: DateTime.now().toUtc().millisecondsSinceEpoch,
-        dateUpdated: DateTime.now().toUtc().millisecondsSinceEpoch);
-    return _firebaseManager.saveAdminUser(admin);
+  /// Creates a new admin user via Cloud Function (server-side).
+  /// Does NOT affect the current admin's session.
+  Future<String> createAdminUser() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) throw Exception('Not authenticated');
+
+    final phoneNumber = "+966${_phone.value}";
+
+    final response = await http.post(
+      Uri.parse(_createAdminUserUrl),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${currentUser.uid}',
+      },
+      body: jsonEncode({
+        'email': _email.value,
+        'password': _password.value,
+        'name': _name.value,
+        'phone': phoneNumber,
+        'role': _role.value,
+      }),
+    );
+
+    final body = jsonDecode(response.body);
+
+    if (response.statusCode != 200) {
+      throw Exception(body['error'] ?? 'Failed to create user');
+    }
+
+    return body['uid'];
   }
 
   Future<void> updateAdminInfo(String id) {
